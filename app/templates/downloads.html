@@ -1,0 +1,45 @@
+{% extends 'cfm_page.html' %}
+
+{% block style%}
+<link rel="stylesheet" href="/static/css/main.css" />
+<style>
+    .description {
+        background-color: #fff;
+        padding: 10px 20px;
+    }
+</style>
+{%endblock%}
+{% block description%}
+<h2>CFM GeoPackage (.gpkg) &amp; KML (.kml) File Downloads</h2>
+<p>
+    Below you can access CFM
+    geospatial data for fault traces in both 2D and 3D formats.
+</p>
+
+<h3>GeoPackage Files (.gpkg)</h3>
+<p>
+    The GeoPackage files available here are designed for use with GIS software, including ArcGIS. These files offer
+    efficient, and versatile storage for both 2D and 3D fault trace data:
+</p>
+<ul>
+    <li style="width:40%"><a
+            href="https://github.com/cascadiaquakes/crescent-cfm/raw/main/crescent_cfm_files/crescent_cfm_crustal_traces.gpkg">CRESCENT
+            Cascadia 2D Crustal Fault traces (GeoPackage)</a></li>
+    <li style="width:40%"><a
+            href="https://github.com/cascadiaquakes/crescent-cfm/raw/main/crescent_cfm_files/crescent_cfm_crustal_3d.gpkg">Download
+            CRESCENT Cascadia 3D Crustal Fault Surfaces (GeoPackage)</a></li>
+</ul>
+
+<h3>KML Files (.kml)</h3>
+<p>
+    For those using Google Earth, the KML files available here for the 2D fault traces:
+</p>
+<ul>
+    <li style="width:40%"><a
+            href="https://raw.githubusercontent.com/cascadiaquakes/crescent-cfm/main/crescent_cfm_files/crescent_cfm_crustal_traces.kml">CRESCENT
+            Cascadia 2D Crustal Fault traces (KML)</a></li>
+</ul>
+
+
+
+{%endblock%}

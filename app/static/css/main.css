@@ -1,0 +1,241 @@
+body,
+html {
+    font-family: 'Arial', sans-serif;
+    /* Sets the font to a common sans-serif type */
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+th,
+td {
+    border: 1px solid rgba(0, 31, 35, 0.5);
+    padding: 8px 10px;
+}
+
+th[scope='col'] {
+    background-color: rgba(0, 31, 35, 1);
+    color: white;
+}
+
+#listPanel {
+    width: 50%;
+    overflow-y: auto;
+    background: #eee;
+    padding: 10px;
+}
+
+#mapContainer {
+    width: 50%;
+    background: #fff;
+    padding: 0px;
+    /* Adjust width as needed */
+    height: 1100px;
+    /* Fixed height, but can be adjusted */
+    overflow-y: auto;
+}
+
+ul {
+    list-style-type: none;
+    /* Removes bullet points */
+    padding: 0;
+}
+
+li {
+    padding: 5px;
+    margin-bottom: 5px;
+    /*background-color: #f9f9f9;*/
+    /*border: 1px solid #ddd;*/
+}
+
+#depthSliders {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: 20px;
+}
+
+input[type="range"] {
+    margin: 0 10px 0 0;
+}
+
+#depthSliders label {
+    margin-right: 5px;
+}
+
+#view3DButton {
+    background-color: #004F59;
+    color: white;
+    width: 20%;
+    padding: 5px;
+    border-radius: 12px;
+    margin: 4px 2px;
+    text-align: center;
+}
+
+#fullScreenButton {
+    background-color: #004F59;
+    color: white;
+    width: 30%;
+    padding: 5px;
+    border-radius: 12px;
+    margin: 4px 2px;
+    text-align: center;
+}
+
+#toggleControlsVisibility {
+    background-color: #004F59;
+    color: white;
+    width: 20%;
+    padding: 5px;
+    border-radius: 12px;
+    margin: 4px 2px;
+    text-align: center;
+}
+
+.slider-group {
+    display: grid;
+    grid-template-columns: auto auto 1fr 1fr auto;
+    align-items: center;
+    gap: 10px;
+    /* Space between columns */
+    margin-bottom: 10px;
+    /* Adds space between each slider group */
+}
+
+.slider-group label {
+    font-weight: bold;
+    white-space: nowrap;
+    /* Ensures the label does not break into multiple lines */
+}
+
+.slider-group .value {
+    min-width: 60px;
+    /* Ensures that the space for the value display is constant */
+    text-align: right;
+    /* Aligns the text to the right */
+}
+
+
+.slider-group input[type="range"] {
+    flex-grow: 1;
+    /* Allows sliders to grow and fill the space */
+    margin-right: 10px;
+    /* Space between consecutive sliders */
+}
+
+.scrollable-div {
+    flex: 1;
+    /* Each div takes equal space */
+    overflow-y: auto;
+    /* Enables vertical scrolling */
+    overflow-x: auto;
+    /* Optional: Enables horizontal scrolling */
+    margin: 5px;
+    /* Adds space between the divs */
+    height: 100%;
+    /* Full height of the container */
+    border: 1px solid #ccc;
+    /* Adds a border for visibility */
+}
+
+table {
+    font-size: 10px;
+    width: 100%;
+    /* Use the full width of the container */
+    border-collapse: collapse;
+    /* Collapses borders to reduce space between them */
+    border: 1px solid #ccc;
+    /* Light gray border for definition */
+}
+
+th,
+td {
+    border: 1px solid #ccc;
+    /* Consistent border styling */
+    padding: 4px 10px;
+    /* Reduced padding for compactness */
+    text-align: left;
+    /* Align text to the left */
+    vertical-align: top;
+    /* Align content to the top of the cell */
+    white-space: nowrap;
+    /* Prevent text from wrapping */
+}
+
+/* CSS rule to hide elements of the ID column */
+.hidden-id-column {
+    display: none;
+}
+
+th {
+    background-color: rgba(0, 31, 35, 0.5);
+    color: white;
+    font-weight: bold;
+    /* Bold text for headers */
+    height: 20px;
+    /* Fixed height for the header cells */
+}
+
+tbody tr:nth-child(odd) {
+    background-color: #eee;
+    /* Very light gray for odd rows, for better readability */
+}
+
+tbody tr:hover {
+    background-color: #e0e0e0;
+    /* Slightly darker gray for hover, improving interaction */
+}
+
+.table-container {
+    width: 100%;
+    /* Adjust width as needed */
+    height: 700px;
+    /* Fixed height, but can be adjusted */
+    overflow-y: auto;
+    /* Enable vertical scrolling */
+    border: 1px solid #ccc;
+    /* Optional for better visibility */
+}
+
+.table-holder {
+    width: 100%;
+    /* Adjust width as needed */
+    height: 700px;
+    /* Fixed height, but can be adjusted */
+    overflow-y: auto;
+    /* Enable vertical scrolling */
+    border: 1px solid #ccc;
+    /* Optional for better visibility */
+}
+
+.color-bar {
+    width: 15px;
+    /* Width of the color bar */
+    height: 10px;
+    /* Height of the color bar */
+    display: inline-block;
+    /* To display it inline with inputs */
+    border: 1px solid #ccc;
+    /* Optional: adds border around the color bar */
+    align-self: center;
+}
+
+.notes {
+    width: 100%;
+    font-size: 12px;
+    color: darkred;
+    margin-top: 10px;
+
+}
+
+#exitInstructions {
+    display: none;
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 5px;
+    border-radius: 3px;
+}

@@ -1,0 +1,216 @@
+{% extends 'cfm_page.html' %}
+
+{% block style%}
+<link rel="stylesheet" href="/static/css/guide.css" />
+<title>CFM Web Interface User Guide</title>
+{%endblock%}
+{% block description%}
+<header>
+    <h1>CFM Web Interface User Guide</h1>
+    <style>
+        /* Inline code style */
+        code {
+            background-color: #e4e4e4;
+            color: #d6336c;
+            /* Dark pink or similar highlight color */
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+        }
+
+        /* Code block style */
+        pre {
+            background-color: #282c34;
+            /* Dark theme background */
+            color: #ffffff;
+            /* White text for contrast */
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            overflow: auto;
+            /* Scroll when content overflows */
+            border: 1px solid #3e4451;
+            /* Subtle border for contrast */
+        }
+
+        /* Highlight specific syntax or add a glow effect */
+        pre code {
+            display: block;
+            line-height: 1.5;
+            tab-size: 4;
+        }
+
+        /* Optional: Styling comments or keywords for manual highlighting */
+        .comment {
+            color: #6a737d;
+            font-style: italic;
+        }
+
+        .keyword {
+            color: #c678dd;
+        }
+
+        /* Purple-like keyword color */
+        .string {
+            color: #98c379;
+        }
+
+        /* Green for strings */
+    </style>
+</header>
+
+<div class="container">
+    <h2>Overview</h2>
+    <p>The Community Fault Model (CFM) Web Interface provides interactive 2D and 3D visualizations of fault traces and
+        surfaces for the Cascadia Subduction Zone. This guide outlines the functionality and usage of the 2D
+        and 3D Fault Viewers, including instructions for interacting with the maps and accessing the data.</p>
+
+    <h2>2D Fault Viewer (Homepage)</h2>
+    <p>The Homepage includes a <strong>2D Fault Viewer</strong> as a map-based representation of fault traces and other
+        geospatial datasets. It allows users to explore, filter, and analyze faults in a two-dimensional view.</p>
+
+    <h3>Key Features</h3>
+    <ul>
+        <li><strong>Fault Trace Visualization</strong>: Displays fault traces as lines on the map. Users can click on
+            fault traces to view detailed descriptions.</li>
+        <li><strong>Interactive Filtering</strong>: Filter faults by latitude, longitude, or depth using range sliders.
+            Apply custom colors to faults based on their attributes (e.g., depth, dip, or rake).</li>
+    </ul>
+
+    <h3>How to Use</h3>
+    <ol>
+        <li><strong>Navigate to the 2D Viewer</strong> ( <strong>Visualization</strong>
+            &rightarrow;<strong> Repository</strong> ): Open the CFM-Web's homepage.</li>
+        <li><strong>Filter Faults</strong>: Use the sliders to set minimum and maximum values for
+            latitude, longitude, and depth. The map on the right and the list of displayed faults under the control
+            panel will update dynamically to show/list only the faults within the selected ranges.</li>
+        <li><strong>Customize Fault Colors</strong>: Use the <em>Fault Color</em> dropdown to select how faults are
+            colored. Adjust the numeric range for color mapping if applicable.</li>
+        <li><strong>Select/Deselect Faults for 3D View</strong>: Use the <em>Select All/Deselect All</em> checkbox to
+            quickly toggle
+            all faults. Click individual faults on the map for more information.</li>
+        <li><strong>Navigate to the 3D Viewer</strong>: Click the <em>View 3D</em> button to open the
+            3D fault viewer and display fault traces and surfaces for the selected faults on the 2D viewer.
+        </li>
+    </ol>
+
+    <h2>3D Fault Viewer</h2>
+    <p>The <strong>3D Fault Viewer</strong> provides an immersive, three-dimensional visualization of fault surfaces and
+        traces. It includes additional geospatial features such as earthquake data, terrain occlusion, and boundary
+        lines.</p>
+
+    <h3>Key Features</h3>
+    <ul>
+        <li><strong>Fault Surface Visualization</strong>: View 3D fault surfaces with adjustable opacity and selectable
+            depth ranges.</li>
+        <li><strong>Earthquake Data</strong>: Display earthquake epicenters as points sized proportionally to magnitude.
+        </li>
+        <li><strong>Toggle Auxiliary Datasets</strong>: Use the <em>2D Surfaces</em> selection box to toggle auxiliary
+            GeoJSON datasets on the map (select up to two surfaces at the same time).</li>
+        <li><strong>Imagery Layer and Terrain</strong>: Show or hide terrain features and geospatial boundaries. Enable
+            or disable terrain occlusion for a clearer view.</li>
+        <li><strong>Community Velocity Models (CVM)</strong>: Use the CVM selection box and sliders to display and
+            adjust
+            CVM model limits. Use the sliders to refine latitude, longitude, depth, and outline opacity for the model.
+        </li>
+    </ul>
+
+    <h3>How to Use</h3>
+    <ul>
+        <li><strong>To View All Fault Surfaces</strong>: For a 3D view of all fault surfaces, navigate to
+            <strong>Visualization</strong>
+            &rightarrow;<strong> 3D Viewer</strong>.
+        </li>
+        <li><strong>To View Selected Fault Surfaces</strong>:
+            <ol>
+                <li><strong>Navigate to the 2D Viewer</strong>: Go to the homepage ( <strong>Visualization</strong>
+                    &rightarrow;<strong> Repository</strong> ).
+                </li>
+                <li><strong>Filter Faults</strong>: Use the sliders to limit faults to those of interest.</li>
+                <li><strong>Select Faults for 3D View</strong>: Use the checkbox next to each fault in the fault list
+                    table to select individual faults or use the top checkbox to select all faults. The viewer will
+                    highlight the selected faults.
+                </li>
+                <li><strong>Navigate to the 3D Viewer</strong>: Click the <em>View 3D</em> button to open the
+                    3D fault viewer and display fault traces and surfaces for the selected faults on the 2D viewer.
+                </li>
+                <li><strong>Select Auxiliary 2D Surface(s)</strong>: Use the dropdown menu on the upper left corner to
+                    select up to two auxiliary 2D surfaces to display.
+                </li>
+                <li><strong>Toggle Features</strong>: Use checkboxes to show/hide earthquakes, terrain occlusion, and
+                    boundary lines.
+                </li>
+                <li><strong>Change View</strong>: Use the <em>Center View</em> button to focus on a specific region by
+                    entering latitude and longitude. Use the <em>Home View</em> button to reset the map to its default
+                    orientation.
+                </li>
+                <li><strong>Explore Earthquake Data</strong>: Toggle the <em>Earthquakes</em> checkbox to display
+                    epicenters. Adjust the circle size slider to change the marker size for earthquakes.
+                </li>
+                <li><strong>Adjust Opacity</strong>: Use the <em>Opacity Control</em> slider to adjust the transparency
+                    of fault surfaces.
+                </li>
+            </ol>
+        </li>
+    </ul>
+
+
+    <h2>Data Download</h2>
+    <p>CFM GeoPackage (.gpkg) & KML (.kml) file downloads of the models are available under the <strong>Data</strong>
+        menu ( <strong>Data</strong> &rightarrow;<strong> Download Models</strong> ).</p>
+
+    <h2>General Tips</h2>
+    <ul>
+        <li>Visit the links under the <strong>More menu</strong>.</li>
+        <li><strong>Interaction</strong>: Use your mouse or touchscreen to pan, zoom, and rotate the map. Hover over
+            features to display tooltips with additional information.
+        </li>
+        <li><strong>Full-Screen Mode</strong>: Click the <em>Full Screen Map</em> button for an enhanced viewing
+            experience.
+        </li>
+        <li><strong>Help and Support</strong>: If you encounter any issues, visit the <a
+                href="https://cfm.cascadiaquakes.org/request">Help Page</a> to submit a question or request assistance.
+        </li>
+    </ul>
+
+    <h2>Development and Branch Support</h2>
+    <p>The CFM Web Interface supports configuration and deployment across multiple branches. By default, the interface
+        uses the <strong>main</strong> branch. However, for development or testing purposes, the <strong>dev</strong>
+        branch
+        is also supported. To use the dev branch, access the interface with the following URL:</p>
+    <ul>
+        <li><code>http://your-cfm-server-address/?branch=dev</code></li>
+    </ul>
+    <p>Using the <strong>dev</strong> branch allows you to load development-specific configuration files and resources,
+        making it easy to test new features without affecting the main interface.</p>
+
+    <h2>Local Installation</h2>
+    If you plan to download and install this package locally:
+    <ul>
+        <li>Download the CFM-WEB code from the <a href="https://github.com/cascadiaquakes/CRESCENT-CFM-WEB/"
+                target="_blank">GitHub repository</a></li>
+        <li>Download and install <a href="https://www.docker.com/get-started/" target="_blank">Docker</a></li>
+        <li>Go to the <a
+                href="https://cesium.com/learn/cesiumjs-learn/cesiumjs-quickstart/#step-1-create-an-account-and-get-a-token"
+                target="_blank">CESIUM site </a> and create an account and get a token</li>
+        <li>Go to the downloaded CFM-WEB code directory</li>
+        <li>Place your token in <code>app/static/config/repository_config.js</code> by replacing
+            <code>your_access_token</code>
+            in <code>Cesium.Ion.defaultAccessToken = "your_access_token";</code> with your own token
+        </li>
+        <li>In the root directory (directory above <code>app/</code>) Build the image:
+            <code>docker run -d -p 8080:80 -v $(pwd)/app:/app cfm_viewer</code>
+        </li>
+        <li>Run the package <code>docker run -p 8080:80 -v $(pwd)/app:/app cfm_viewer</code>
+        </li>
+        <li>On your browser go to the CFM viewer <a href="http://localhost:8080"
+                target="_blank">http://localhost:8080</a></li>
+    </ul>
+
+</div>
+
+{%endblock%}
+{%block scripts %}
+{%endblock%}
