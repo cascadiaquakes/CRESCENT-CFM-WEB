@@ -239,3 +239,24 @@ tbody tr:hover {
     padding: 5px;
     border-radius: 3px;
 }
+
+.legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.legend-dot {
+    display: inline-block;
+    /* <-- add this */
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+}
+
+.eq-dot {
+    background: rgba(255, 255, 0, 0.5);
+    /* match Cesium.Color.YELLOW.withAlpha(0.5) */
+    border: 1px solid #c9a800;
+    /* slightly darker yellow stroke */
+}

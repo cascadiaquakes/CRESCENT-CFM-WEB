@@ -8,7 +8,21 @@
     <link rel="icon" href="/static/favicon.ico" type="image/png">
     <link rel="stylesheet" href="/static/css/view3d.css">
     <script src="https://cesium.com/downloads/cesiumjs/releases/1.116/Build/Cesium/Cesium.js"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
 
+        gtag('config', 'G-ZWF5S15WXK');
+    </script>
+    <!-- Microsoft Clarity -->
+    <script type="text/javascript">
+        (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, "clarity", "script", "tlk27i58yf");
+    </script>
     <!-- Load repository_config.js synchronously 
              Synchronous XHR ensures loading order: The browser halts execution until repository_config.js is fetched and executed, 
             ensuring that all variables are available. If repository_config.js fails to load, a console error message will help diagnose issues.
@@ -43,7 +57,7 @@
                     let domain = window.location.hostname;
                     let capitalizedBranch = capitalizeBranchName(branch);
                     document.title = `[${capitalizedBranch} - ${domain}] ${currentTitle}`;
-                    alert("Page title updated to: " + document.title);
+                    //alert("Page title updated to: " + document.title);
 
                 }
             } else {
@@ -90,7 +104,6 @@
             </div>
             <div style="font-weight:bold;padding-top: 10px;">Select 2D Surfaces:</div>
             <select id="select2dSurface" multiple size="5"></select>
-            </select>
         </div>
 
         <div id="eqcontrols">
@@ -105,9 +118,9 @@
                 <input type="checkbox" id="toggleBoundaryCheckbox" checked> Boundary lines
             </label>
         </div>
-        <!-- Center View Button -->
+        <!-- Centered View Button -->
         <div>
-            <button id="centerViewButton">Center view</button>&nbsp;<label for="centerCoordinates">@</label><input
+            <button id="centerViewButton">Centered view</button>&nbsp;<label for="centerCoordinates">@</label><input
                 type="text" id="centerCoordinates" style="width:70px;" value="-123.0,45.5" />
             <button id="homeViewButton">Tilted view</button>
         </div>
@@ -177,7 +190,9 @@
     <script>
 
         // Opacity for the items outside the study area.
-        outsideOpacity = 0.15
+        const outsideOpacity = 0.15
+
+        let earthquakeDataSource;
 
         // CFM area display parameters.
         const cfmAreaOutlineColor = [Cesium.Color.CYAN]
@@ -187,8 +202,21 @@
 
         // Handling the 2D Geojson data.
         document.addEventListener('DOMContentLoaded', function () {
-            function handleGeoJsonData(checkboxId, dataArray, labelArray, colorArray, lineWidthArray, fillOpacityArray, dataSourcesArray, extraLogic) {
+            // Call loadDropdown when the page has finished loading
+            loadDropdown();
+
+            // Load the logo after the HTML is loaded.
+            // Select the image element by its ID
+            const logoImage = document.getElementById('logo-image');
+
+            // Set the src attribute to the desired image URL
+            logoImage.src = logoFile;
+
+
+            function handleGeoJsonData(checkboxId, dataArray, labelArray, colorArray, lineWidthArray, fillOpacityArray, dataSourcesArray, applyBoundingBoxFilter, extraLogic) {
                 var checkbox = document.getElementById(checkboxId);
+                // ↓↓↓ DEBUG: log the cfmData that this function receives
+                console.log('[CFM] handleGeoJsonData received dataArray:', dataArray);
                 function handleData(checked) {
                     if (checked) {
                         for (var i = 0; i < dataArray.length; i++) {
@@ -200,6 +228,38 @@
                                     strokeWidth: lineWidthArray[index],
                                     markerSymbol: '?'
                                 }).then(function (dataSource) {
+                                    if (applyBoundingBoxFilter) {
+                                        const now = Cesium.JulianDate.now();
+                                        const isInside = (pos) => {
+                                            const cart = Cesium.Cartographic.fromCartesian(pos);
+                                            const lon = Cesium.Math.toDegrees(cart.longitude);
+                                            const lat = Cesium.Math.toDegrees(cart.latitude);
+                                            return lon >= west && lon <= east && lat >= south && lat <= north;
+                                        };
+                                        const entities = dataSource.entities.values;
+                                        entities.forEach((entity) => {
+                                            let positions = [];
+                                            if (Cesium.defined(entity.polygon)) {
+                                                const h = entity.polygon.hierarchy.getValue(now);
+                                                if (h) positions = h.positions || h;
+                                            } else if (Cesium.defined(entity.polyline)) {
+                                                positions = entity.polyline.positions.getValue(now);
+                                            }
+                                            if (positions.length && positions.every((p) => !isInside(p))) {
+                                                if (entity.polygon) {
+                                                    entity.polygon.material = colorArray[index].withAlpha(0.0);
+                                                    entity.polygon.outlineColor = colorArray[index].withAlpha(outsideOpacity);
+                                                }
+                                                if (entity.polyline) {
+                                                    entity.polyline.material = new Cesium.PolylineGlowMaterialProperty({
+                                                        glowPower: 0,
+                                                        color: colorArray[index].withAlpha(outsideOpacity)
+                                                    });
+                                                }
+                                            }
+                                        });
+                                    }
+
                                     if (extraLogic) {
                                         extraLogic(dataSource, index);
                                     }
@@ -331,7 +391,8 @@
                         [auxColor[selectedValue]],
                         [auxLineWidth[selectedValue]],
                         [auxFillOpacity[selectedValue]],
-                        auxDataSources
+                        auxDataSources,
+                        false
                     );
                 });
 
@@ -385,26 +446,114 @@
 
             // Boundary lines.
             var boundaryDataSources = [];
+            handleGeoJsonData('toggleBoundaryCheckbox', boundaryData, boundaryLabel, boundaryColor, boundaryLineWidth, boundaryFillOpacity, boundaryDataSources, true);
+
+            // CFM data with additional logic
+            var cfmDataSources = [];
             handleGeoJsonData(
-                'toggleBoundaryCheckbox',
-                boundaryData,
-                boundaryLabel, // Assuming you have a label array for boundaryData
-                boundaryColor,
-                boundaryLineWidth,
-                boundaryFillOpacity,
-                boundaryDataSources
+                'toggleCFMCheckbox',
+                cfmData,
+                cfmLabel,
+                cfmColor,
+                cfmLineWidth,
+                cfmFillOpacity,
+                cfmDataSources,
+                false,
+                function (dataSource, index) {
+                    var entitiesToRemove = [];
+                    dataSource.entities.values.forEach(function (entity) {
+                        var ok = true;
+                        // Display all if selectedLines is empty.
+                        if (selectedLines.length != 0) {
+                            if (!selectedLines.includes(String(entity.properties.id))) {
+                                ok = false;
+                                entitiesToRemove.push(entity);
+                            }
+                        }
+                        if (ok) {
+                            if (Cesium.defined(entity.polygon)) {
+                                var coordinates = entity.polygon.hierarchy.getValue().positions;
+                                coordinates.forEach(function (coordinate) {
+                                    Cesium.Cartographic.fromCartesian(coordinate);
+                                });
+                            } else if (Cesium.defined(entity.polyline)) {
+                                var positions = entity.polyline.positions.getValue();
+                                positions.forEach(function (position) {
+                                    Cesium.Cartographic.fromCartesian(position);
+                                });
+                            }
+                            var description = '';
+                            var properties = entity.properties;
+                            for (var propertyName in properties) {
+                                if (properties.hasOwnProperty(propertyName) && typeof properties[propertyName] !== 'function') {
+                                    var propNameWithoutUnderscore = propertyName.replace(/^_/, '');
+                                    description += propNameWithoutUnderscore + ': ' + properties[propertyName] + '<br />';
+                                }
+                            }
+                            entity.description = description;
+                        }
+                    });
+
+                    entitiesToRemove.forEach(function (entity) {
+                        dataSource.entities.remove(entity);
+                    });
+                }
             );
 
+            // CFM Trace data with additional logic
+            var cfmTraceDataSources = [];
+            handleGeoJsonData(
+                'toggleCFMTraceCheckbox',
+                cfmTraceData,
+                cfmTraceLabel,
+                cfmTraceColor,
+                cfmTraceLineWidth,
+                cfmTraceFillOpacity,
+                cfmTraceDataSources,
+                false,
+                function (dataSource, index) {
+                    var entitiesToRemove = [];
+                    dataSource.entities.values.forEach(function (entity) {
+                        var ok = true;
+                        // Display all if selectedLines is empty.
+                        if (selectedLines.length != 0) {
+                            if (!selectedLines.includes(String(entity.properties.id))) {
+                                ok = false;
+                                entitiesToRemove.push(entity);
+                            }
+                        }
+                        if (ok) {
+                            if (Cesium.defined(entity.polygon)) {
+                                var coordinates = entity.polygon.hierarchy.getValue().positions;
+                                coordinates.forEach(function (coordinate) {
+                                    Cesium.Cartographic.fromCartesian(coordinate);
+                                });
+                            } else if (Cesium.defined(entity.polyline)) {
+                                var positions = entity.polyline.positions.getValue();
+                                positions.forEach(function (position) {
+                                    Cesium.Cartographic.fromCartesian(position);
+                                });
+                            }
+                            var description = '';
+                            var properties = entity.properties;
+                            for (var propertyName in properties) {
+                                if (properties.hasOwnProperty(propertyName) && typeof properties[propertyName] !== 'function') {
+                                    var propNameWithoutUnderscore = propertyName.replace(/^_/, '');
+                                    description += propNameWithoutUnderscore + ': ' + properties[propertyName] + '<br />';
+                                }
+                            }
+                            entity.description = description;
+                        }
+                    });
+
+                    entitiesToRemove.forEach(function (entity) {
+                        dataSource.entities.remove(entity);
+                    });
+                }
+            );
         });
 
-        // Load the logo after the HTML is loaded.
-        document.addEventListener('DOMContentLoaded', function () {
-            // Select the image element by its ID
-            const logoImage = document.getElementById('logo-image');
 
-            // Set the src attribute to the desired image URL
-            logoImage.src = logoFile;
-        });
 
         console.log("Setting the viewer ");// + Cesium.Ion.defaultAccessToken)
         var viewer = new Cesium.Viewer('cesiumContainer', {
@@ -427,7 +576,6 @@
         viewer.scene.backgroundColor = Cesium.Color.BLACK;
 
         // The north arrow.
-        // The north arrow.
         function updateNorthArrow() {
             var heading = Cesium.Math.toDegrees(viewer.camera.heading);
             document.getElementById('northArrow').style.transform = 'rotate(' + (-heading) + 'deg)';
@@ -438,7 +586,7 @@
         // Bind updateNorthArrow to the postRender event
         viewer.scene.postRender.addEventListener(updateNorthArrow);
 
-        // Center view button functionality
+        // Centered view button functionality
         document.getElementById('centerViewButton').addEventListener('click', function () {
             // Get the coordinates from the input box
             const coordinates = document.getElementById('centerCoordinates').value.split(',');
@@ -553,7 +701,6 @@
         });
 
         globe.maximumScreenSpaceError = 1.0;
-        viewer.scene.backgroundColor = new Cesium.Color(0.0, 0.0, 0.0, 0.0);
 
         viewer.camera.flyTo({
             destination: Cesium.Cartesian3.fromDegrees(initialFlyTO[0], initialFlyTO[1], initialFlyTO[2]),
@@ -564,34 +711,8 @@
             }
         });
 
-        viewer.scene.globe.baseColor = Cesium.Color.TRANSPARENT;
         viewer.animation.container.style.visibility = 'hidden';
         viewer.timeline.container.style.visibility = 'hidden';
-
-        var dataSources = [];
-        var boundaryDataSources = [];
-
-
-        // Really need only one variable, but my attempts at merging them was drawing extra diagonal line.
-
-        async function loadDropdown() {
-            try {
-                const response = await fetch('/models_drop_down');
-                if (response.ok) {
-                    const dropdownHTML = await response.text();
-                    document.getElementById('data-file').innerHTML = dropdownHTML;
-                } else {
-                    console.error('Failed to load dropdown:', response.statusText);
-                    document.getElementById('data-file').textContent = 'Failed to load dropdown.';
-                }
-            } catch (error) {
-                console.error('Error fetching dropdown:', error);
-                document.getElementById('data-file').textContent = 'Error loading dropdown.';
-            }
-        }
-
-        // Call loadDropdown when the page has finished loading
-        document.addEventListener('DOMContentLoaded', loadDropdown);
 
         // Earthquakes.
         async function loadEarthquakeData(url) {
@@ -637,22 +758,22 @@
         }
 
         document.getElementById('showEarthquakesCheckbox').addEventListener('change', updateEarthquakeVisibility);
-
         function calculateMarkerSize(baseSize, magnitude) {
             const scaleFactor = 3;
-            return baseSize * Math.pow(magnitude, scaleFactor);
+            return parseFloat(baseSize) * Math.pow(magnitude, scaleFactor);
         }
 
         document.getElementById('circleSizeSlider').addEventListener('input', function () {
-            if (earthquakeDataSource) {
-                var entities = earthquakeDataSource.entities.values;
-                entities.forEach(function (entity) {
-                    entity.point = new Cesium.PointGraphics({
-                        color: eqColor,
-                        pixelSize: calculateMarkerSize(circleSizeSlider.value, entity.properties.mag)
-                    });
+            if (!earthquakeDataSource) return;
+            const size = parseFloat(this.value);
+            const now = Cesium.JulianDate.now();
+            earthquakeDataSource.entities.values.forEach(function (entity) {
+                const mag = entity?.properties?.mag?.getValue?.(now) ?? 1;
+                entity.point = new Cesium.PointGraphics({
+                    color: eqColor,
+                    pixelSize: calculateMarkerSize(size, mag)
                 });
-            }
+            });
         });
 
         // Draw a polygon showing the study area
@@ -759,9 +880,6 @@
             }
         }
 
-        // Call loadDropdown when the page has finished loading
-        document.addEventListener('DOMContentLoaded', loadDropdown);
-
         // Outline box for CVM.
         function updateBoxOutline(minLat, maxLat, minLon, maxLon, minDepth, maxDepth, alpha) {
             const minDepthScaled = minDepth * -1000;
@@ -811,25 +929,11 @@
 
             // Helper function to create and add polygon entity
             function addPolygonEntity(positions, alpha, name) {
-                return viewer.entities.add({
-                    name: name,
-                    polygon: {
-                        hierarchy: new Cesium.PolygonHierarchy(positions),
-                        material: cvmFaceColor.withAlpha(alpha),
-                        perPositionHeight: true, // Allow different heights for each vertex
-                        outline: true,
-                        outlineColor: cvmOutlineColor,
-                    }
-                });
                 // Add a polyline entity for a thicker outline with transparency
-                viewer.entities.add({
-                    name: name + " outline",
-                    polyline: {
-                        positions: positions,
-                        width: cvmLineWidth[0], // Set the width of the outline
-                        material: cvmOutlineColor.withAlpha(1.0)
-                    }
-                });
+                const line = viewer.entities.add({ name: name + " outline", polyline: { positions, width: cvmLineWidth[0], material: cvmOutlineColor.withAlpha(1.0) } });
+                const poly = viewer.entities.add({ name: name, polygon: { hierarchy: new Cesium.PolygonHierarchy(positions), material: cvmFaceColor.withAlpha(alpha), perPositionHeight: true, outline: true, outlineColor: cvmOutlineColor } });
+                return [poly, line];
+
             }
 
             // Remove existing entities if they exist
@@ -839,12 +943,12 @@
             boxEntities = [];
 
             // Add polygons for all six faces
-            boxEntities.push(addPolygonEntity(topPositions, alpha, 'Top Surface'));
-            boxEntities.push(addPolygonEntity(bottomPositions, alpha, 'Bottom Surface'));
-            boxEntities.push(addPolygonEntity(northPositions, alpha, 'North Surface'));
-            boxEntities.push(addPolygonEntity(southPositions, alpha, 'South Surface'));
-            boxEntities.push(addPolygonEntity(eastPositions, alpha, 'East Surface'));
-            boxEntities.push(addPolygonEntity(westPositions, alpha, 'West Surface'));
+            boxEntities.push(...addPolygonEntity(topPositions, alpha, 'Top Surface'));
+            boxEntities.push(...addPolygonEntity(bottomPositions, alpha, 'Bottom Surface'));
+            boxEntities.push(...addPolygonEntity(northPositions, alpha, 'North Surface'));
+            boxEntities.push(...addPolygonEntity(southPositions, alpha, 'South Surface'));
+            boxEntities.push(...addPolygonEntity(eastPositions, alpha, 'East Surface'));
+            boxEntities.push(...addPolygonEntity(westPositions, alpha, 'West Surface'));
         }
 
 
@@ -899,7 +1003,7 @@
             } else {
                 document.getElementById('alphaSlider').disabled = true;
                 if (boxEntities) {
-                    boxEntities.forEach(entity => viewer.entities.remove(entity));
+                    boxEntities.forEach(e => viewer.entities.remove(e));
                 }
                 boxEntities = [];
 
@@ -950,7 +1054,6 @@
 
         var points = [];
         var distanceDisplay = document.getElementById('distanceDisplay');
-        var clearButton = document.getElementById('clearButton');
 
         // Measure distance.
         function calculateDistance(point1, point2) {
@@ -962,10 +1065,12 @@
         }
 
 
+        let distanceEntities = [];
         function clearDistance() {
             points = [];
             distanceDisplay.textContent = '';
-            viewer.entities.removeAll();
+            distanceEntities.forEach(e => viewer.entities.remove(e));
+            distanceEntities = [];
         }
 
         var handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
@@ -978,13 +1083,8 @@
                 if (points.length >= 2) {
                     var distance = calculateDistance(points[points.length - 2], points[points.length - 1]);
                     updateDistanceDisplay(distance);
-                    viewer.entities.add({
-                        polyline: {
-                            positions: points,
-                            width: 2,
-                            material: Cesium.Color.TEAL
-                        }
-                    });
+                    const line = viewer.entities.add({ polyline: { positions: points, width: 2, material: Cesium.Color.TEAL } });
+                    distanceEntities.push(line);
                 }
             }
         }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
@@ -998,221 +1098,6 @@
         document.getElementById('toggleGlobeCheckbox').addEventListener('change', function () {
             viewer.scene.globe.show = this.checked;
         });
-
-        // Handling the Geojson data.
-        document.addEventListener('DOMContentLoaded', function () {
-            function handleGeoJsonData(checkboxId, dataArray, labelArray, colorArray, lineWidthArray, fillOpacityArray, dataSourcesArray, applyBoundingBoxFilter, extraLogic) {
-                var checkbox = document.getElementById(checkboxId);
-
-                // Function to check if a position is inside the bounding box
-                function isInsideBoundingBox(position) {
-                    const cartographic = Cesium.Cartographic.fromCartesian(position);
-                    const longitude = Cesium.Math.toDegrees(cartographic.longitude);
-                    const latitude = Cesium.Math.toDegrees(cartographic.latitude);
-                    return (
-                        longitude >= west &&
-                        longitude <= east &&
-                        latitude >= south &&
-                        latitude <= north
-                    );
-                }
-
-                function handleData(checked) {
-                    if (checked) {
-                        for (var i = 0; i < dataArray.length; i++) {
-                            (function (index) {
-                                Cesium.GeoJsonDataSource.load(dataArray[index], {
-                                    label: labelArray[index],
-                                    stroke: colorArray[index],
-                                    fill: colorArray[index].withAlpha(fillOpacityArray[index]),
-                                    strokeWidth: lineWidthArray[index],
-                                    markerSymbol: '?'
-                                }).then(function (dataSource) {
-                                    if (applyBoundingBoxFilter) {
-                                        const entities = dataSource.entities.values;
-
-                                        entities.forEach(entity => {
-                                            let positions = [];
-
-                                            if (Cesium.defined(entity.polygon)) {
-                                                const hierarchy = entity.polygon.hierarchy.getValue(Cesium.JulianDate.now());
-                                                if (hierarchy) {
-                                                    positions = hierarchy.positions || hierarchy;
-                                                }
-                                            } else if (Cesium.defined(entity.polyline)) {
-                                                positions = entity.polyline.positions.getValue(Cesium.JulianDate.now());
-                                            }
-
-                                            if (positions.length > 0) {
-                                                const allOutside = positions.every(position => !isInsideBoundingBox(position));
-                                                if (allOutside) {
-                                                    // Reduce opacity significantly for entities outside the bounding box
-                                                    if (entity.polygon) {
-                                                        entity.polygon.material = colorArray[index].withAlpha(0); // Significantly reduce opacity for outside area
-                                                        entity.polygon.outlineColor = colorArray[index].withAlpha(outsideOpacity); // Reduce opacity for the outline
-                                                    }
-                                                    if (entity.polyline) {
-                                                        entity.polyline.material = new Cesium.PolylineGlowMaterialProperty({
-                                                            glowPower: 0,
-                                                            color: colorArray[index].withAlpha(outsideOpacity) // Significantly reduce opacity for outside area
-                                                        });
-                                                    }
-                                                }
-                                            }
-                                        });
-                                    }
-
-                                    if (extraLogic) {
-                                        extraLogic(dataSource, index);
-                                    }
-
-                                    dataSourcesArray.push(dataSource);
-                                    viewer.dataSources.add(dataSource);
-                                }).catch(function (error) {
-                                    console.error('Error loading GeoJSON:', error);
-                                });
-                            })(i);
-                        }
-                    } else {
-                        for (var i = 0; i < dataSourcesArray.length; i++) {
-                            if (viewer.dataSources.contains(dataSourcesArray[i])) {
-                                viewer.dataSources.remove(dataSourcesArray[i]);
-                            }
-                        }
-                        dataSourcesArray.length = 0; // Clear the array
-                    }
-                }
-
-                checkbox.addEventListener('change', function () {
-                    handleData(this.checked);
-                });
-
-                handleData(checkbox.checked);
-            }
-
-
-
-
-            // Auxiliary data.
-            var auxDataSources = [];
-
-            // Boundary lines.
-            var boundaryDataSources = [];
-            handleGeoJsonData(
-                'toggleBoundaryCheckbox',
-                boundaryData,
-                boundaryLabel, // Assuming you have a label array for boundaryData
-                boundaryColor,
-                boundaryLineWidth,
-                boundaryFillOpacity,
-                boundaryDataSources, true
-            );
-
-            // CFM data with additional logic
-            var cfmDataSources = [];
-            handleGeoJsonData(
-                'toggleCFMCheckbox',
-                cfmData,
-                cfmLabel,
-                cfmColor,
-                cfmLineWidth,
-                cfmFillOpacity,
-                cfmDataSources,
-                false,
-                function (dataSource, index) {
-                    var entitiesToRemove = [];
-                    dataSource.entities.values.forEach(function (entity) {
-                        var ok = true;
-                        // Display all if selectedLines is empty.
-                        if (selectedLines.length != 0) {
-                            if (!selectedLines.includes(String(entity.properties.id))) {
-                                ok = false;
-                                entitiesToRemove.push(entity);
-                            }
-                        }
-                        if (ok) {
-                            if (Cesium.defined(entity.polygon)) {
-                                var coordinates = entity.polygon.hierarchy.getValue().positions;
-                                coordinates.forEach(function (coordinate) {
-                                    Cesium.Cartographic.fromCartesian(coordinate);
-                                });
-                            } else if (Cesium.defined(entity.polyline)) {
-                                var positions = entity.polyline.positions.getValue();
-                                positions.forEach(function (position) {
-                                    Cesium.Cartographic.fromCartesian(position);
-                                });
-                            }
-                            var description = '';
-                            var properties = entity.properties;
-                            for (var propertyName in properties) {
-                                if (properties.hasOwnProperty(propertyName) && typeof properties[propertyName] !== 'function') {
-                                    var propNameWithoutUnderscore = propertyName.replace(/^_/, '');
-                                    description += propNameWithoutUnderscore + ': ' + properties[propertyName] + '<br />';
-                                }
-                            }
-                            entity.description = description;
-                        }
-                    });
-
-                    entitiesToRemove.forEach(function (entity) {
-                        dataSource.entities.remove(entity);
-                    });
-                }
-            );
-
-            // CFM Trace data with additional logic
-            var cfmTraceDataSources = [];
-            handleGeoJsonData(
-                'toggleCFMTraceCheckbox',
-                cfmTraceData,
-                cfmTraceLabel,
-                cfmTraceColor,
-                cfmTraceLineWidth,
-                cfmTraceFillOpacity,
-                cfmTraceDataSources,
-                false,
-                function (dataSource, index) {
-                    var entitiesToRemove = [];
-                    dataSource.entities.values.forEach(function (entity) {
-                        var ok = true;
-                        // Display all if selectedLines is empty.
-                        if (selectedLines.length != 0) {
-                            if (!selectedLines.includes(String(entity.properties.id))) {
-                                ok = false;
-                                entitiesToRemove.push(entity);
-                            }
-                        }
-                        if (ok) {
-                            if (Cesium.defined(entity.polygon)) {
-                                var coordinates = entity.polygon.hierarchy.getValue().positions;
-                                coordinates.forEach(function (coordinate) {
-                                    Cesium.Cartographic.fromCartesian(coordinate);
-                                });
-                            } else if (Cesium.defined(entity.polyline)) {
-                                var positions = entity.polyline.positions.getValue();
-                                positions.forEach(function (position) {
-                                    Cesium.Cartographic.fromCartesian(position);
-                                });
-                            }
-                            var description = '';
-                            var properties = entity.properties;
-                            for (var propertyName in properties) {
-                                if (properties.hasOwnProperty(propertyName) && typeof properties[propertyName] !== 'function') {
-                                    var propNameWithoutUnderscore = propertyName.replace(/^_/, '');
-                                    description += propNameWithoutUnderscore + ': ' + properties[propertyName] + '<br />';
-                                }
-                            }
-                            entity.description = description;
-                        }
-                    });
-
-                    entitiesToRemove.forEach(function (entity) {
-                        dataSource.entities.remove(entity);
-                    });
-                }
-            );
-        });
-
 
 
 

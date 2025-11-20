@@ -32,6 +32,22 @@
             script.text = xhr.responseText;
             document.head.appendChild(script);
 
+            // >>> LOG the cfmTraceData URL as soon as it's available
+            try {
+                if (typeof cfmTraceData !== "undefined") {
+                    const resolved =
+                        typeof cfmTraceData === "function" ? cfmTraceData() : cfmTraceData;
+                    // Make it absolute for clarity in the console
+                    const absolute = new URL(resolved, location.origin).href;
+                    console.info("[CFM] cfmTraceData URL:", absolute);
+                } else {
+                    console.warn("[CFM] cfmTraceData is not defined by:", configFilePath);
+                }
+            } catch (e) {
+                console.error("[CFM] Failed to resolve cfmTraceData:", e);
+            }
+            // <<<
+
             // Function to capitalize the branch name
             function capitalizeBranchName(branch) {
                 return branch.charAt(0).toUpperCase() + branch.slice(1);
@@ -66,7 +82,6 @@
         target="_blank">user guide</a>.
 </p>
 {%endblock%}
-<div style="display: flex; height: 100%;"></div>
 {% block leftpanel%}
 <div id="listPanel">
 
@@ -133,14 +148,17 @@
             <div id="colorBarMax" class="color-bar" style="background-color: blue;">&nbsp;&nbsp;</div>
 
             <div id="colorBarNote" class="notes">&nbsp;</div>
-            <input type="text" id="eqColor" style="width: 20px;background-color:yellow;" />
-            <label for="eqColor">&nbsp;&nbsp;Earthquake</label>
+            <div class="legend-item">
+                <span class="legend-dot eq-dot" aria-hidden="true"></span>
+                <span class="legend-label"><strong>Earthquakes</strong></span>
+            </div>
+
         </div>
 
 
         <hr width="100%" />
     </div>
-    <div id=" tableControls">
+    <div id="tableControls">
         <div>
             <button id="toggleControlsVisibility">Map Controls</button>&nbsp;&nbsp;&nbsp;
             <button id="view3DButton">View 3D</button> <!-- Add this button -->
@@ -164,10 +182,7 @@
 </div>
 {%endblock%}
 {%block rightpanel%}
-<div id="mapContainer">
-
-</div>
-</div>
+<div id="mapContainer"></div>
 
 
 <script>
@@ -178,6 +193,10 @@
         const delta = 0.1;
         const startDepth = 0;
         const endDepth = 50;
+
+        // Which branch we are looking into
+        const url = new URL(window.location.href);
+        const branch = url.searchParams.get('branch') || 'main';
 
         // Initializes the input ranges for longitude, latitude, and depth based on the given variables.
         function initializeSliders() {
@@ -231,22 +250,6 @@
             maxDepthInput.addEventListener('input', () => validateSliderAdjustments(minDepthInput, maxDepthInput, startDepth, endDepth, delta));
         }
 
-
-        function updateDisplayValues() {
-            // Update display values for all sliders
-            ['minLongitude', 'maxLongitude', 'minLatitude', 'maxLatitude', 'minDepth', 'maxDepth'].forEach(id => {
-                updateDisplay(id, id.includes('Depth') ? ' km' : '°');
-            });
-        }
-
-        function updateDisplay(id, unit) {
-            const input = document.getElementById(id);
-            const span = document.getElementById(id + 'Value');
-            span.textContent = input.value + unit;
-            input.addEventListener('input', function () {
-                span.textContent = this.value + unit;
-            });
-        }
 
         // Initialize sliders on load
         initializeSliders();
@@ -323,11 +326,14 @@
             localStorage.setItem('selectedLines', JSON.stringify(selectedLines));
 
             // Open the new page in a new tab
+            const backend3d = `/3d?branch=${encodeURIComponent(branch)}`
+            console.log("backend3d= %s", backend3d)
+
             const newTab = window.open();
             if (newTab) {
                 newTab.document.write('<html><head><title>View 3D</title></head><body></body></html>');
                 newTab.document.close();
-                newTab.location.href = '/3d';
+                newTab.location.href = backend3d;
             } else {
                 alert('Please select at least one fault before proceeding.');
                 return; // Stop further execution
@@ -471,7 +477,7 @@
                 colorBarMax.style.opacity = '1'; // Make it fully visible
                 minColorInputLabel.style.color = "BLACK"; // Make it fully visible
                 maxColorInputLabel.style.color = "BLACK"; // Make it fully visible
-                maxColorInputLabel.style.backgroundColor = colorBarMax
+                //maxColorInputLabel.style.backgroundColor = colorBarMax
             } else {
                 colorBarMin.style.opacity = '0.3'; // Reduce visibility
                 colorBarMax.style.opacity = '0.3'; // Reduce visibility
@@ -485,16 +491,39 @@
         let filterRectangle = viewer.entities.add({
             rectangle: {
                 coordinates: Cesium.Rectangle.fromDegrees(west, south, east, north),
-                material: Cesium.Color.GREY.withAlpha(0.2),
+                material: Cesium.Color.GRAY.withAlpha(0.2),
                 outline: true,
-                outlineColor: Cesium.Color.GREY
+                outlineColor: Cesium.Color.GRAY
             }
         });
+
+        // 1) define the updater
+        function updateFilterRectangle() {
+            const minLon = parseFloat(document.getElementById('minLongitude').value);
+            const maxLon = parseFloat(document.getElementById('maxLongitude').value);
+            const minLat = parseFloat(document.getElementById('minLatitude').value);
+            const maxLat = parseFloat(document.getElementById('maxLatitude').value);
+
+            filterRectangle.rectangle.coordinates = Cesium.Rectangle.fromDegrees(minLon, minLat, maxLon, maxLat);
+            // optional: ensure render
+            viewer.scene.requestRender();
+        }
+
+        // 2) wire it to the four sliders
+        ['minLongitude', 'maxLongitude', 'minLatitude', 'maxLatitude'].forEach(id => {
+            document.getElementById(id).addEventListener('input', updateFilterRectangle);
+        });
+
+        // 3) set it once on load
+        updateFilterRectangle();
 
 
         const geoJsonEntities = {};
 
-        fetch('/geojson')
+        // include branch when call the GEOJSON route
+        const GeojsonData = `/geojson?branch=${encodeURIComponent(branch)}`
+        console.log("Loading GeojsonData= %s", GeojsonData)
+        fetch(GeojsonData)
             .then(response => response.json())
             .then(data => {
                 const lineList = document.getElementById('lineList');
@@ -543,126 +572,141 @@
             .catch(error => console.error('Error fetching GeoJSON:', error));
 
         function populateLineList(data, lineList, entities, viewer) {
+            // Helpers
+            const coerceNumber = (v, fallback = 0) => {
+                const n = typeof v === 'string' ? parseFloat(v) : (typeof v === 'number' ? v : NaN);
+                return Number.isFinite(n) ? n : fallback;
+            };
+            const toStr = (v, fallback = '') => (v == null ? fallback : String(v));
+
+            // Header (unchanged)
             const headerRow = document.createElement('tr');
             ['', '', 'Fault Name', 'Avg. Depth (km)', 'Dip (°)', 'Rake (°)', 'Source', 'ID'].forEach(text => {
                 const header = document.createElement('th');
                 header.textContent = text;
-                // Apply a class to the "ID" column
-                if (text === 'ID') {
-                    header.classList.add('hidden-id-column');
-                }
+                if (text === 'ID') header.classList.add('hidden-id-column');
                 headerRow.appendChild(header);
             });
             lineList.appendChild(headerRow);
 
-            data.features.forEach((feature, index) => {
-                if (feature.geometry.type === "LineString") {
-                    const positions = feature.geometry.coordinates.map(coord => Cesium.Cartesian3.fromDegrees(coord[0], coord[1]));
-                    const lineName = feature.properties.name.trim() ? feature.properties.name : `Fault trace ${feature.properties.id}`;
-                    const id = feature.properties.id;
-                    const source = feature.properties.source;
-                    const upperDepth = feature.properties.upper_depth || 0;
-                    const lowerDepth = feature.properties.lower_depth || 0;
-                    const averageDepth = (upperDepth + lowerDepth) / 2;
+            (data.features || []).forEach((feature, index) => {
+                // Guard geometry
+                if (!feature || !feature.geometry || feature.geometry.type !== 'LineString') return;
 
-                    const longitudes = positions.map(pos => {
-                        const cartographic = Cesium.Cartographic.fromCartesian(pos);
-                        return cartographic.longitude * Cesium.Math.DEGREES_PER_RADIAN;
-                    });
+                const coords = feature.geometry.coordinates || [];
+                if (!Array.isArray(coords) || coords.length === 0) return;
 
-                    const latitudes = positions.map(pos => {
-                        const cartographic = Cesium.Cartographic.fromCartesian(pos);
-                        return cartographic.latitude * Cesium.Math.DEGREES_PER_RADIAN;
-                    });
+                // Safe properties object
+                const props = feature.properties || {};
 
-                    const averageLongitude = longitudes.reduce((a, b) => a + b, 0) / longitudes.length;
-                    const averageLatitude = latitudes.reduce((a, b) => a + b, 0) / latitudes.length;
+                // Safe name/id/source
+                const rawName = toStr(props.name, '').trim();
+                const id = toStr(feature.id != null ? feature.id : (props.id != null ? props.id : `feat-${index}`));
+                const lineName = rawName || (id ? `Fault trace ${id}` : `Fault trace ${index}`);
+                const source = toStr(props.source, '');
 
+                // Numeric fields with fallbacks
+                const upperDepth = coerceNumber(props.upper_depth, 0);
+                const lowerDepth = coerceNumber(props.lower_depth, 0);
+                const averageDepth = (upperDepth + lowerDepth) / 2;
+                const rake = coerceNumber(props.rake, 0);
+                const dip = coerceNumber(props.dip, 0);
 
-                    const rake = feature.properties.rake || 0;
-                    const dip = feature.properties.dip || 0;
+                // Build Cesium positions (skip bad coords defensively)
+                const positions = coords
+                    .filter(c => Array.isArray(c) && Number.isFinite(c[0]) && Number.isFinite(c[1]))
+                    .map(c => Cesium.Cartesian3.fromDegrees(c[0], c[1]));
+                if (positions.length < 2) return; // need at least a segment
 
-                    const lineEntity = viewer.entities.add({
-                        polyline: {
-                            positions: positions,
-                            material: Cesium.Color.BLACK,
-                            width: 3
-                        },
-                        name: lineName,
-                        id: id,
-                        show: true,
-                        description: Object.entries(feature.properties).map(([key, value]) => `${key}: ${value}`).join('<br>') + '<br>average longitude:' + averageLongitude.toFixed(2) + '<br>average latitude: ' + averageLatitude.toFixed(2),
-                        averageLongitude: averageLongitude,
-                        averageLatitude: averageLatitude,
-                        averageDepth: averageDepth,
-                        rake: rake,
-                        dip: dip
+                // Averages
+                const longitudes = positions.map(pos => Cesium.Cartographic.fromCartesian(pos).longitude * Cesium.Math.DEGREES_PER_RADIAN);
+                const latitudes = positions.map(pos => Cesium.Cartographic.fromCartesian(pos).latitude * Cesium.Math.DEGREES_PER_RADIAN);
+                const avgLon = longitudes.reduce((a, b) => a + b, 0) / longitudes.length;
+                const avgLat = latitudes.reduce((a, b) => a + b, 0) / latitudes.length;
 
-                    });
+                // Safe description (properties may have been null)
+                const safeEntries = Object.entries(props || {});
+                const description =
+                    (safeEntries.length ? safeEntries.map(([k, v]) => `${k}: ${v}`).join('<br>') : '(no properties)') +
+                    `<br>average longitude: ${avgLon.toFixed(2)}<br>average latitude: ${avgLat.toFixed(2)}`;
 
-                    entities[id] = lineEntity;
+                // Entity
+                const lineEntity = viewer.entities.add({
+                    polyline: { positions, material: Cesium.Color.BLACK, width: 3 },
+                    name: lineName,
+                    id: id,
+                    show: true,
+                    description,
+                    averageLongitude: avgLon,
+                    averageLatitude: avgLat,
+                    averageDepth,
+                    rake,
+                    dip
+                });
+                entities[id] = lineEntity;
 
-                    const listItem = document.createElement('tr');
+                // Row
+                const listItem = document.createElement('tr');
 
-                    const checkboxCell = document.createElement('td');
-                    const checkbox = document.createElement('input');
-                    checkbox.type = 'checkbox';
-                    checkbox.id = `checkbox-${index}`;
-                    checkbox.value = id;
-                    checkbox.onchange = function () {
-                        lineEntity.polyline.material = this.checked ? Cesium.Color.MAGENTA : Cesium.Color.BLACK;
-                    };
-                    checkboxCell.appendChild(checkbox);
-                    listItem.appendChild(checkboxCell);
+                // checkbox
+                const checkboxCell = document.createElement('td');
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.id = `checkbox-${index}`;
+                checkbox.value = id;
+                checkbox.onchange = function () {
+                    lineEntity.polyline.material = this.checked ? Cesium.Color.MAGENTA : Cesium.Color.BLACK;
+                };
+                checkboxCell.appendChild(checkbox);
+                listItem.appendChild(checkboxCell);
 
-                    const visibilityCell = document.createElement('td');
-                    const visibilityIcon = document.createElement('i');
-                    visibilityIcon.classList.add('fas', 'fa-eye');
-                    visibilityIcon.style.cursor = 'pointer';
-                    visibilityIcon.onclick = function () {
-                        lineEntity.show = !lineEntity.show;
-                        visibilityIcon.style.color = lineEntity.show ? 'black' : 'grey';
-                    };
-                    visibilityCell.appendChild(visibilityIcon);
-                    listItem.appendChild(visibilityCell);
+                // eye icon
+                const visibilityCell = document.createElement('td');
+                const visibilityIcon = document.createElement('i');
+                visibilityIcon.classList.add('fas', 'fa-eye');
+                visibilityIcon.style.cursor = 'pointer';
+                visibilityIcon.onclick = function () {
+                    lineEntity.show = !lineEntity.show;
+                    visibilityIcon.style.color = lineEntity.show ? 'black' : 'grey';
+                };
+                visibilityCell.appendChild(visibilityIcon);
+                listItem.appendChild(visibilityCell);
 
-                    const nameCell = document.createElement('td');
-                    nameCell.textContent = lineName;
-                    listItem.appendChild(nameCell);
-                    /*
-                     const averageLongitudeCell = document.createElement('td');
-                     averageLongitudeCell.textContent = averageLongitude.toFixed(2);
-                     listItem.appendChild(averageLongitudeCell);
-     
-                     const averageLatitudeCell = document.createElement('td');
-                     averageLatitudeCell.textContent = averageLatitude.toFixed(2);
-                     listItem.appendChild(averageLatitudeCell);
-                     */
-                    const averageDepthCell = document.createElement('td');
-                    averageDepthCell.textContent = averageDepth.toFixed(1);
-                    listItem.appendChild(averageDepthCell);
+                // name
+                const nameCell = document.createElement('td');
+                nameCell.textContent = lineName;
+                listItem.appendChild(nameCell);
 
-                    const dipCell = document.createElement('td');
-                    dipCell.textContent = dip.toFixed(1);
-                    listItem.appendChild(dipCell);
+                // avg depth
+                const averageDepthCell = document.createElement('td');
+                averageDepthCell.textContent = Number.isFinite(averageDepth) ? averageDepth.toFixed(1) : '';
+                listItem.appendChild(averageDepthCell);
 
-                    const rakeCell = document.createElement('td');
-                    rakeCell.textContent = rake.toFixed(1);
-                    listItem.appendChild(rakeCell);
+                // dip
+                const dipCell = document.createElement('td');
+                dipCell.textContent = Number.isFinite(dip) ? dip.toFixed(1) : '';
+                listItem.appendChild(dipCell);
 
-                    const sourceCell = document.createElement('td');
-                    sourceCell.textContent = source;
-                    listItem.appendChild(sourceCell);
+                // rake
+                const rakeCell = document.createElement('td');
+                rakeCell.textContent = Number.isFinite(rake) ? rake.toFixed(1) : '';
+                listItem.appendChild(rakeCell);
 
-                    const idCell = document.createElement('td');
-                    idCell.textContent = id;
-                    idCell.classList.add('hidden-id-column'); // Make the ID column hidden
-                    listItem.appendChild(idCell);
+                // source
+                const sourceCell = document.createElement('td');
+                sourceCell.textContent = source;
+                listItem.appendChild(sourceCell);
 
-                    lineList.appendChild(listItem);
-                }
+                // id (hidden)
+                const idCell = document.createElement('td');
+                idCell.textContent = id;
+                idCell.classList.add('hidden-id-column');
+                listItem.appendChild(idCell);
+
+                lineList.appendChild(listItem);
             });
         }
+
 
 
         function updateVisibility(entities, list) {
@@ -709,38 +753,6 @@
             });
         }
 
-
-
-
-        function updateFilterRectangle() {
-            const minLon = parseFloat(document.getElementById('minLongitude').value);
-            const maxLon = parseFloat(document.getElementById('maxLongitude').value);
-            const minLat = parseFloat(document.getElementById('minLatitude').value);
-            const maxLat = parseFloat(document.getElementById('maxLatitude').value);
-
-            filterRectangle.rectangle.coordinates = Cesium.Rectangle.fromDegrees(minLon, minLat, maxLon, maxLat);
-        }
-
-        document.getElementById('minLongitude').addEventListener('input', function () {
-            updateVisibility(geoJsonEntities, lineList);
-            updateFilterRectangle();
-        });
-        document.getElementById('maxLongitude').addEventListener('input', function () {
-            updateVisibility(geoJsonEntities, lineList);
-            updateFilterRectangle();
-        });
-
-        document.getElementById('minLatitude').addEventListener('input', function () {
-            updateVisibility(geoJsonEntities, lineList);
-            updateFilterRectangle();
-        });
-
-        document.getElementById('maxLatitude').addEventListener('input', function () {
-            updateVisibility(geoJsonEntities, lineList);
-            updateFilterRectangle();
-        });
-        //document.getElementById('minDepth').addEventListener('input', updateFilterRectangle);
-        //document.getElementById('maxDepth').addEventListener('input', updateFilterRectangle);
     });
 
     // Unpdate min, max color labels.
@@ -806,7 +818,6 @@
             } else if (elem.msRequestFullscreen) { // IE/Edge
                 elem.msRequestFullscreen();
             }
-            instructions.style.display = 'block';
         } else {
             if (document.exitFullscreen) {
                 document.exitFullscreen();
@@ -817,14 +828,11 @@
             } else if (document.msExitFullscreen) { // IE/Edge
                 document.msExitFullscreen();
             }
-            instructions.style.display = 'none';
         }
     }
 
 
 
 </script>
-</body>
 
-</html>
 {%endblock%}
