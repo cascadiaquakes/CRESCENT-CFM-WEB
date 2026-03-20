@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main, dev]
+  push:
+    branches: [main, dev]
+
+permissions:
+  contents: read
+
+jobs:
+  lint-and-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # ── Checkout ──────────────────────────────────────────────
+      - uses: actions/checkout@v4
+
+      # ── Python setup ──────────────────────────────────────────
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt ruff
+
+      # ── Lint ──────────────────────────────────────────────────
+      - name: Lint with ruff
+        run: ruff check app/
+
+      # ── Docker build validation ───────────────────────────────
+      - name: Verify Docker image builds
+        run: docker build -t cfm-viewer:ci .
+
+      # ── Smoke test ────────────────────────────────────────────
+      - name: Smoke test container
+        run: |
+          docker run -d --name cfm-smoke \
+            -p 8080:80 \
+            -e 'CESIUM_KEYS={"cesium_access_token":"ci_placeholder"}' \
+            cfm-viewer:ci
+
+          sleep 5
+
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/get-token)
+          echo "GET /get-token returned HTTP $STATUS"
+
+          if [ "$STATUS" -ne 200 ]; then
+            echo "Smoke test failed"
+            docker logs cfm-smoke
+            exit 1
+          fi
+
+          docker stop cfm-smoke
+          docker rm cfm-smoke
