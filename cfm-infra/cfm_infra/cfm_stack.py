@@ -14,18 +14,11 @@ class CfmStack(Stack):
     def __init__(self, scope: Construct, construct_id: str, **kwargs):
         super().__init__(scope, construct_id, **kwargs)
 
-        # ── ECR Repository ──────────────────────────────────────
-        repository = ecr.Repository(
+        # ── ECR Repository (existing, created outside stack) ────
+        repository = ecr.Repository.from_repository_name(
             self,
             "CfmWebRepo",
             repository_name="cfm-web",
-            removal_policy=RemovalPolicy.RETAIN,
-            lifecycle_rules=[
-                ecr.LifecycleRule(
-                    description="Keep last 10 images",
-                    max_image_count=10,
-                )
-            ],
         )
 
         # ── App Runner Access Role (pulls from ECR) ─────────────
