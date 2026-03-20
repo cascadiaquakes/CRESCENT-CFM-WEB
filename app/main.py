@@ -1,7 +1,6 @@
 # CHECKED OK
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
-import routes
 from routes import router
 
 app = FastAPI()

@@ -1,13 +1,11 @@
 import os
-import boto3
 
 from fastapi import HTTPException
 from fastapi.responses import HTMLResponse, JSONResponse, FileResponse
 
-from fastapi import APIRouter, Request, Form, Query
+from fastapi import APIRouter, Request, Query
 from typing import Optional
 
-from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from PIL import Image, ImageDraw
 from io import BytesIO
@@ -15,8 +13,6 @@ from io import BytesIO
 from datetime import datetime, timezone
 import json
 import httpx
-import re
-import socket
 
 import logging
 
@@ -138,7 +134,7 @@ async def get_cesium_key(request: Request):
 
     # Only internal requests are accepted.
     if os.getenv("CESIUM_KEYS") is None:
-        logging.error(f"get-token Failed")
+        logging.error("get-token Failed")
         return {"token": "your_access_token"}
     else:
         CESIUM_KEYS = json.loads(os.getenv("CESIUM_KEYS"))
@@ -264,7 +260,7 @@ def models_drop_down_coverage():
                 continue
 
     # Prepare the HTML for the dropdown
-    dropdown_html = f'<option value="">None</option>'
+    dropdown_html = '<option value="">None</option>'
     for i, filename in enumerate(model_list):
         selected = " selected" if i == 0 else ""
         dropdown_html += (
