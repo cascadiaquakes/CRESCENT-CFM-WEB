@@ -62,24 +62,36 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
           CESIUM_KEYS: ${{ secrets.CESIUM_KEYS }}
         run: |
-          aws apprunner update-service \
+          ACCESS_ROLE=$(aws apprunner describe-service \
             --service-arn "$APP_RUNNER_SERVICE_ARN" \
-            --source-configuration '{
-              "ImageRepository": {
-                "ImageIdentifier": "'"$ECR_REGISTRY/$ECR_REPO:$IMAGE_TAG"'",
-                "ImageRepositoryType": "ECR",
-                "ImageConfiguration": {
-                  "Port": "80",
-                  "RuntimeEnvironmentVariables": {
-                    "CESIUM_KEYS": "'"$CESIUM_KEYS"'",
-                    "ENV": "dev"
+            --query 'Service.SourceConfiguration.AuthenticationConfiguration.AccessRoleArn' \
+            --output text)
+
+          # Build JSON config using jq to avoid shell escaping issues
+          jq -n \
+            --arg image "$ECR_REGISTRY/$ECR_REPO:$IMAGE_TAG" \
+            --arg cesium "$CESIUM_KEYS" \
+            --arg role "$ACCESS_ROLE" \
+            '{
+              ImageRepository: {
+                ImageIdentifier: $image,
+                ImageRepositoryType: "ECR",
+                ImageConfiguration: {
+                  Port: "80",
+                  RuntimeEnvironmentVariables: {
+                    CESIUM_KEYS: $cesium,
+                    ENV: "dev"
                   }
                 }
               },
-              "AuthenticationConfiguration": {
-                "AccessRoleArn": "'"$(aws apprunner describe-service --service-arn $APP_RUNNER_SERVICE_ARN --query 'Service.SourceConfiguration.AuthenticationConfiguration.AccessRoleArn' --output text)"'"
+              AuthenticationConfiguration: {
+                AccessRoleArn: $role
               }
-            }'
+            }' > /tmp/source-config.json
+
+          aws apprunner update-service \
+            --service-arn "$APP_RUNNER_SERVICE_ARN" \
+            --source-configuration file:///tmp/source-config.json
 
       # ── Wait for deployment ───────────────────────────────────
       - name: Wait for App Runner deployment
