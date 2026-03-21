@@ -84,7 +84,7 @@ This repo includes GitHub Actions workflows and AWS CDK infrastructure for autom
 Push to dev → CI (lint + build + smoke test) → Deploy Dev (ECR push → App Runner update)
 ```
 
-Authentication uses GitHub Actions OIDC — no long-lived AWS credentials are stored in the repository. The Cesium ion token and service ARNs are managed as GitHub repository secrets.
+Authentication uses GitHub Actions OIDC as no long-lived AWS credentials are stored in the repository. The Cesium ion token and service ARNs are managed as GitHub repository secrets.
 
 For detailed infrastructure notes, see `cfm-infra/`.
 
