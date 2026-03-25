@@ -149,7 +149,8 @@ async def favicon():
 
 
 @router.get("/")
-async def index(request: Request, branch: Optional[str] = Query("main")):
+async def index(request: Request, branch: Optional[str] = Query(None)):
+    branch = branch or os.environ.get("ENV", "main")
     branch = (branch or "main").strip()
 
     config = get_config(branch)
@@ -178,7 +179,8 @@ async def downloads(request: Request):
 
 
 @router.get("/3d", response_class=HTMLResponse)
-async def threed(request: Request, branch: str = "main"):
+async def threed(request: Request, branch: str = None):
+    branch = branch or os.environ.get("ENV", "main")
     # Get the token from environment variables (internal access)
     CESIUM_KEYS = json.loads(os.getenv("CESIUM_KEYS", "{}"))
     access_token = CESIUM_KEYS.get("cesium_access_token", "your_access_token")
@@ -270,8 +272,8 @@ def models_drop_down_coverage():
 
 
 @router.get("/geojson")
-async def get_geojson(request: Request, branch: Optional[str] = Query("main")):
-    branch = (branch or "main").strip()
+async def get_geojson(request: Request, branch: Optional[str] = Query(None)):
+    branch = (branch or os.environ.get("ENV", "main")).strip()
     config = get_config(branch)
 
     geojson_file_url = config.get("cfmTraceFile")
