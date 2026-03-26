@@ -96,6 +96,14 @@
                 <input type="checkbox" id="toggleCFMCheckbox" checked> CFM surfaces
             </label>
         </div>
+
+        <div id="highResFaultContainer" style="margin-top: 15px; margin-bottom: 15px; padding: 10px; border: 1px solid #777; border-radius: 4px; background: rgba(0,0,0,0.4);">
+            <div style="font-weight:bold; margin-bottom: 5px; color: white;">Load High-Res Faults:</div>
+            <div style="font-size: 0.85em; margin-bottom: 8px; color: #ddd;">Select faults to view in full 3D resolution (max ~10 recommended).</div>
+            <select id="selectHighResFaults" multiple size="6" style="width: 100%; color: black; background: white;"></select>
+            <button id="loadHighResBtn" style="width: 100%; margin-top: 8px; padding: 4px; cursor: pointer; color: black;">Load Selected High-Res</button>
+            <div id="highResStatus" style="font-size: 0.85em; margin-top: 6px; color: #ffcc00; font-weight: bold;"></div>
+        </div>
         <div id="toggleSubductionInterface">
             <!-- Visible checkbox with label -->
             <div>
