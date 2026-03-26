@@ -1157,24 +1157,25 @@ setTimeout(() => {
         statusDiv.innerText = 'Loading ' + selectedOptions.length + ' high-res fault(s)...';
         statusDiv.style.color = "#ffcc00";
         for (let option of selectedOptions) {
-            let faultId = option.value;
+            let faultId = String(option.value);
             if (loadedHighResFaults[faultId]) continue;
             let hiresUrl = githubBaseUrl + 'hires_faults/' + faultId + '_hires.geojson';
             try {
-                // Hide low-res entities matching this fault ID
-                viewer.dataSources._dataSources.forEach(ds => {
+                for (let i = 0; i < viewer.dataSources.length; i++) {
+                    let ds = viewer.dataSources.get(i);
                     ds.entities.values.forEach(entity => {
-                        if (entity.properties && entity.properties.id) {
-                            let entityId = String(entity.properties.id.getValue());
-                            if (entityId === String(faultId)) {
+                        if (entity.properties) {
+                            let cId = entity.properties.CFM_ID ? (typeof entity.properties.CFM_ID.getValue === 'function' ? entity.properties.CFM_ID.getValue() : entity.properties.CFM_ID) : null;
+                            let pId = entity.properties.id ? (typeof entity.properties.id.getValue === 'function' ? entity.properties.id.getValue() : entity.properties.id) : null;
+                            let eId = String(cId || pId);
+                            if (eId === faultId) {
                                 entity.show = false;
                                 if (!hiddenLowResEntities[faultId]) hiddenLowResEntities[faultId] = [];
                                 hiddenLowResEntities[faultId].push(entity);
                             }
                         }
                     });
-                });
-                // Load high-res version
+                }
                 let dataSource = await Cesium.GeoJsonDataSource.load(hiresUrl, {
                     stroke: Cesium.Color.CYAN,
                     fill: Cesium.Color.CYAN.withAlpha(0.5),
@@ -1190,7 +1191,6 @@ setTimeout(() => {
         statusDiv.style.color = "#00ff00";
     });
 
-    // Reset button
     document.getElementById('resetHighResBtn').addEventListener('click', () => {
         const statusDiv = document.getElementById('highResStatus');
         for (let faultId in loadedHighResFaults) {
