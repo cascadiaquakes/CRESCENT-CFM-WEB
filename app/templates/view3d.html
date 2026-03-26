@@ -1106,7 +1106,68 @@
         document.getElementById('toggleGlobeCheckbox').addEventListener('change', function () {
             viewer.scene.globe.show = this.checked;
         });
+        
+        // =====================================================================
+// CRESCENT CFM HIGH-RES FAULT VIEWER LOGIC
+// =====================================================================
+setTimeout(() => {
+    const githubBaseUrl = "https://raw.githubusercontent.com/cascadiaquakes/CRESCENT-CFM/dev/crescent_cfm_files/";
+    const listUrl = githubBaseUrl + "crescent_cfm_crustal_3d_lowres.geojson";
 
+    fetch(listUrl)
+        .then(response => response.json())
+        .then(data => {
+            const selectBox = document.getElementById('selectHighResFaults');
+            const features = data.features.sort((a, b) => {
+                let nameA = a.properties.name || '';
+                let nameB = b.properties.name || '';
+                return nameA.localeCompare(nameB);
+            });
+            features.forEach(feat => {
+                let id = feat.properties.id || feat.properties.CFM_ID;
+                let name = feat.properties.name || 'Fault ' + id;
+                if(id) {
+                    let option = document.createElement('option');
+                    option.value = id;
+                    option.text = name + ' (ID: ' + id + ')';
+                    selectBox.appendChild(option);
+                }
+            });
+        })
+        .catch(err => console.error("Error loading fault list:", err));
+
+    const loadedHighResFaults = {};
+    document.getElementById('loadHighResBtn').addEventListener('click', async () => {
+        const selectBox = document.getElementById('selectHighResFaults');
+        const statusDiv = document.getElementById('highResStatus');
+        const selectedOptions = Array.from(selectBox.selectedOptions);
+        if (selectedOptions.length === 0) {
+            statusDiv.innerText = "Please select at least one fault.";
+            statusDiv.style.color = "#ff4444";
+            return;
+        }
+        statusDiv.innerText = 'Loading ' + selectedOptions.length + ' high-res fault(s)...';
+        statusDiv.style.color = "#ffcc00";
+        for (let option of selectedOptions) {
+            let faultId = option.value;
+            if (loadedHighResFaults[faultId]) continue;
+            let hiresUrl = githubBaseUrl + 'hires_faults/' + faultId + '_hires.geojson';
+            try {
+                let dataSource = await Cesium.GeoJsonDataSource.load(hiresUrl, {
+                    stroke: Cesium.Color.CYAN,
+                    fill: Cesium.Color.CYAN.withAlpha(0.5),
+                    strokeWidth: 3
+                });
+                viewer.dataSources.add(dataSource);
+                loadedHighResFaults[faultId] = dataSource;
+            } catch (err) {
+                console.error('Failed to load high-res fault ' + faultId + ':', err);
+            }
+        }
+        statusDiv.innerText = "High-res faults loaded!";
+        statusDiv.style.color = "#00ff00";
+    });
+}, 2000);
 
 
     </script>
