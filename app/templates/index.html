@@ -329,14 +329,10 @@
             const backend3d = `/3d?branch=${encodeURIComponent(branch)}`
             console.log("backend3d= %s", backend3d)
 
-            const newTab = window.open();
-            if (newTab) {
-                newTab.document.write('<html><head><title>View 3D</title></head><body></body></html>');
-                newTab.document.close();
-                newTab.location.href = backend3d;
-            } else {
-                alert('Please select at least one fault before proceeding.');
-                return; // Stop further execution
+            const newTab = window.open(backend3d);
+            if (!newTab) {
+                alert('Popup blocked. Please allow popups for this site.');
+                return;
             }
         });
 
