@@ -102,6 +102,7 @@
             <div style="font-size: 0.85em; margin-bottom: 8px; color: #ddd;">Select faults to view in full 3D resolution (max ~10 recommended).</div>
             <select id="selectHighResFaults" multiple size="6" style="width: 100%; color: black; background: white;"></select>
             <button id="loadHighResBtn" style="width: 100%; margin-top: 8px; padding: 4px; cursor: pointer; color: black;">Load Selected High-Res</button>
+            <button id="resetHighResBtn" style="width: 100%; margin-top: 4px; padding: 4px; cursor: pointer; color: black; background: #ffcccc;">Reset High-Res</button>
             <div id="highResStatus" style="font-size: 0.85em; margin-top: 6px; color: #ffcc00; font-weight: bold;"></div>
         </div>
         <div id="toggleSubductionInterface">
@@ -1106,7 +1107,7 @@
         document.getElementById('toggleGlobeCheckbox').addEventListener('change', function () {
             viewer.scene.globe.show = this.checked;
         });
-        
+
 // =====================================================================
 // CRESCENT CFM HIGH-RES FAULT VIEWER LOGIC
 // =====================================================================
@@ -1137,6 +1138,8 @@ setTimeout(() => {
         .catch(err => console.error("Error loading fault list:", err));
 
     const loadedHighResFaults = {};
+    const hiddenLowResEntities = {};
+
     document.getElementById('loadHighResBtn').addEventListener('click', async () => {
         const selectBox = document.getElementById('selectHighResFaults');
         const statusDiv = document.getElementById('highResStatus');
@@ -1158,17 +1161,19 @@ setTimeout(() => {
             if (loadedHighResFaults[faultId]) continue;
             let hiresUrl = githubBaseUrl + 'hires_faults/' + faultId + '_hires.geojson';
             try {
-                // Remove low-res version of this fault
-                for (let ds of viewer.dataSources._dataSources) {
-                    let entitiesToRemove = [];
+                // Hide low-res entities matching this fault ID
+                viewer.dataSources._dataSources.forEach(ds => {
                     ds.entities.values.forEach(entity => {
-                        let entityId = entity.properties && entity.properties.id ? String(entity.properties.id.getValue()) : '';
-                        if (entityId === String(faultId)) {
-                            entitiesToRemove.push(entity);
+                        if (entity.properties && entity.properties.id) {
+                            let entityId = String(entity.properties.id.getValue());
+                            if (entityId === String(faultId)) {
+                                entity.show = false;
+                                if (!hiddenLowResEntities[faultId]) hiddenLowResEntities[faultId] = [];
+                                hiddenLowResEntities[faultId].push(entity);
+                            }
                         }
                     });
-                    entitiesToRemove.forEach(e => ds.entities.remove(e));
-                }
+                });
                 // Load high-res version
                 let dataSource = await Cesium.GeoJsonDataSource.load(hiresUrl, {
                     stroke: Cesium.Color.CYAN,
@@ -1183,6 +1188,27 @@ setTimeout(() => {
         }
         statusDiv.innerText = "High-res faults loaded!";
         statusDiv.style.color = "#00ff00";
+    });
+
+    // Reset button
+    document.getElementById('resetHighResBtn').addEventListener('click', () => {
+        const statusDiv = document.getElementById('highResStatus');
+        for (let faultId in loadedHighResFaults) {
+            let ds = loadedHighResFaults[faultId];
+            if (viewer.dataSources.contains(ds)) {
+                viewer.dataSources.remove(ds);
+            }
+        }
+        for (let faultId in hiddenLowResEntities) {
+            hiddenLowResEntities[faultId].forEach(entity => {
+                entity.show = true;
+            });
+        }
+        for (let key in loadedHighResFaults) delete loadedHighResFaults[key];
+        for (let key in hiddenLowResEntities) delete hiddenLowResEntities[key];
+        document.getElementById('selectHighResFaults').selectedIndex = -1;
+        statusDiv.innerText = "Reset complete. Showing low-res.";
+        statusDiv.style.color = "#ffcc00";
     });
 }, 2000);
 
