@@ -1107,7 +1107,7 @@
             viewer.scene.globe.show = this.checked;
         });
         
-        // =====================================================================
+// =====================================================================
 // CRESCENT CFM HIGH-RES FAULT VIEWER LOGIC
 // =====================================================================
 setTimeout(() => {
@@ -1146,6 +1146,11 @@ setTimeout(() => {
             statusDiv.style.color = "#ff4444";
             return;
         }
+        if (selectedOptions.length > 10) {
+            statusDiv.innerText = "Max 10 faults. You selected " + selectedOptions.length + ".";
+            statusDiv.style.color = "#ff4444";
+            return;
+        }
         statusDiv.innerText = 'Loading ' + selectedOptions.length + ' high-res fault(s)...';
         statusDiv.style.color = "#ffcc00";
         for (let option of selectedOptions) {
@@ -1153,6 +1158,18 @@ setTimeout(() => {
             if (loadedHighResFaults[faultId]) continue;
             let hiresUrl = githubBaseUrl + 'hires_faults/' + faultId + '_hires.geojson';
             try {
+                // Remove low-res version of this fault
+                for (let ds of viewer.dataSources._dataSources) {
+                    let entitiesToRemove = [];
+                    ds.entities.values.forEach(entity => {
+                        let entityId = entity.properties && entity.properties.id ? String(entity.properties.id.getValue()) : '';
+                        if (entityId === String(faultId)) {
+                            entitiesToRemove.push(entity);
+                        }
+                    });
+                    entitiesToRemove.forEach(e => ds.entities.remove(e));
+                }
+                // Load high-res version
                 let dataSource = await Cesium.GeoJsonDataSource.load(hiresUrl, {
                     stroke: Cesium.Color.CYAN,
                     fill: Cesium.Color.CYAN.withAlpha(0.5),
@@ -1168,7 +1185,6 @@ setTimeout(() => {
         statusDiv.style.color = "#00ff00";
     });
 }, 2000);
-
 
     </script>
 </body>
