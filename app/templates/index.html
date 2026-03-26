@@ -196,7 +196,7 @@
 
         // Which branch we are looking into
         const url = new URL(window.location.href);
-        const branch = url.searchParams.get('branch') || 'main';
+        const branch = url.searchParams.get('branch') || '{{ branch }}';
 
         // Initializes the input ranges for longitude, latitude, and depth based on the given variables.
         function initializeSliders() {
