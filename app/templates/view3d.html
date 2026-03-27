@@ -1154,13 +1154,31 @@ setTimeout(() => {
             statusDiv.style.color = "#ff4444";
             return;
         }
+
+        // Clear previous high-res faults first
+        for (let faultId in loadedHighResFaults) {
+            let ds = loadedHighResFaults[faultId];
+            if (viewer.dataSources.contains(ds)) {
+                viewer.dataSources.remove(ds);
+            }
+        }
+        // Restore previously hidden low-res
+        for (let faultId in hiddenLowResEntities) {
+            hiddenLowResEntities[faultId].forEach(entity => {
+                entity.show = true;
+            });
+        }
+        for (let key in loadedHighResFaults) delete loadedHighResFaults[key];
+        for (let key in hiddenLowResEntities) delete hiddenLowResEntities[key];
+
         statusDiv.innerText = 'Loading ' + selectedOptions.length + ' high-res fault(s)...';
         statusDiv.style.color = "#ffcc00";
+
         for (let option of selectedOptions) {
             let faultId = String(option.value);
-            if (loadedHighResFaults[faultId]) continue;
             let hiresUrl = githubBaseUrl + 'hires_faults/' + faultId + '_hires.geojson';
             try {
+                // Hide low-res entities for this fault
                 for (let i = 0; i < viewer.dataSources.length; i++) {
                     let ds = viewer.dataSources.get(i);
                     ds.entities.values.forEach(entity => {
@@ -1176,6 +1194,7 @@ setTimeout(() => {
                         }
                     });
                 }
+                // Load high-res
                 let dataSource = await Cesium.GeoJsonDataSource.load(hiresUrl, {
                     stroke: Cesium.Color.CYAN,
                     fill: Cesium.Color.CYAN.withAlpha(0.5),
