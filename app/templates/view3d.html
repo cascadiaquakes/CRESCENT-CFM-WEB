@@ -70,9 +70,10 @@
         @import url(https://cesium.com/downloads/cesiumjs/releases/1.116/Build/Cesium/Widgets/widgets.css);
 
         #controlContainer {
-            max-height: 85vh;
+            max-height: 70vh;
             overflow-y: auto;
             scrollbar-width: thin;
+            width: 310px;
         }
     </style>
 </head>
@@ -1120,7 +1121,23 @@
 setTimeout(() => {
     const githubBaseUrl = "https://raw.githubusercontent.com/cascadiaquakes/CRESCENT-CFM/dev/crescent_cfm_files/";
     const listUrl = githubBaseUrl + "crescent_cfm_crustal_3d_lowres.geojson";
-    const cfmCheckbox = document.getElementById('toggleCFMCheckbox');
+
+    // Find the CFM surfaces datasource (the one with 60k+ entities)
+    let cfmSurfacesDS = null;
+    function findCfmSurfacesDS() {
+        if (cfmSurfacesDS) return cfmSurfacesDS;
+        for (let i = 0; i < viewer.dataSources.length; i++) {
+            let ds = viewer.dataSources.get(i);
+            if (ds.entities.values.length > 1000) {
+                let props = ds.entities.values[0]?.properties?._propertyNames || [];
+                if (props.includes('CFM_ID')) {
+                    cfmSurfacesDS = ds;
+                    return ds;
+                }
+            }
+        }
+        return null;
+    }
 
     fetch(listUrl)
         .then(response => response.json())
@@ -1145,6 +1162,7 @@ setTimeout(() => {
         .catch(err => console.error("Error loading fault list:", err));
 
     const loadedHighResFaults = {};
+    const hiddenLowResEntities = {};
 
     document.getElementById('loadHighResBtn').addEventListener('click', async () => {
         const selectBox = document.getElementById('selectHighResFaults');
@@ -1161,28 +1179,40 @@ setTimeout(() => {
             return;
         }
 
-        // Clear previous high-res faults
+        // Clear previous high-res and restore previous low-res
         for (let faultId in loadedHighResFaults) {
             let ds = loadedHighResFaults[faultId];
-            if (viewer.dataSources.contains(ds)) {
-                viewer.dataSources.remove(ds);
-            }
+            if (viewer.dataSources.contains(ds)) viewer.dataSources.remove(ds);
+        }
+        for (let faultId in hiddenLowResEntities) {
+            hiddenLowResEntities[faultId].forEach(e => { e.show = true; });
         }
         for (let key in loadedHighResFaults) delete loadedHighResFaults[key];
-
-        // Hide ALL low-res surfaces by unchecking the CFM surfaces checkbox
-        if (cfmCheckbox.checked) {
-            cfmCheckbox.checked = false;
-            cfmCheckbox.dispatchEvent(new Event('change'));
-        }
+        for (let key in hiddenLowResEntities) delete hiddenLowResEntities[key];
 
         statusDiv.innerText = 'Loading ' + selectedOptions.length + ' high-res fault(s)...';
         statusDiv.style.color = "#ffcc00";
+
+        let ds = findCfmSurfacesDS();
 
         for (let option of selectedOptions) {
             let faultId = String(option.value);
             let hiresUrl = githubBaseUrl + 'hires_faults/' + faultId + '_hires.geojson';
             try {
+                // Hide low-res triangles for this fault
+                if (ds) {
+                    ds.entities.values.forEach(entity => {
+                        if (entity.properties && entity.properties.CFM_ID) {
+                            let eId = String(typeof entity.properties.CFM_ID.getValue === 'function' ? entity.properties.CFM_ID.getValue() : entity.properties.CFM_ID);
+                            if (eId === faultId) {
+                                entity.show = false;
+                                if (!hiddenLowResEntities[faultId]) hiddenLowResEntities[faultId] = [];
+                                hiddenLowResEntities[faultId].push(entity);
+                            }
+                        }
+                    });
+                }
+                // Load high-res
                 let dataSource = await Cesium.GeoJsonDataSource.load(hiresUrl, {
                     stroke: Cesium.Color.CYAN,
                     fill: Cesium.Color.CYAN.withAlpha(0.5),
@@ -1200,21 +1230,15 @@ setTimeout(() => {
 
     document.getElementById('resetHighResBtn').addEventListener('click', () => {
         const statusDiv = document.getElementById('highResStatus');
-        // Remove all high-res
         for (let faultId in loadedHighResFaults) {
             let ds = loadedHighResFaults[faultId];
-            if (viewer.dataSources.contains(ds)) {
-                viewer.dataSources.remove(ds);
-            }
+            if (viewer.dataSources.contains(ds)) viewer.dataSources.remove(ds);
+        }
+        for (let faultId in hiddenLowResEntities) {
+            hiddenLowResEntities[faultId].forEach(e => { e.show = true; });
         }
         for (let key in loadedHighResFaults) delete loadedHighResFaults[key];
-
-        // Restore low-res by re-checking the CFM surfaces checkbox
-        if (!cfmCheckbox.checked) {
-            cfmCheckbox.checked = true;
-            cfmCheckbox.dispatchEvent(new Event('change'));
-        }
-
+        for (let key in hiddenLowResEntities) delete hiddenLowResEntities[key];
         document.getElementById('selectHighResFaults').selectedIndex = -1;
         statusDiv.innerText = "Reset complete. Showing low-res.";
         statusDiv.style.color = "#ffcc00";
