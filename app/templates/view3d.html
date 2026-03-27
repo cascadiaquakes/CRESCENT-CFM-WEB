@@ -123,7 +123,7 @@
         </div>
 
         <div id="eqcontrols">
-            <label><input type="checkbox" id="showEarthquakesCheckbox" checked> Earthquakes</label>
+            <label><input type="checkbox" id="showEarthquakesCheckbox"> Earthquakes</label>
             <br>
             <label>Circle Size: <input type="range" id="circleSizeSlider" min="0" max="0.2" step="0.01"
                     value="0.04"></label>
@@ -481,7 +481,9 @@
                         var ok = true;
                         // Display all if selectedLines is empty.
                         if (selectedLines.length != 0) {
-                            if (!selectedLines.includes(String(entity.properties.id))) {
+                            let eid = entity.properties.id ? String(entity.properties.id.getValue ? entity.properties.id.getValue() : entity.properties.id) : '';
+                            let cfmId = entity.properties.CFM_ID ? String(entity.properties.CFM_ID.getValue ? entity.properties.CFM_ID.getValue() : entity.properties.CFM_ID) : '';
+                            if (!selectedLines.includes(eid) && !selectedLines.includes(cfmId)) {
                                 ok = false;
                                 entitiesToRemove.push(entity);
                             }
@@ -533,7 +535,9 @@
                         var ok = true;
                         // Display all if selectedLines is empty.
                         if (selectedLines.length != 0) {
-                            if (!selectedLines.includes(String(entity.properties.id))) {
+                            let eid = entity.properties.id ? String(entity.properties.id.getValue ? entity.properties.id.getValue() : entity.properties.id) : '';
+                            let cfmId = entity.properties.CFM_ID ? String(entity.properties.CFM_ID.getValue ? entity.properties.CFM_ID.getValue() : entity.properties.CFM_ID) : '';
+                            if (!selectedLines.includes(eid) && !selectedLines.includes(cfmId)) {
                                 ok = false;
                                 entitiesToRemove.push(entity);
                             }
