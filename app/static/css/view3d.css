@@ -72,7 +72,7 @@ html, body {
     z-index: 1000;
 
     width: 290px !important;
-    max-height: calc(100vh - 70px) !important;
+    max-height: calc(48vh - 30px) !important;
     overflow-y: auto !important;
     scrollbar-width: none !important;
     padding: 10px 12px 12px;
@@ -101,7 +101,7 @@ html, body {
     z-index: 1000;
 
     width: 290px !important;
-    max-height: calc(50vh - 70px) !important;
+    max-height: calc(48vh - 30px) !important; /* overridden by JS positionCard2() */
     overflow-y: auto !important;
     scrollbar-width: none !important;
     padding: 10px 12px 12px;

@@ -718,7 +718,10 @@
             var c1 = document.getElementById('controlContainer');
             var c2 = document.getElementById('controlContainer2');
             var rect = c1.getBoundingClientRect();
-            c2.style.top = (rect.bottom + 8) + 'px';
+            var topPos = rect.bottom + 8;
+            c2.style.top = topPos + 'px';
+            // Constrain card 2 so it never extends off-screen
+            c2.style.maxHeight = Math.max(120, window.innerHeight - topPos - 16) + 'px';
         }
 
         document.getElementById('toggleButton').addEventListener('click', function () {
