@@ -79,6 +79,7 @@
     <div id="cesiumContainer"></div>
     <div id="legend"></div>
     <div id="toggleButton"><span style="color: red;">&#9660;&nbsp;</span>Show/Hide Controls</div>
+    <!-- Card 1: Layers & View -->
     <div id="controlContainer">
         <center><b>CFM 3D Viewer</b></center>
         <hr />
@@ -108,8 +109,8 @@
             <button id="resetHighResBtn">Reset High-Res</button>
             <div id="highResStatus"></div>
         </div>
+
         <div id="toggleSubductionInterface">
-            <!-- Visible checkbox with label -->
             <div>
                 <input type="checkbox" id="toggle2dSurfaceCheckbox">
                 <label for="toggle2dSurfaceCheckbox">2D Surfaces</label>
@@ -130,22 +131,20 @@
                 <input type="checkbox" id="toggleBoundaryCheckbox" checked> Boundary lines
             </label>
         </div>
-        <!-- Centered View Button -->
+
         <div id="viewButtonsRow">
             <button id="centerViewButton">Centered view</button>
             <label for="centerCoordinates">@</label><input type="text" id="centerCoordinates" value="-123.0,45.5" />
             <button id="homeViewButton">Tilted view</button>
         </div>
+    </div>
 
-        <!-- Slider controls for model boundaries -->
-        <div>
-            <hr style="border-top: 1px solid #0000FF" />
-        </div>
-        <div>
-            <b>CVM:</b>
-            <select id="data-file" name="data_file"></select>
-        </div>
-        <div>&nbsp;</div>
+    <!-- Card 2: CVM & Filters -->
+    <div id="controlContainer2">
+        <center><b>CVM</b></center>
+        <hr />
+        <select id="data-file" name="data_file"></select>
+        <hr />
         <b>Latitude:</b>
         <div class="sliderContainer">
             <label class="sliderLabel">Min. <input type="range" id="minLatSlider" min="47" max="50.9" step="0.1"
@@ -168,7 +167,6 @@
                     value="-121.1"></label>
             <span id="maxLonValue">-121.1</span>
         </div>
-
         <b>Depth (km):</b>
         <div class="sliderContainer">
             <label class="sliderLabel">Min.: <input type="range" id="minDepthSlider" min="0" max="93" step="1"
@@ -185,6 +183,9 @@
                     min="0" max="1" step="0.1" value="0.3"></label>
             <span id="alphaValue">0.3</span>
         </div>
+        <hr />
+        <label><input type="checkbox" id="clearCheckbox"> Measure Distance</label>
+        <div id="distanceDisplay">Click distances will appear here</div>
     </div>
 
     <div id="mapControls">
@@ -201,10 +202,6 @@
         </button>
         <div id="legendLabel" style="font-weight: bold; font-style: italic;padding-top: 40px;">Color Legend:</div>
         <div id="legendContainer" class="is-open"></div>
-        <div id="distanceControl">
-            <label><input type="checkbox" id="clearCheckbox"> Measure Distance</label>
-            <div id="distanceDisplay">Click distances will appear here</div>
-        </div>
     </div>
 
     <script>
@@ -716,18 +713,29 @@
         });
 
 
-        // Hide/open the menu button
+        // Hide/open the menu button — shows both cards
+        function positionCard2() {
+            var c1 = document.getElementById('controlContainer');
+            var c2 = document.getElementById('controlContainer2');
+            var rect = c1.getBoundingClientRect();
+            c2.style.top = (rect.bottom + 8) + 'px';
+        }
+
         document.getElementById('toggleButton').addEventListener('click', function () {
             var controlContainer = document.getElementById('controlContainer');
+            var controlContainer2 = document.getElementById('controlContainer2');
             var toggleButton = document.getElementById('toggleButton');
-            // Get the actual styles applied
-            const controlContainerDisplay = window.getComputedStyle(controlContainer).display
-            if (controlContainerDisplay === 'none' || controlContainerDisplay === '') {
+            const isHidden = window.getComputedStyle(controlContainer).display === 'none';
+            if (isHidden) {
                 controlContainer.style.display = 'block';
-                toggleButton.innerHTML = '▲ Show/Hide Controls'; // Up arrow
+                controlContainer2.style.display = 'block';
+                toggleButton.innerHTML = '▲ Show/Hide Controls';
+                // position card 2 after card 1 renders
+                requestAnimationFrame(positionCard2);
             } else {
                 controlContainer.style.display = 'none';
-                toggleButton.innerHTML = '▼ Show/Hide Controls'; // Down arrow
+                controlContainer2.style.display = 'none';
+                toggleButton.innerHTML = '▼ Show/Hide Controls';
             }
         });
 
@@ -1341,10 +1349,21 @@ setTimeout(() => {
     });
 }, 2000);
 
-    // Prevent panel scroll from bleeding into Cesium (which would pan/zoom the globe)
-    document.getElementById('controlContainer').addEventListener('wheel', function (e) {
-        e.stopPropagation();
-    }, { passive: false });
+    // Add title tooltips to truncated select options so full name shows on hover
+    ['selectHighResFaults', 'select2dSurface'].forEach(function(id) {
+        var sel = document.getElementById(id);
+        if (!sel) return;
+        new MutationObserver(function() {
+            Array.from(sel.options).forEach(function(o) { o.title = o.text; });
+        }).observe(sel, { childList: true });
+        Array.from(sel.options).forEach(function(o) { o.title = o.text; });
+    });
+
+    // Prevent panel scroll from bleeding into Cesium
+    ['controlContainer', 'controlContainer2'].forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el) el.addEventListener('wheel', function(e) { e.stopPropagation(); }, { passive: false });
+    });
 
     // Legend toggle button
     (function() {
