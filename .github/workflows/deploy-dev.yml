@@ -1,0 +1,125 @@
+name: Deploy Dev
+
+on:
+  push:
+    branches: [dev]
+    paths-ignore:
+      - "**.md"
+      - "cfm-infra/**"
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: deploy-dev
+  cancel-in-progress: true
+
+env:
+  AWS_REGION: us-west-2
+  ECR_REPO: cfm-web
+  APP_RUNNER_SERVICE_ARN: ${{ secrets.CFM_DEV_SERVICE_ARN }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # ── Checkout ──────────────────────────────────────────────
+      - uses: actions/checkout@v4
+
+      # ── Authenticate to AWS via OIDC ──────────────────────────
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+          role-session-name: gha-deploy-cfm-dev
+
+      # ── Login to ECR ──────────────────────────────────────────
+      - name: Login to Amazon ECR
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@v2
+
+      # ── Build & push image ────────────────────────────────────
+      - name: Build and push Docker image
+        env:
+          ECR_REGISTRY: ${{ steps.ecr-login.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build \
+            -t $ECR_REGISTRY/$ECR_REPO:$IMAGE_TAG \
+            -t $ECR_REGISTRY/$ECR_REPO:dev \
+            .
+
+          docker push $ECR_REGISTRY/$ECR_REPO:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$ECR_REPO:dev
+
+      # ── Deploy to App Runner ──────────────────────────────────
+      - name: Update App Runner service
+        env:
+          ECR_REGISTRY: ${{ steps.ecr-login.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+          CESIUM_KEYS: ${{ secrets.CESIUM_KEYS }}
+        run: |
+          ACCESS_ROLE=$(aws apprunner describe-service \
+            --service-arn "$APP_RUNNER_SERVICE_ARN" \
+            --query 'Service.SourceConfiguration.AuthenticationConfiguration.AccessRoleArn' \
+            --output text)
+
+          # Build JSON config using jq to avoid shell escaping issues
+          jq -n \
+            --arg image "$ECR_REGISTRY/$ECR_REPO:$IMAGE_TAG" \
+            --arg cesium "$CESIUM_KEYS" \
+            --arg role "$ACCESS_ROLE" \
+            '{
+              ImageRepository: {
+                ImageIdentifier: $image,
+                ImageRepositoryType: "ECR",
+                ImageConfiguration: {
+                  Port: "80",
+                  RuntimeEnvironmentVariables: {
+                    CESIUM_KEYS: $cesium,
+                    ENV: "dev"
+                  }
+                }
+              },
+              AuthenticationConfiguration: {
+                AccessRoleArn: $role
+              }
+            }' > /tmp/source-config.json
+
+          aws apprunner update-service \
+            --service-arn "$APP_RUNNER_SERVICE_ARN" \
+            --source-configuration file:///tmp/source-config.json
+
+      # ── Wait for deployment ───────────────────────────────────
+      - name: Wait for App Runner deployment
+        run: |
+          echo "Waiting for App Runner service to stabilize..."
+          for i in $(seq 1 60); do
+            STATUS=$(aws apprunner describe-service \
+              --service-arn "$APP_RUNNER_SERVICE_ARN" \
+              --query 'Service.Status' \
+              --output text)
+
+            echo "Attempt $i: Status = $STATUS"
+
+            if [ "$STATUS" = "RUNNING" ]; then
+              echo "Service is running."
+              SERVICE_URL=$(aws apprunner describe-service \
+                --service-arn "$APP_RUNNER_SERVICE_ARN" \
+                --query 'Service.ServiceUrl' \
+                --output text)
+              echo "Dev URL: https://$SERVICE_URL"
+              exit 0
+            elif [ "$STATUS" = "OPERATION_IN_PROGRESS" ]; then
+              sleep 10
+            else
+              echo "Unexpected status: $STATUS"
+              exit 1
+            fi
+          done
+
+          echo "Timed out waiting for deployment"
+          exit 1
