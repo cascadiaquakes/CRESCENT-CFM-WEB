@@ -1,154 +1,31 @@
 @import url(https://cesium.com/downloads/cesiumjs/releases/1.116/Build/Cesium/Widgets/widgets.css);
 
-.cesium-selection-wrapper {
-    display: none !important;
-}
+/* ---- Reset ---- */
+*, *::before, *::after { box-sizing: border-box; }
 
-#cesiumContainer {
+html, body {
+    margin: 0;
+    padding: 0;
     width: 100%;
-    height: calc(85vh - 55px);
-    float: left;
-    position: relative;
+    height: 100%;
+    overflow: hidden;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
 }
 
-#distanceControl {
-    position: absolute;
-    bottom: 10px;
-    left: 15px;
-    z-index: 1;
-    background-color: rgba(255, 255, 255, 0.8);
-    padding: 5px;
-    border-radius: 5px;
+/* ---- Cesium full screen ---- */
+#cesiumContainer {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
 }
 
-#distanceDisplay {
-    margin-bottom: 5px;
-}
+.cesium-selection-wrapper { display: none !important; }
 
-#clearButton {
-    margin-right: 10px;
-}
-
-#fileSelection {
-    position: absolute;
-    bottom: 100px;
-    left: 10px;
-    z-index: 1;
-    background-color: rgba(255, 255, 255, 0.8);
-    padding: 10px;
-    border-radius: 50px;
-}
-
-#logoContainer {
-    position: absolute;
-    bottom: 20px;
-    right: 10px;
-    z-index: 1;
-}
-
-#logoContainer img {
-    width: 200px;
-}
-
-#legendContainer {
-    width: auto;
-    float: left;
-    padding: 5px;
-    position: absolute;
-    bottom: 70pxpx;
-    background-color: rgba(255, 255, 255, 0.8);
-    border-radius: 5px;
-}
-
-#auxLegendContainer {
-    width: auto;
-    float: left;
-    padding: 5px;
-    position: absolute;
-    bottom: 60px;
-    background-color: rgba(255, 255, 255, 0.8);
-    border-radius: 5px;
-}
-
-.legendItem {
-    margin-bottom: 10px;
-    display: inline-block;
-    margin-right: 20px;
-}
-
-.legendColor {
-    width: 20px;
-    height: 20px;
-    display: inline-block;
-    margin-right: 5px;
-}
-
-.checkboxRow {
-    display: flex;
-    flex-wrap: wrap;
-}
-
-.checkboxRow label {
-    margin-right: 10px;
-}
-
-
-#toggleButton {
-    position: absolute;
-    font-size: 9;
-    top: 10px;
-    left: 10px;
-    z-index: 100;
-    padding: 5px;
-    background-color: #004F59;
-    color: white;
-    border-radius: 15px;
-    cursor: pointer;
-}
-
-#controlContainer {
-    position: absolute;
-    top: 50px;
-    left: 10px;
-    z-index: 100;
-    padding: 10px;
-    background-color: #ffffff;
-    border: 1px solid #cccccc;
-    border-radius: 5px;
-    cursor: pointer;
-    display: none;
-}
-
-#controlContainer {
-    background-color: rgba(255, 255, 255, 0.7);
-    z-index: 1000;
-}
-
-#toggleGlobeContainer,
-#toggleSubductionInterface,
-#eqcontrols,
-#toggleTerrainOcclusion {
-    margin-bottom: 10px;
-}
-
-#eqcontrols {
-    background-color: transparent;
-}
-
-.sliderContainer {
-    margin-bottom: 10px;
-}
-
-.sliderLabel {
-    margin-right: 10px;
-}
-
-label {
-    margin-right: 10px;
-}
-
+/* ---- North arrow ---- */
 #northArrow {
-    position: absolute;
+    position: fixed;
     top: 50px;
     right: 75px;
     width: 50px;
@@ -157,26 +34,483 @@ label {
     background-size: contain;
     pointer-events: none;
     z-index: 10000;
-    /* Prevent the arrow from interfering with map interaction */
 }
 
-#toggleSubductionInterface label {
-    vertical-align: top;
-    margin-right: 10px;
-    /* Optional: Adjust the space between label and select box */
+/* ===================== TOGGLE BUTTON ===================== */
+#toggleButton {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 1100;
+
+    padding: 7px 14px;
+    background: rgba(11, 74, 83, 0.88);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    cursor: pointer;
+
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+    transition: background 0.2s ease;
 }
 
+#toggleButton:hover {
+    background: rgba(11, 74, 83, 1);
+}
+
+/* ===================== FLOATING GLASS SIDEBAR ===================== */
+#controlContainer {
+    position: fixed;
+    top: 50px;
+    left: 12px;
+    z-index: 1000;
+
+    width: 290px !important;
+    max-height: calc(100vh - 70px) !important;
+    overflow-y: auto !important;
+    scrollbar-width: none !important;
+    padding: 10px 12px 12px;
+
+    background: #ffffff;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 18px;
+    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.18), 0 2px 10px rgba(0, 0, 0, 0.08);
+
+    display: none; /* JS-controlled */
+    cursor: default;
+    font-size: 12px;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: #334155;
+}
+
+#controlContainer::-webkit-scrollbar { display: none; }
+
+/* Panel title */
+#controlContainer center b {
+    font-size: 13px;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+}
+
+#controlContainer hr {
+    border: none;
+    border-top: 1px solid #e2e8f0;
+    margin: 6px 0;
+}
+
+/* Scoped label — don't bleed into Cesium */
+#controlContainer label {
+    font-size: 12px;
+    font-weight: 500;
+    color: #334155;
+    cursor: pointer;
+    margin-right: 0;
+}
+
+/* Checkbox rows */
+#toggleGlobeContainer,
+#toggleCFMInterface,
+#toggleBoundaryInterface {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px 10px;
+    margin-bottom: 4px;
+}
+
+/* ---- High-res fault card ---- */
+#highResFaultContainer {
+    margin-top: 6px;
+    margin-bottom: 6px;
+    padding: 8px 10px;
+    border: 1px solid rgba(11, 74, 83, 0.18);
+    border-radius: 12px;
+    background: rgba(11, 74, 83, 0.06);
+}
+
+#highResFaultContainer .hrf-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: #0b4a53;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+#highResFaultContainer .hrf-subtitle {
+    font-size: 11px;
+    color: #64748b;
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+
+#selectHighResFaults {
+    width: 100%;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    padding: 4px;
+    font-size: 12px;
+    background: white;
+    color: #334155;
+}
+
+#loadHighResBtn,
+#resetHighResBtn {
+    width: 100%;
+    margin-top: 6px;
+    padding: 6px;
+    border-radius: 8px;
+    border: none;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.18s ease;
+}
+
+#loadHighResBtn {
+    background: #0b4a53;
+    color: white;
+}
+#loadHighResBtn:hover { background: #083b42; }
+
+#resetHighResBtn {
+    background: transparent;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+}
+#resetHighResBtn:hover {
+    background: #f1f5f9;
+    border-color: #94a3b8;
+    color: #334155;
+}
+
+#highResStatus {
+    font-size: 11px;
+    color: #0b4a53;
+    font-weight: 600;
+    margin-top: 6px;
+}
+
+/* ---- 2D Surfaces section ---- */
+#toggleSubductionInterface {
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+
+#toggleSubductionInterface .surf-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #475569;
+    margin: 6px 0 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    display: block;
+}
+
+#select2dSurface {
+    width: 100%;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    padding: 4px;
+    font-size: 12px;
+    background: white;
+    color: #334155;
+}
+
+/* ---- EQ controls ---- */
+#eqcontrols {
+    margin-top: 6px;
+    margin-bottom: 6px;
+    background: transparent;
+}
+
+/* ---- Sliders ---- */
+.sliderContainer {
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.sliderLabel {
+    font-size: 11px;
+    color: #64748b;
+    margin-right: 0;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+}
+
+input[type="range"],
+input[type="checkbox"] {
+    accent-color: #0b4a53;
+}
+
+/* noUiSlider-style range inputs */
+input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 4px;
+    border-radius: 3px;
+    background: #0b4a53;
+    outline: none;
+    cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+    height: 4px;
+    border-radius: 3px;
+    background: #0b4a53;
+}
+
+input[type="range"]::-moz-range-track {
+    height: 4px;
+    border-radius: 3px;
+    background: #0b4a53;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 2px solid #0b4a53;
+    cursor: pointer;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+    margin-top: -5.5px;
+}
+
+input[type="range"]::-moz-range-thumb {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 2px solid #0b4a53;
+    cursor: pointer;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+}
+
+/* ---- Camera / view button row ---- */
+#viewButtonsRow {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 4px;
+    margin-top: 4px;
+}
+
+#viewButtonsRow label {
+    font-size: 11px;
+    color: #64748b;
+    flex-shrink: 0;
+}
+
+#centerViewButton,
+#homeViewButton {
+    padding: 4px 8px;
+    border-radius: 7px;
+    border: 1px solid rgba(11, 74, 83, 0.22);
+    background: rgba(11, 74, 83, 0.07);
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    color: #0b4a53;
+    font-family: 'Inter', -apple-system, sans-serif;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: all 0.15s ease;
+}
+
+#centerViewButton:hover,
+#homeViewButton:hover {
+    background: #0b4a53;
+    color: white;
+    border-color: #0b4a53;
+}
+
+#centerCoordinates {
+    flex: 1;
+    min-width: 0;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    padding: 4px 5px;
+    font-size: 11px;
+    color: #334155;
+    background: white;
+}
+
+
+/* CVM dropdown */
+#data-file {
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 4px 8px;
+    font-size: 12px;
+    color: #334155;
+    background: white;
+}
+
+/* Blue divider for CVM section */
+#controlContainer hr[style*="0000FF"],
+#controlContainer > div > hr {
+    border-color: rgba(11, 74, 83, 0.3) !important;
+}
+
+/* ===================== 2D SURFACE LEGEND (bottom-right, above logo) ===================== */
 #legend {
-
-    position: absolute;
-    top: 150px;
-    right: 10px;
-    width: 150px;
-    height: 150px;
-    color: gray;
-    background-color: rgba(0, 0, 0, 0.5);
-    padding: 10px;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+    position: fixed;
+    bottom: 72px;     /* sits above the CRESCENT logo */
+    right: 12px;
     z-index: 10000;
+
+    min-width: 160px;
+    max-width: 230px;
+    width: auto;
+    height: auto;
+
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 14px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    padding: 8px 12px;
+
+    color: #334155;
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+/* Hide entirely when nothing selected */
+#legend:empty {
+    display: none;
+}
+
+/* ===================== BOTTOM COLOR LEGEND ===================== */
+#mapControls {
+    pointer-events: none;
+}
+
+/* Hide the "Color Legend:" text label */
+#legendLabel {
+    display: none;
+}
+
+#legendContainer {
+    position: fixed;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    pointer-events: auto;
+    z-index: 500;
+
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 3px 12px;
+
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(0, 0, 0, 0.07);
+    border-radius: 100px;
+    padding: 6px 16px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
+
+    max-width: 90vw;
+}
+
+/* Legend item row */
+.legendItem {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 500;
+    color: #475569;
+    white-space: nowrap;
+    /* override JS-injected inline margins */
+    margin: 0 !important;
+}
+
+/* Color swatch */
+.legendColor {
+    width: 11px !important;
+    height: 11px !important;
+    border-radius: 3px;
+    flex-shrink: 0;
+    display: inline-block !important;
+    margin-right: 0 !important;
+}
+
+/* Separator between primary and aux legend groups */
+.legend-sep {
+    width: 1px;
+    height: 16px;
+    background: #e2e8f0;
+    flex-shrink: 0;
+}
+
+/* ===================== LOGO ===================== */
+#logoContainer {
+    position: fixed;
+    bottom: 10px;
+    right: 12px;
+    z-index: 200;
+    pointer-events: none;
+}
+
+#logoContainer img {
+    width: 160px;
+    opacity: 0.90;
+}
+
+/* ===================== DISTANCE MEASUREMENT ===================== */
+#distanceControl {
+    position: fixed;
+    bottom: 50px;
+    left: 12px;
+    z-index: 200;
+    pointer-events: auto;
+
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
+    padding: 8px 12px;
+    font-size: 12px;
+    color: #334155;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+#distanceDisplay {
+    margin-top: 4px;
+    font-size: 11px;
+    color: #64748b;
+}
+
+#clearButton {
+    margin-right: 6px;
+}
+
+/* ===================== MISC ===================== */
+.checkboxRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 10px;
 }

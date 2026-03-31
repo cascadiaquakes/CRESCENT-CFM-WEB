@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CFM 3D Viewer</title>
     <link rel="icon" href="/static/favicon.ico" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/view3d.css">
     <script src="https://cesium.com/downloads/cesiumjs/releases/1.116/Build/Cesium/Cesium.js"></script>
     <script>
@@ -68,13 +71,6 @@
     </script>
     <style>
         @import url(https://cesium.com/downloads/cesiumjs/releases/1.116/Build/Cesium/Widgets/widgets.css);
-
-        #controlContainer {
-            max-height: 70vh;
-            overflow-y: auto;
-            scrollbar-width: thin;
-            width: 310px;
-        }
     </style>
 </head>
 
@@ -104,13 +100,13 @@
             </label>
         </div>
 
-        <div id="highResFaultContainer" style="margin-top: 15px; margin-bottom: 15px; padding: 10px; border: 1px solid #777; border-radius: 4px; background: rgba(0,0,0,0.4);">
-            <div style="font-weight:bold; margin-bottom: 5px; color: white;">Load High-Res Faults:</div>
-            <div style="font-size: 0.85em; margin-bottom: 8px; color: #ddd;">Select faults to view in full 3D resolution (max ~10 recommended).</div>
-            <select id="selectHighResFaults" multiple size="6" style="width: 100%; color: black; background: white;"></select>
-            <button id="loadHighResBtn" style="width: 100%; margin-top: 8px; padding: 4px; cursor: pointer; color: black;">Load Selected High-Res</button>
-            <button id="resetHighResBtn" style="width: 100%; margin-top: 4px; padding: 4px; cursor: pointer; color: black; background: #ffcccc;">Reset High-Res</button>
-            <div id="highResStatus" style="font-size: 0.85em; margin-top: 6px; color: #ffcc00; font-weight: bold;"></div>
+        <div id="highResFaultContainer">
+            <div class="hrf-title">Load High-Res Faults:</div>
+            <div class="hrf-subtitle">Select faults to view in full 3D resolution (max ~10 recommended).</div>
+            <select id="selectHighResFaults" multiple size="4"></select>
+            <button id="loadHighResBtn">Load Selected High-Res</button>
+            <button id="resetHighResBtn">Reset High-Res</button>
+            <div id="highResStatus"></div>
         </div>
         <div id="toggleSubductionInterface">
             <!-- Visible checkbox with label -->
@@ -118,8 +114,8 @@
                 <input type="checkbox" id="toggle2dSurfaceCheckbox">
                 <label for="toggle2dSurfaceCheckbox">2D Surfaces</label>
             </div>
-            <div style="font-weight:bold;padding-top: 10px;">Select 2D Surfaces:</div>
-            <select id="select2dSurface" multiple size="5"></select>
+            <span class="surf-label">Select 2D Surfaces:</span>
+            <select id="select2dSurface" multiple size="3"></select>
         </div>
 
         <div id="eqcontrols">
@@ -135,9 +131,9 @@
             </label>
         </div>
         <!-- Centered View Button -->
-        <div>
-            <button id="centerViewButton">Centered view</button>&nbsp;<label for="centerCoordinates">@</label><input
-                type="text" id="centerCoordinates" style="width:70px;" value="-123.0,45.5" />
+        <div id="viewButtonsRow">
+            <button id="centerViewButton">Centered view</button>
+            <label for="centerCoordinates">@</label><input type="text" id="centerCoordinates" value="-123.0,45.5" />
             <button id="homeViewButton">Tilted view</button>
         </div>
 
@@ -864,6 +860,11 @@
             legendContainer.appendChild(legendItem);
         });
 
+        // Separator between primary and aux groups
+        var sep = document.createElement('div');
+        sep.classList.add('legend-sep');
+        legendContainer.appendChild(sep);
+
         // Auxiliary legends.
         auxLegendColor.forEach(function (color, i) {
             var legendItem = document.createElement('div');
@@ -1174,12 +1175,12 @@ setTimeout(() => {
         const selectedOptions = Array.from(selectBox.selectedOptions);
         if (selectedOptions.length === 0) {
             statusDiv.innerText = "Please select at least one fault.";
-            statusDiv.style.color = "#ff4444";
+            statusDiv.style.color = "#dc2626";
             return;
         }
         if (selectedOptions.length > 10) {
             statusDiv.innerText = "Max 10 faults. You selected " + selectedOptions.length + ".";
-            statusDiv.style.color = "#ff4444";
+            statusDiv.style.color = "#dc2626";
             return;
         }
 
@@ -1195,7 +1196,7 @@ setTimeout(() => {
         for (let key in hiddenLowResEntities) delete hiddenLowResEntities[key];
 
         statusDiv.innerText = 'Loading ' + selectedOptions.length + ' high-res fault(s)...';
-        statusDiv.style.color = "#ffcc00";
+        statusDiv.style.color = "#0b4a53";
 
         let ds = findCfmSurfacesDS();
 
@@ -1229,7 +1230,7 @@ setTimeout(() => {
             }
         }
         statusDiv.innerText = "High-res faults loaded!";
-        statusDiv.style.color = "#00ff00";
+        statusDiv.style.color = "#0b4a53";
     });
 
     document.getElementById('resetHighResBtn').addEventListener('click', () => {
@@ -1245,10 +1246,14 @@ setTimeout(() => {
         for (let key in hiddenLowResEntities) delete hiddenLowResEntities[key];
         document.getElementById('selectHighResFaults').selectedIndex = -1;
         statusDiv.innerText = "Reset complete. Showing low-res.";
-        statusDiv.style.color = "#ffcc00";
+        statusDiv.style.color = "#64748b";
     });
 }, 2000);
 
+    // Prevent panel scroll from bleeding into Cesium (which would pan/zoom the globe)
+    document.getElementById('controlContainer').addEventListener('wheel', function (e) {
+        e.stopPropagation();
+    }, { passive: false });
 
     </script>
 </body>
