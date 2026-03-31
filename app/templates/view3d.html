@@ -79,6 +79,8 @@
     <div id="cesiumContainer"></div>
     <div id="legend"></div>
     <div id="toggleButton"><span style="color: red;">&#9660;&nbsp;</span>Show/Hide Controls</div>
+    <!-- Scrollable wrapper for both cards -->
+    <div id="cardWrapper">
     <!-- Card 1: Layers & View -->
     <div id="controlContainer">
         <center><b>CFM 3D Viewer</b></center>
@@ -187,6 +189,7 @@
         <label><input type="checkbox" id="clearCheckbox"> <b>Measure Distance</b></label>
         <div id="distanceDisplay">Click distances will appear here</div>
     </div>
+    </div><!-- end #cardWrapper -->
 
     <div id="mapControls">
         <div id="logoContainer">
@@ -714,30 +717,15 @@
 
 
         // Hide/open the menu button — shows both cards
-        function positionCard2() {
-            var c1 = document.getElementById('controlContainer');
-            var c2 = document.getElementById('controlContainer2');
-            var rect = c1.getBoundingClientRect();
-            var topPos = rect.bottom + 8;
-            c2.style.top = topPos + 'px';
-            // Constrain card 2 so it never extends off-screen
-            c2.style.maxHeight = Math.max(120, window.innerHeight - topPos - 16) + 'px';
-        }
-
         document.getElementById('toggleButton').addEventListener('click', function () {
-            var controlContainer = document.getElementById('controlContainer');
-            var controlContainer2 = document.getElementById('controlContainer2');
+            var wrapper = document.getElementById('cardWrapper');
             var toggleButton = document.getElementById('toggleButton');
-            const isHidden = window.getComputedStyle(controlContainer).display === 'none';
+            const isHidden = window.getComputedStyle(wrapper).display === 'none';
             if (isHidden) {
-                controlContainer.style.display = 'block';
-                controlContainer2.style.display = 'block';
+                wrapper.style.display = 'block';
                 toggleButton.innerHTML = '▲ Show/Hide Controls';
-                // position card 2 after card 1 renders
-                requestAnimationFrame(positionCard2);
             } else {
-                controlContainer.style.display = 'none';
-                controlContainer2.style.display = 'none';
+                wrapper.style.display = 'none';
                 toggleButton.innerHTML = '▼ Show/Hide Controls';
             }
         });
@@ -1363,10 +1351,8 @@ setTimeout(() => {
     });
 
     // Prevent panel scroll from bleeding into Cesium
-    ['controlContainer', 'controlContainer2'].forEach(function(id) {
-        var el = document.getElementById(id);
-        if (el) el.addEventListener('wheel', function(e) { e.stopPropagation(); }, { passive: false });
-    });
+    var wrapper = document.getElementById('cardWrapper');
+    if (wrapper) wrapper.addEventListener('wheel', function(e) { e.stopPropagation(); }, { passive: false });
 
     // Legend toggle button
     (function() {
