@@ -1,95 +1,144 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CFM Web</title>
-    <link rel="icon" href="/static/favicon.ico" type="image/png">
+    <link rel="icon" href="/static/favicon.ico" type="image/png" />
     <link rel="stylesheet" href="/static/css/cfm.css" />
     <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
-        gtag('js', new Date());
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
 
-        gtag('config', 'G-ZWF5S15WXK');
+      gtag("config", "G-ZWF5S15WXK");
     </script>
     <!-- Microsoft Clarity -->
     <script type="text/javascript">
-        (function (c, l, a, r, i, t, y) {
-            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
-            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
-            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
-        })(window, document, "clarity", "script", "tlk27i58yf");
+      (function (c, l, a, r, i, t, y) {
+        c[a] =
+          c[a] ||
+          function () {
+            (c[a].q = c[a].q || []).push(arguments);
+          };
+        t = l.createElement(r);
+        t.async = 1;
+        t.src = "https://www.clarity.ms/tag/" + i;
+        y = l.getElementsByTagName(r)[0];
+        y.parentNode.insertBefore(t, y);
+      })(window, document, "clarity", "script", "tlk27i58yf");
     </script>
     {% block style %}{% endblock %}
-</head>
+  </head>
 
-<body>
-
+  <body>
     <div class="container">
-        <div class="top-banner">
-            <div class="logo-container">
-                <a href="https://cascadiaquakes.org/" target="_blank" style="text-decoration: none;">
-                    <img src="/static/images/IMG_6459_NSF.png" alt="Logo" width="250px">
-                </a>
-                <a href="https://cascadiaquakes.org/cfm/" target="_blank" style="text-decoration: none;">
-                    <div class="working-group-name">&nbsp;&nbsp;Community Fault Model (CFM)</div>
-                </a>
+      <div class="top-banner">
+        <div class="logo-container">
+          <a
+            href="https://cascadiaquakes.org/"
+            target="_blank"
+            style="text-decoration: none"
+          >
+            <img
+              src="/static/images/IMG_6459_NSF.png"
+              alt="Logo"
+              width="250px"
+            />
+          </a>
+          <a
+            href="https://cascadiaquakes.org/cfm/"
+            target="_blank"
+            style="text-decoration: none"
+          >
+            <div class="working-group-name">
+              &nbsp;&nbsp;Community Fault Model (CFM)
             </div>
-            <nav class="navbar">
-                <ul class="nav-menu">
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">Visualization<span class="chevron">&#9660;</span></a>
-                        <ul class="dropdown">
-                            <li><a href="/">Repository</a></li>
-                            <li><a href="/3d" target=" 3Dviewer">3D Viewer</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">Data<span class="chevron">&#9660;</span></a>
-                        <ul class="dropdown">
-                            <li><a href="/downloads">Download Models</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">More<span class="chevron">&#9660;</span></a>
-                        <ul class="dropdown">
-                            <li><a href="/news">CFM-Web News</a></li>
-                            <li><a href="/request">Contact US</a></li>
-                            <li class="nav-item">
-                                <a href="#" class="nav-link">About<span class="chevron">&#9660;</span></a>
-                                <ul class="dropdown">
-                                    <li><a href="https://cascadiaquakes.org/about-crescent/"
-                                            target="_blank">CRESCENT</a></li>
-                                    <li><a href="https://cascadiaquakes.org/cfm/" target="_blank">CFM</a></li>
-                                    <li><a href="https://cascadiaquakes.org/cvm/" target="_blank">CVM</a></li>
-                                </ul>
-                            </li>
-
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a href="/guide" class="nav-link">Guide<span class="chevron">&#9660;</span></a>
-
-                    </li>
-                </ul>
-            </nav>
+          </a>
         </div>
-        <div class="description">
-            {% block description %}{% endblock %}
-        </div>
-        <div class="filter">
-            {% block filter %}{% endblock %}
-        </div>
-        <div class="left-right">
-            {% block leftpanel%}{% endblock %} {% block rightpanel%}{% endblock %} </div>
-        <div class="footer">
-            <!-- Footer content -->
-        </div>
-        {% block scripts %}{% endblock %}
+        <nav class="navbar">
+          <ul class="nav-menu">
+            <li class="nav-item">
+              <a href="#" class="nav-link"
+                >Visualization<span class="chevron">&#9660;</span></a
+              >
+              <ul class="dropdown">
+                <li><a href="/">Repository</a></li>
+                <li><a href="/3d" target=" 3Dviewer">3D Viewer</a></li>
+              </ul>
+            </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link"
+                >Data<span class="chevron">&#9660;</span></a
+              >
+              <ul class="dropdown">
+                <li><a href="/downloads">Download Models</a></li>
+              </ul>
+            </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link"
+                >More<span class="chevron">&#9660;</span></a
+              >
+              <ul class="dropdown">
+                <li><a href="/news">CFM-Web News</a></li>
+                <li><a href="/request">Contact US</a></li>
+                <li class="nav-item">
+                  <a href="#" class="nav-link"
+                    >About<span class="chevron">&#9660;</span></a
+                  >
+                  <ul class="dropdown">
+                    <li>
+                      <a
+                        href="https://cascadiaquakes.org/about-crescent/"
+                        target="_blank"
+                        >CRESCENT</a
+                      >
+                    </li>
+                    <li>
+                      <a href="https://cascadiaquakes.org/cfm/" target="_blank"
+                        >CFM</a
+                      >
+                    </li>
+                    <li>
+                      <a href="https://cascadiaquakes.org/cvm/" target="_blank"
+                        >CVM</a
+                      >
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+            <li class="nav-item">
+              <a href="/guide" class="nav-link"
+                >Guide<span class="chevron">&#9660;</span></a
+              >
+            </li>
+          </ul>
+        </nav>
+      </div>
+      <div class="description">{% block description %}{% endblock %}</div>
+      <div class="filter">{% block filter %}{% endblock %}</div>
+      <div class="left-right">
+        {% block leftpanel%}{% endblock %} {% block rightpanel%}{% endblock %}
+      </div>
+      <div class="footer">
+        <p>
+          <sup>1</sup> U.S. Geological Survey, FDSN Event Web Service,
+          <a href="https://earthquake.usgs.gov/fdsnws/event/1/"
+            >https://earthquake.usgs.gov/fdsnws/event/1/</a
+          >
+        </p>
+        <p>
+          <sup>2</sup> U.S. Geological Survey, Quaternary Fault and Fold
+          Database of the United States,
+          <a href="https://earthquake.usgs.gov/cfusion/qfault/query_main_AB.cfm"
+            >https://earthquake.usgs.gov/cfusion/qfault/query_main_AB.cfm</a
+          >
+        </p>
+      </div>
+      {% block scripts %}{% endblock %}
     </div>
-
-</body>
-
+  </body>
 </html>

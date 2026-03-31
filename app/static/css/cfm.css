@@ -212,3 +212,16 @@ option {
     margin-right: 10px;
     /* Optional: Adjust the space between label and select box */
 }
+
+.footer {
+    text-align: left;
+  }
+  
+  .footer a,
+  .footer a:visited,
+  .footer a:hover,
+  .footer a:active {
+    color: white;
+    text-decoration: none; /* optional – removes underline */
+  }
+  

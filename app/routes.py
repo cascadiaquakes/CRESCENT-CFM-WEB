@@ -1,7 +1,8 @@
 import os
-import boto3
+import httpx
+from fastapi import FastAPI, HTTPException
+from fastapi.responses import Response
 
-from fastapi import HTTPException
 from fastapi.responses import HTMLResponse, JSONResponse, FileResponse
 
 from fastapi import APIRouter, Request, Form, Query
@@ -144,6 +145,29 @@ async def get_cesium_key(request: Request):
         CESIUM_KEYS = json.loads(os.getenv("CESIUM_KEYS"))
         access_token = CESIUM_KEYS["cesium_access_token"]
         return {"token": access_token}
+
+
+CSV_URL = "https://raw.githubusercontent.com/cascadiaquakes/crescent-cfm/main/misc_data/metadata/cfm_metadata.csv"
+
+
+@router.get("/download/cfm-metadata")
+async def download_cfm_metadata():
+    async with httpx.AsyncClient(follow_redirects=True, timeout=30) as client:
+        r = await client.get(CSV_URL)
+    if r.status_code != 200:
+        raise HTTPException(
+            status_code=502, detail=f"Upstream returned {r.status_code}"
+        )
+
+    return Response(
+        content=r.content,
+        media_type="text/csv; charset=utf-8",
+        headers={
+            "Content-Disposition": 'attachment; filename="cfm_metadata.csv"',
+            # optional but nice:
+            "Cache-Control": "public, max-age=3600",
+        },
+    )
 
 
 # Route to serve favicon

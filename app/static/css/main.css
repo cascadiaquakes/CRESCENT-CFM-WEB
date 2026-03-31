@@ -63,36 +63,6 @@ input[type="range"] {
     margin-right: 5px;
 }
 
-#view3DButton {
-    background-color: #004F59;
-    color: white;
-    width: 20%;
-    padding: 5px;
-    border-radius: 12px;
-    margin: 4px 2px;
-    text-align: center;
-}
-
-#fullScreenButton {
-    background-color: #004F59;
-    color: white;
-    width: 30%;
-    padding: 5px;
-    border-radius: 12px;
-    margin: 4px 2px;
-    text-align: center;
-}
-
-#toggleControlsVisibility {
-    background-color: #004F59;
-    color: white;
-    width: 20%;
-    padding: 5px;
-    border-radius: 12px;
-    margin: 4px 2px;
-    text-align: center;
-}
-
 .slider-group {
     display: grid;
     grid-template-columns: auto auto 1fr 1fr auto;
@@ -260,3 +230,74 @@ tbody tr:hover {
     border: 1px solid #c9a800;
     /* slightly darker yellow stroke */
 }
+
+/* Hide the camera icon in the Cesium infoBox header */
+.cesium-infoBox-camera {
+    display: none !important;
+}
+
+/* Shared button styling */
+.cfm-button {
+    appearance: none;
+    -webkit-appearance: none;
+  
+    background-color: #004F59;
+    color: #ffffff;
+    border: 2px solid rgba(0, 31, 35, 0.85);
+  
+    /* 🔹 tighter sizing */
+    font-size: 12px;
+    font-weight: 600;
+    padding: 5px 10px;     /* narrower & shorter */
+    border-radius: 999px;  /* pill shape */
+    letter-spacing: 0.15px;
+  
+    cursor: pointer;
+    user-select: none;
+  
+    /* active feel */
+    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.25);
+    transform: translateY(0);
+  
+    transition:
+      transform 120ms ease,
+      box-shadow 120ms ease,
+      background-color 120ms ease,
+      filter 120ms ease;
+  }
+  
+  /* Hover */
+  .cfm-button:hover {
+    background-color: #006775;
+    filter: brightness(1.05);
+  }
+  
+  /* Click press */
+  .cfm-button:active {
+    transform: translateY(1px);
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.25);
+  }
+  
+  /* Keyboard focus */
+  .cfm-button:focus-visible {
+    outline: none;
+    box-shadow:
+      0 0 0 2px rgba(255, 255, 255, 0.6),
+      0 0 0 4px rgba(0, 79, 89, 0.6),
+      0 2px 0 rgba(0, 0, 0, 0.25);
+  }
+  
+  /* Disabled */
+  .cfm-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+    transform: none;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Icon spacing */
+  .cfm-button i {
+    margin-right: 6px;
+    font-size: 11px;
+  }
+  

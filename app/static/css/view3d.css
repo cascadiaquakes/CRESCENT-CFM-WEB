@@ -180,3 +180,8 @@ label {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
     z-index: 10000;
 }
+
+/* Hide the camera icon in the Cesium infoBox header */
+.cesium-infoBox-camera {
+    display: none !important;
+}
