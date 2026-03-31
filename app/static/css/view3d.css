@@ -93,9 +93,9 @@ html, body {
 
 #controlContainer::-webkit-scrollbar { display: none; }
 
-/* Panel title */
+/* Panel title — larger than section headers */
 #controlContainer center b {
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 700;
     color: #64748b;
     text-transform: uppercase;
@@ -104,17 +104,43 @@ html, body {
 
 #controlContainer hr {
     border: none;
-    border-top: 1px solid #e2e8f0;
+    border-top: 1px solid #f1f5f9;
     margin: 6px 0;
 }
 
-/* Scoped label — don't bleed into Cesium */
+/* Scoped label — matches eq viewer checkbox labels */
 #controlContainer label {
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 500;
-    color: #334155;
+    color: #1e293b;
     cursor: pointer;
     margin-right: 0;
+}
+
+/* Sub-section headings (CVM:, Latitude:, etc.) */
+#controlContainer b {
+    font-size: 11px;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Section labels that are uppercase (Load High-Res, Select 2D Surfaces) */
+.hrf-title,
+.surf-label {
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    color: #64748b !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+}
+
+/* Slider value readout numbers */
+#controlContainer span {
+    font-size: 11px;
+    color: #64748b;
+    font-weight: 500;
 }
 
 /* Checkbox rows */
@@ -161,6 +187,12 @@ html, body {
     font-size: 12px;
     background: white;
     color: #334155;
+}
+
+#selectHighResFaults option:checked,
+#select2dSurface option:checked {
+    background: #e2eef0;
+    color: #0b4a53;
 }
 
 #loadHighResBtn,
@@ -432,6 +464,70 @@ input[type="range"]::-moz-range-thumb {
     box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
 
     max-width: 90vw;
+
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+}
+
+#legendContainer.is-closed {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateX(-50%) translateY(16px);
+}
+
+#legendContainer.is-open {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* ===================== LEGEND TOGGLE BUTTON ===================== */
+.btn-legend-toggle {
+    position: fixed;
+    right: 15px;
+    bottom: 130px;
+    z-index: 99999;
+    pointer-events: auto;
+
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    border-radius: 12px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(255, 255, 255, 0.92);
+    color: #0b4a53;
+    border: 1px solid rgba(11, 74, 83, 0.2);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+    transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease;
+}
+
+.btn-legend-toggle svg {
+    width: 16px;
+    height: 16px;
+    display: block;
+    fill: currentColor;
+    pointer-events: none;
+}
+
+.btn-legend-toggle:hover {
+    background: rgba(255, 255, 255, 0.98);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+}
+
+.btn-legend-toggle.is-active {
+    background: linear-gradient(135deg, #0e7490 0%, #0b4a53 100%);
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.25);
 }
 
 /* Legend item row */

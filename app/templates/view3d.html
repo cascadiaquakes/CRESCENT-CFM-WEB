@@ -142,7 +142,7 @@
             <hr style="border-top: 1px solid #0000FF" />
         </div>
         <div>
-            <label for="data-file" style="font-weight: bold;">CVM:</label>
+            <b>CVM:</b>
             <select id="data-file" name="data_file"></select>
         </div>
         <div>&nbsp;</div>
@@ -181,7 +181,7 @@
             <span id="maxDepthValue">93</span>
         </div>
         <div class="sliderContainer">
-            <label class="sliderLabel" style="font-weight: bold;">Opacity Control: <input type="range" id="alphaSlider"
+            <label class="sliderLabel">Opacity: <input type="range" id="alphaSlider"
                     min="0" max="1" step="0.1" value="0.3"></label>
             <span id="alphaValue">0.3</span>
         </div>
@@ -191,8 +191,16 @@
         <div id="logoContainer">
             <img src="" alt="Logo" id="logo-image">
         </div>
+        <button class="btn-legend-toggle" id="toggle-legend" type="button" title="Toggle legend" aria-label="Toggle legend">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <rect x="4" y="4" width="7" height="7" rx="1.6"></rect>
+                <rect x="13" y="4" width="7" height="7" rx="1.6"></rect>
+                <rect x="4" y="13" width="7" height="7" rx="1.6"></rect>
+                <rect x="13" y="13" width="7" height="7" rx="1.6"></rect>
+            </svg>
+        </button>
         <div id="legendLabel" style="font-weight: bold; font-style: italic;padding-top: 40px;">Color Legend:</div>
-        <div id="legendContainer"></div>
+        <div id="legendContainer" class="is-open"></div>
         <div id="distanceControl">
             <label><input type="checkbox" id="clearCheckbox"> Measure Distance</label>
             <div id="distanceDisplay">Click distances will appear here</div>
@@ -591,6 +599,11 @@
         // Set background color to black
         viewer.scene.backgroundColor = Cesium.Color.BLACK;
 
+        // Allow the infoBox iframe to run scripts so the Load High-Res button can call parent
+        viewer.infoBox.frame.setAttribute('sandbox',
+            'allow-same-origin allow-scripts allow-popups allow-forms');
+        viewer.infoBox.frame.src = 'about:blank';
+
         // The north arrow.
         function updateNorthArrow() {
             var heading = Cesium.Math.toDegrees(viewer.camera.heading);
@@ -601,6 +614,80 @@
 
         // Bind updateNorthArrow to the postRender event
         viewer.scene.postRender.addEventListener(updateNorthArrow);
+
+        // ---- High-res button in the infoBox popup ----
+        // Expose a global so the button inside the infoBox iframe can call back out
+        window.loadHighResFromPopup = async function (faultId) {
+            faultId = String(faultId);
+            const statusDiv = document.getElementById('highResStatus');
+
+            // If already loaded, do nothing
+            if (loadedHighResFaults[faultId]) {
+                statusDiv.innerText = 'Already loaded.';
+                statusDiv.style.color = '#64748b';
+                return;
+            }
+
+            statusDiv.innerText = 'Loading high-res...';
+            statusDiv.style.color = '#0b4a53';
+
+            // Hide low-res entities for this fault
+            let ds = findCfmSurfacesDS();
+            if (ds) {
+                ds.entities.values.forEach(entity => {
+                    if (entity.properties && entity.properties.CFM_ID) {
+                        let eId = String(typeof entity.properties.CFM_ID.getValue === 'function'
+                            ? entity.properties.CFM_ID.getValue() : entity.properties.CFM_ID);
+                        if (eId === faultId) {
+                            entity.show = false;
+                            if (!hiddenLowResEntities[faultId]) hiddenLowResEntities[faultId] = [];
+                            hiddenLowResEntities[faultId].push(entity);
+                        }
+                    }
+                });
+            }
+
+            try {
+                let hiresUrl = githubBaseUrl + 'hires_faults/' + faultId + '_hires.geojson';
+                let dataSource = await Cesium.GeoJsonDataSource.load(hiresUrl, {
+                    stroke: Cesium.Color.CYAN,
+                    fill: Cesium.Color.CYAN.withAlpha(0.5),
+                    strokeWidth: 3
+                });
+                viewer.dataSources.add(dataSource);
+                loadedHighResFaults[faultId] = dataSource;
+                statusDiv.innerText = 'High-res faults loaded!';
+                statusDiv.style.color = '#0b4a53';
+            } catch (err) {
+                statusDiv.innerText = 'Failed to load high-res.';
+                statusDiv.style.color = '#dc2626';
+                console.error('High-res load error:', err);
+            }
+        };
+
+        // Append a Load High-Res button to the infoBox description whenever a CFM surface is selected
+        viewer.selectedEntityChanged.addEventListener(function (entity) {
+            if (!entity || !entity.properties) return;
+            let cfmId = entity.properties.CFM_ID;
+            if (!cfmId) return;
+            let id = String(typeof cfmId.getValue === 'function' ? cfmId.getValue() : cfmId);
+            if (!id) return;
+
+            // Append button only once per entity
+            let base = entity.description ? entity.description.getValue() : '';
+            if (base.indexOf('loadHighResFromPopup') !== -1) return;
+            entity.description =
+                base +
+                '<hr style="border:none;border-top:1px solid #e2e8f0;margin:10px 0">' +
+                '<button onclick="parent.loadHighResFromPopup(\'' + id + '\')" ' +
+                'style="' +
+                  'background:#0b4a53;color:#fff;border:none;border-radius:8px;' +
+                  'padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;' +
+                  'font-family:Inter,sans-serif;width:100%;margin-top:4px;' +
+                '">' +
+                '&#9652; Load High-Res (ID: ' + id + ')' +
+                '</button>';
+        });
 
         // Centered view button functionality
         document.getElementById('centerViewButton').addEventListener('click', function () {
@@ -1123,26 +1210,33 @@
 // =====================================================================
 // CRESCENT CFM HIGH-RES FAULT VIEWER LOGIC
 // =====================================================================
-setTimeout(() => {
-    const githubBaseUrl = "https://raw.githubusercontent.com/cascadiaquakes/CRESCENT-CFM/dev/crescent_cfm_files/";
-    const listUrl = githubBaseUrl + "crescent_cfm_crustal_3d_lowres.geojson";
 
-    // Find the CFM surfaces datasource (the one with 60k+ entities)
-    let cfmSurfacesDS = null;
-    function findCfmSurfacesDS() {
-        if (cfmSurfacesDS) return cfmSurfacesDS;
-        for (let i = 0; i < viewer.dataSources.length; i++) {
-            let ds = viewer.dataSources.get(i);
-            if (ds.entities.values.length > 1000) {
-                let props = ds.entities.values[0]?.properties?._propertyNames || [];
-                if (props.includes('CFM_ID')) {
-                    cfmSurfacesDS = ds;
-                    return ds;
-                }
+// Hoisted so loadHighResFromPopup (defined above) can access these
+const githubBaseUrl = "https://raw.githubusercontent.com/cascadiaquakes/CRESCENT-CFM/dev/crescent_cfm_files/";
+const loadedHighResFaults = {};
+const hiddenLowResEntities = {};
+
+// Find the CFM surfaces datasource (the one with 1000+ CFM_ID entities)
+let cfmSurfacesDS = null;
+function findCfmSurfacesDS() {
+    if (cfmSurfacesDS) return cfmSurfacesDS;
+    for (let i = 0; i < viewer.dataSources.length; i++) {
+        let ds = viewer.dataSources.get(i);
+        if (ds.entities.values.length > 1000) {
+            let props = ds.entities.values[0]?.properties?._propertyNames || [];
+            if (props.includes('CFM_ID')) {
+                cfmSurfacesDS = ds;
+                return ds;
             }
         }
-        return null;
     }
+    return null;
+}
+
+setTimeout(() => {
+    const listUrl = githubBaseUrl + "crescent_cfm_crustal_3d_lowres.geojson";
+
+    // findCfmSurfacesDS is hoisted above setTimeout so loadHighResFromPopup can use it
 
     fetch(listUrl)
         .then(response => response.json())
@@ -1165,9 +1259,6 @@ setTimeout(() => {
             });
         })
         .catch(err => console.error("Error loading fault list:", err));
-
-    const loadedHighResFaults = {};
-    const hiddenLowResEntities = {};
 
     document.getElementById('loadHighResBtn').addEventListener('click', async () => {
         const selectBox = document.getElementById('selectHighResFaults');
@@ -1254,6 +1345,24 @@ setTimeout(() => {
     document.getElementById('controlContainer').addEventListener('wheel', function (e) {
         e.stopPropagation();
     }, { passive: false });
+
+    // Legend toggle button
+    (function() {
+        const legend = document.getElementById('legendContainer');
+        const toggleBtn = document.getElementById('toggle-legend');
+        if (!legend || !toggleBtn) return;
+        toggleBtn.addEventListener('click', function() {
+            if (legend.classList.contains('is-open')) {
+                legend.classList.remove('is-open');
+                legend.classList.add('is-closed');
+                toggleBtn.classList.add('is-active');
+            } else {
+                legend.classList.remove('is-closed');
+                legend.classList.add('is-open');
+                toggleBtn.classList.remove('is-active');
+            }
+        });
+    })();
 
     </script>
 </body>
