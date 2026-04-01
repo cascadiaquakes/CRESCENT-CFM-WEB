@@ -56,7 +56,7 @@ const auxData = ["https://raw.githubusercontent.com/cascadiaquakes/crescent-cfm/
     "https://raw.githubusercontent.com/cascadiaquakes/crescent-cfm/dev/crescent_cfm_files/mcrory_2012_cascadia_interface.geojson",
     "https://raw.githubusercontent.com/cascadiaquakes/crescent-cfm/dev/crescent_cfm_files/slab2_cascadia_interface_multipart.geojson"
 ];
-const auxLabel = ["Cascadia subduction interface - Graham et al., 2018", "Cascadia plate boundary - Carbotte et al., 2024", "Cascadia plate boundary - McRory et al., 2012.", "Cascadia plate boundary from Slab2 - Hayes et al., 2018"];
+const auxLabel = ["Cascadia subduction interface - Graham et al., 2018", "Cascadia plate boundary - Carbotte et al., 2024", "Cascadia plate boundary - McCrory et al., 2012", "Cascadia plate boundary from Slab2 - Hayes et al., 2018"];
 const auxColor = [Cesium.Color.OLIVE.withAlpha(0.7), Cesium.Color.SIENNA.withAlpha(0.7), Cesium.Color.SANDYBROWN.withAlpha(0.7), Cesium.Color.GREEN.withAlpha(0.7)];
 const auxFillOpacity = [0.3, 0.3, 0.3, 0.3];
 const auxLineWidth = [4, 4, 4, 4];
