@@ -116,14 +116,6 @@ html, body {
     margin-right: 0;
 }
 
-#controlContainer2 center b {
-    font-size: 14px;
-    font-weight: 700;
-    color: #64748b;
-    text-transform: uppercase;
-    letter-spacing: 0.6px;
-}
-
 #controlContainer2 b {
     font-size: 11px;
     font-weight: 700;
@@ -205,14 +197,36 @@ html, body {
     font-weight: 500;
 }
 
-/* Checkbox rows */
-#toggleGlobeContainer,
-#toggleCFMInterface,
+/* Checkbox grid — 2 columns, aligned */
+#toggleCheckboxGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px 10px;
+    margin-bottom: 4px;
+}
+
 #toggleBoundaryInterface {
     display: flex;
     flex-wrap: wrap;
     gap: 2px 10px;
     margin-bottom: 4px;
+}
+
+/* CVM toggle label */
+#cvmToggleLabel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    cursor: pointer;
+}
+
+#cvmToggleLabel b {
+    font-size: 14px;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
 }
 
 /* ---- High-res fault card ---- */

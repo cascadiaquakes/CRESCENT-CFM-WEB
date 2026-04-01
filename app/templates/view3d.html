@@ -85,16 +85,13 @@
     <div id="controlContainer">
         <center><b>CFM 3D Viewer</b></center>
         <hr />
-        <div id="toggleGlobeContainer">
+        <div id="toggleCheckboxGrid">
             <label>
-                <input type="checkbox" id="toggleGlobeCheckbox">Imagery layer
+                <input type="checkbox" id="toggleGlobeCheckbox"> Imagery layer
             </label>
             <label>
                 <input type="checkbox" id="toggleTerrainOcclusionCheckbox" checked> Terrain Occlusion
             </label>
-        </div>
-
-        <div id="toggleCFMInterface">
             <label>
                 <input type="checkbox" id="toggleCFMTraceCheckbox" checked> CFM traces
             </label>
@@ -104,10 +101,10 @@
         </div>
 
         <div id="highResFaultContainer">
-            <div class="hrf-title">Load High-Res Faults:</div>
+            <div class="hrf-title">Load High-Res (1 km) Faults:</div>
             <div class="hrf-subtitle">Select faults to view in full 3D resolution (max ~10 recommended).</div>
             <select id="selectHighResFaults" multiple size="4"></select>
-            <button id="loadHighResBtn">Load Selected High-Res</button>
+            <button id="loadHighResBtn">Load Selected High-Res (1 km)</button>
             <button id="resetHighResBtn">Reset High-Res</button>
             <div id="highResStatus"></div>
         </div>
@@ -143,7 +140,10 @@
 
     <!-- Card 2: CVM & Filters -->
     <div id="controlContainer2">
-        <center><b>CVM</b></center>
+        <label id="cvmToggleLabel">
+            <input type="checkbox" id="toggleCVMCheckbox"> <b>CVM</b>
+        </label>
+        <div id="cvmContent" style="display: none;">
         <hr />
         <select id="data-file" name="data_file"></select>
         <hr />
@@ -188,6 +188,7 @@
         <hr />
         <label><input type="checkbox" id="clearCheckbox"> <b>Measure Distance</b></label>
         <div id="distanceDisplay">Click distances will appear here</div>
+        </div><!-- end #cvmContent -->
     </div>
     </div><!-- end #cardWrapper -->
 
@@ -224,6 +225,21 @@
         document.addEventListener('DOMContentLoaded', function () {
             // Call loadDropdown when the page has finished loading
             loadDropdown();
+
+            // CVM toggle: hidden by default, show/hide content + box entities
+            document.getElementById('toggleCVMCheckbox').addEventListener('change', function () {
+                var content = document.getElementById('cvmContent');
+                if (this.checked) {
+                    content.style.display = '';
+                    updateSlidersFromDropdown();
+                } else {
+                    content.style.display = 'none';
+                    if (typeof boxEntities !== 'undefined' && boxEntities.length) {
+                        boxEntities.forEach(function (e) { viewer.entities.remove(e); });
+                        boxEntities.length = 0;
+                    }
+                }
+            });
 
             // Load the logo after the HTML is loaded.
             // Select the image element by its ID
@@ -480,6 +496,9 @@
                 cfmDataSources,
                 false,
                 function (dataSource, index) {
+                    // Store direct reference for high-res swap logic
+                    cfmSurfacesDS = dataSource;
+
                     var entitiesToRemove = [];
                     dataSource.entities.values.forEach(function (entity) {
                         var ok = true;
@@ -685,7 +704,7 @@
                   'padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;' +
                   'font-family:Inter,sans-serif;width:100%;margin-top:4px;' +
                 '">' +
-                '&#9652; Load High-Res (ID: ' + id + ')' +
+                '&#9652; Load High-Res 1 km (ID: ' + id + ')' +
                 '</button>';
         });
 
@@ -987,8 +1006,9 @@
             }
         }
 
-        // Outline box for CVM.
+        // Outline box for CVM — only draw when CVM is toggled on.
         function updateBoxOutline(minLat, maxLat, minLon, maxLon, minDepth, maxDepth, alpha) {
+            if (!document.getElementById('toggleCVMCheckbox').checked) return;
             const minDepthScaled = minDepth * -1000;
             const maxDepthScaled = maxDepth * -1000;
 
@@ -1215,21 +1235,10 @@ const githubBaseUrl = "https://raw.githubusercontent.com/cascadiaquakes/CRESCENT
 const loadedHighResFaults = {};
 const hiddenLowResEntities = {};
 
-// Find the CFM surfaces datasource (the one with 1000+ CFM_ID entities)
+// Direct reference to the CFM surfaces datasource, set when it loads
 let cfmSurfacesDS = null;
 function findCfmSurfacesDS() {
-    if (cfmSurfacesDS) return cfmSurfacesDS;
-    for (let i = 0; i < viewer.dataSources.length; i++) {
-        let ds = viewer.dataSources.get(i);
-        if (ds.entities.values.length > 1000) {
-            let props = ds.entities.values[0]?.properties?._propertyNames || [];
-            if (props.includes('CFM_ID')) {
-                cfmSurfacesDS = ds;
-                return ds;
-            }
-        }
-    }
-    return null;
+    return cfmSurfacesDS;
 }
 
 setTimeout(() => {
