@@ -63,34 +63,28 @@ input[type="range"] {
     margin-right: 5px;
 }
 
-#view3DButton {
-    background-color: #004F59;
-    color: white;
-    width: 20%;
-    padding: 5px;
-    border-radius: 12px;
-    margin: 4px 2px;
-    text-align: center;
+#buttonRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 6px;
 }
 
-#fullScreenButton {
-    background-color: #004F59;
+#buttonRow button {
+    background-color: #0b4a53;
     color: white;
-    width: 30%;
-    padding: 5px;
-    border-radius: 12px;
-    margin: 4px 2px;
-    text-align: center;
+    padding: 6px 14px;
+    border: none;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s;
 }
 
-#toggleControlsVisibility {
-    background-color: #004F59;
-    color: white;
-    width: 20%;
-    padding: 5px;
-    border-radius: 12px;
-    margin: 4px 2px;
-    text-align: center;
+#buttonRow button:hover {
+    background-color: #0d5e69;
 }
 
 .slider-group {
@@ -256,7 +250,26 @@ tbody tr:hover {
 
 .eq-dot {
     background: rgba(255, 255, 0, 0.5);
-    /* match Cesium.Color.YELLOW.withAlpha(0.5) */
     border: 1px solid #c9a800;
-    /* slightly darker yellow stroke */
+}
+
+.overlay-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: #334155;
+    margin-top: 4px;
+}
+
+.overlay-toggle label {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+}
+
+.overlay-toggle sup {
+    font-size: 9px;
+    color: #64748b;
 }

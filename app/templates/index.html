@@ -126,15 +126,24 @@
             <select id="colorSelector" onchange="updateLabels()">
                 <option value="Black">Black</option>
                 <option value="Blue">Blue</option>
-                <option value="DepthColorMap"
-                    title="To color fault traces by their average depth, input numeric color values (min and max) for a range of average depths.">
-                    Color by Average Depth</option>
                 <option value="DipColorMap"
-                    title="To color fault traces by dip, input numeric color values (min and max) for a range of dips (0 to 90).">
+                    title="Color by average dip (0–90°).">
                     Color by Dip</option>
                 <option value="RakeColorMap"
-                    title="To color fault traces by rake, input numeric color values (min and max) for a range of rakes (-180 to 180).">
+                    title="Color by rake (-180–180°).">
                     Color by Rake</option>
+                <option value="SlipRateColorMap"
+                    title="Color by NSHM 2023 slip rate.">
+                    Color by Slip Rate</option>
+                <option value="FaultLevelColor"
+                    title="Color by fault level.">
+                    Color by Fault Level</option>
+                <option value="RegionColor"
+                    title="Color by region.">
+                    Color by Region</option>
+                <option value="SlipSenseColor"
+                    title="Color by slip sense.">
+                    Color by Slip Sense</option>
             </select>
 
             <label for="minColor" id="minColorLabel">min.</label>
@@ -148,9 +157,16 @@
             <div id="colorBarMax" class="color-bar" style="background-color: blue;">&nbsp;&nbsp;</div>
 
             <div id="colorBarNote" class="notes">&nbsp;</div>
-            <div class="legend-item">
+            <div class="overlay-toggle">
                 <span class="legend-dot eq-dot" aria-hidden="true"></span>
-                <span class="legend-label"><strong>Earthquakes</strong></span>
+                <span>Earthquakes<sup>1</sup></span>
+            </div>
+            <div class="overlay-toggle">
+                <label>
+                    <input type="checkbox" id="toggleQFFCheckbox">
+                    U.S. Geological Survey Quaternary Fault and Fold Database<sup>2</sup>
+                    <span id="qffLoading" style="display:none; margin-left:4px; font-size:11px; color:#64748b;">loading…</span>
+                </label>
             </div>
 
         </div>
@@ -160,9 +176,12 @@
     </div>
     <div id="tableControls">
         <div>
-            <button id="toggleControlsVisibility">Map Controls</button>&nbsp;&nbsp;&nbsp;
-            <button id="view3DButton">View 3D</button> <!-- Add this button -->
-            <button id="fullScreenButton" onclick="toggleFullScreen()">&#x26F6; Full Screen Map</button>
+            <div id="buttonRow">
+                <button id="toggleControlsVisibility">Map Controls</button>
+                <button id="view3DButton">View 3D</button>
+                <button id="downloadSelectedBtn">&#x2B07; Download Selected (1 km)</button>
+                <button id="fullScreenButton" onclick="toggleFullScreen()">&#x26F6; Full Screen Map</button>
+            </div>
         </div>
         <br />
         <input type="checkbox" id="selectAllCheckbox" />
@@ -311,6 +330,66 @@
             })
             .catch(error => console.error('Error fetching earthquake data:', error));
 
+        // USGS Quaternary Fault and Fold Database toggle
+        let qffDataSource = null;
+        const qffUrl = 'https://raw.githubusercontent.com/cascadiaquakes/CRESCENT-CFM/main/misc_data/USGSQFFD_pnwextract.geojson';
+        document.getElementById('toggleQFFCheckbox').addEventListener('change', function () {
+            var loadingEl = document.getElementById('qffLoading');
+            if (this.checked) {
+                if (qffDataSource) {
+                    viewer.dataSources.add(qffDataSource);
+                } else {
+                    loadingEl.style.display = 'inline';
+                    Cesium.GeoJsonDataSource.load(qffUrl, {
+                        stroke: Cesium.Color.RED.withAlpha(0.7),
+                        fill: Cesium.Color.RED.withAlpha(0.2),
+                        strokeWidth: 2
+                    }).then(function (ds) {
+                        qffDataSource = ds;
+                        viewer.dataSources.add(ds);
+                        loadingEl.style.display = 'none';
+                    }).catch(function (err) {
+                        console.error('Error loading USGS QFF data:', err);
+                        loadingEl.textContent = 'failed';
+                    });
+                }
+            } else {
+                if (qffDataSource && viewer.dataSources.contains(qffDataSource)) {
+                    viewer.dataSources.remove(qffDataSource);
+                }
+            }
+        });
+
+        // Download selected high-res (1 km) fault GeoJSON files
+        document.getElementById('downloadSelectedBtn').addEventListener('click', async function () {
+            const checkboxes = document.querySelectorAll('#lineList input[type="checkbox"]:checked');
+            if (checkboxes.length === 0) {
+                alert('Please select at least one fault before downloading.');
+                return;
+            }
+            const ids = Array.from(checkboxes).map(cb => cb.value);
+            const baseUrl = 'https://raw.githubusercontent.com/cascadiaquakes/CRESCENT-CFM/'
+                + encodeURIComponent(branch) + '/crescent_cfm_files/hires_faults/';
+
+            for (const id of ids) {
+                const url = baseUrl + id + '_hires.geojson';
+                try {
+                    const resp = await fetch(url);
+                    if (!resp.ok) throw new Error(resp.status);
+                    const blob = await resp.blob();
+                    const a = document.createElement('a');
+                    a.href = URL.createObjectURL(blob);
+                    a.download = id + '_hires.geojson';
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    URL.revokeObjectURL(a.href);
+                } catch (err) {
+                    console.error('Failed to download fault ' + id + ':', err);
+                }
+            }
+        });
+
         view3DButton.addEventListener('click', function () {
             const checkboxes = document.querySelectorAll('#lineList input[type="checkbox"]:checked');
             if (checkboxes.length === 0) {
@@ -370,9 +449,7 @@
 
         function updateAllFeatureColors(viewer) {
             const selectedColor = document.getElementById('colorSelector').value;
-            if (selectedColor === 'DepthColorMap') {
-                updateFeatureColors(selectedColor, viewer);
-            }
+            updateFeatureColors(selectedColor, viewer);
         }
 
 
@@ -400,19 +477,38 @@
         }
 
 
+        // Categorical color palette for discrete values
+        const categoryPalette = [
+            Cesium.Color.fromCssColorString('#e6194b'),
+            Cesium.Color.fromCssColorString('#3cb44b'),
+            Cesium.Color.fromCssColorString('#4363d8'),
+            Cesium.Color.fromCssColorString('#f58231'),
+            Cesium.Color.fromCssColorString('#911eb4'),
+            Cesium.Color.fromCssColorString('#42d4f4'),
+            Cesium.Color.fromCssColorString('#f032e6'),
+            Cesium.Color.fromCssColorString('#bfef45'),
+            Cesium.Color.fromCssColorString('#fabed4'),
+            Cesium.Color.fromCssColorString('#469990'),
+            Cesium.Color.fromCssColorString('#dcbeff'),
+            Cesium.Color.fromCssColorString('#ffe119'),
+        ];
+        const categoryColorMaps = {};
+
+        function getCategoryColor(mapName, value) {
+            if (!value) return Cesium.Color.GRAY;
+            if (!categoryColorMaps[mapName]) categoryColorMaps[mapName] = {};
+            const map = categoryColorMaps[mapName];
+            if (!(value in map)) {
+                map[value] = categoryPalette[Object.keys(map).length % categoryPalette.length];
+            }
+            return map[value];
+        }
+
         function updateFeatureColors(selectedColor, viewer) {
-            //alert("Updating colors for: " + selectedColor);
             viewer.entities.values.forEach(entity => {
                 if (entity.polyline) {
                     let color;
-                    //alert("Entity has polyline");
-                    if (selectedColor === 'DepthColorMap' && 'averageDepth' in entity) {
-                        toggleColorInputs(true);
-                        const minDepth = parseFloat(document.getElementById('minColor').value);
-                        const maxDepth = parseFloat(document.getElementById('maxColor').value);
-                        //alert("Depth values: " + entity.averageDepth + "," + minDepth + "," + maxDepth);
-                        color = getColorFromValue(entity.averageDepth, minDepth, maxDepth).cesiumColor;
-                    } else if (selectedColor === 'RakeColorMap' && 'rake' in entity) {
+                    if (selectedColor === 'RakeColorMap' && 'rake' in entity) {
                         toggleColorInputs(true);
                         const minRake = parseFloat(document.getElementById('minColor').value);
                         const maxRake = parseFloat(document.getElementById('maxColor').value);
@@ -422,15 +518,31 @@
                         const minDip = parseFloat(document.getElementById('minColor').value);
                         const maxDip = parseFloat(document.getElementById('maxColor').value);
                         color = getColorFromValue(entity.dip, minDip, maxDip).cesiumColor;
+                    } else if (selectedColor === 'SlipRateColorMap' && 'slipRate' in entity) {
+                        toggleColorInputs(true);
+                        const minSR = parseFloat(document.getElementById('minColor').value);
+                        const maxSR = parseFloat(document.getElementById('maxColor').value);
+                        color = Number.isFinite(entity.slipRate)
+                            ? getColorFromValue(entity.slipRate, minSR, maxSR).cesiumColor
+                            : Cesium.Color.GRAY;
+                    } else if (selectedColor === 'FaultLevelColor') {
+                        toggleColorInputs(false);
+                        color = getCategoryColor('faultLevel', entity.faultLevel);
+                    } else if (selectedColor === 'RegionColor') {
+                        toggleColorInputs(false);
+                        color = getCategoryColor('region', entity.region);
+                    } else if (selectedColor === 'SlipSenseColor') {
+                        toggleColorInputs(false);
+                        color = getCategoryColor('slipSense', entity.slipSense);
                     } else if (selectedColor === 'Black') {
                         color = Cesium.Color.BLACK;
                         toggleColorInputs(false);
                     } else if (selectedColor === 'Blue') {
                         color = Cesium.Color.BLUE;
                         toggleColorInputs(false);
-                    }
-                    else {
-                        color = Cesium.Color.WHITE; // default color if no valid option is selected
+                    } else {
+                        color = Cesium.Color.BLACK;
+                        toggleColorInputs(false);
                     }
                     entity.polyline.material = new Cesium.ColorMaterialProperty(color);
                     //alert("Color set to:" + color);
@@ -577,7 +689,7 @@
 
             // Header (unchanged)
             const headerRow = document.createElement('tr');
-            ['', '', 'Fault Name', 'Avg. Depth (km)', 'Dip (°)', 'Rake (°)', 'Source', 'ID'].forEach(text => {
+            ['', '', 'Fault Name', 'Dip (°)', 'Rake (°)', 'Level', 'Region', 'ID'].forEach(text => {
                 const header = document.createElement('th');
                 header.textContent = text;
                 if (text === 'ID') header.classList.add('hidden-id-column');
@@ -606,7 +718,13 @@
                 const lowerDepth = coerceNumber(props.lower_depth, 0);
                 const averageDepth = (upperDepth + lowerDepth) / 2;
                 const rake = coerceNumber(props.rake, 0);
-                const dip = coerceNumber(props.dip, 0);
+                const dip = coerceNumber(props.avg_dip != null ? props.avg_dip : props.dip, 0);
+                const slipRate = coerceNumber(props['NSHM23 sliprates'], NaN);
+
+                // Categorical fields
+                const faultLevel = toStr(props.fault_level, '');
+                const region = toStr(props.region, '');
+                const slipSense = toStr(props.slip_sense, '');
 
                 // Build Cesium positions (skip bad coords defensively)
                 const positions = coords
@@ -637,7 +755,11 @@
                     averageLatitude: avgLat,
                     averageDepth,
                     rake,
-                    dip
+                    dip,
+                    slipRate,
+                    faultLevel,
+                    region,
+                    slipSense
                 });
                 entities[id] = lineEntity;
 
@@ -673,11 +795,6 @@
                 nameCell.textContent = lineName;
                 listItem.appendChild(nameCell);
 
-                // avg depth
-                const averageDepthCell = document.createElement('td');
-                averageDepthCell.textContent = Number.isFinite(averageDepth) ? averageDepth.toFixed(1) : '';
-                listItem.appendChild(averageDepthCell);
-
                 // dip
                 const dipCell = document.createElement('td');
                 dipCell.textContent = Number.isFinite(dip) ? dip.toFixed(1) : '';
@@ -688,10 +805,15 @@
                 rakeCell.textContent = Number.isFinite(rake) ? rake.toFixed(1) : '';
                 listItem.appendChild(rakeCell);
 
-                // source
-                const sourceCell = document.createElement('td');
-                sourceCell.textContent = source;
-                listItem.appendChild(sourceCell);
+                // fault level
+                const levelCell = document.createElement('td');
+                levelCell.textContent = faultLevel;
+                listItem.appendChild(levelCell);
+
+                // region
+                const regionCell = document.createElement('td');
+                regionCell.textContent = region;
+                listItem.appendChild(regionCell);
 
                 // id (hidden)
                 const idCell = document.createElement('td');
@@ -765,11 +887,6 @@
         let unit = '';
         let note = '';
         switch (selector.value) {
-            case 'DepthColorMap':
-                unit = ' km';
-                minColorInput.disabled = false;
-                maxColorInput.disabled = false;
-                break;
             case 'DipColorMap':
                 unit = ' °';
                 minColorInput.disabled = false;
@@ -780,6 +897,21 @@
                 minColorInput.disabled = false;
                 maxColorInput.disabled = false;
                 note = "Note: Aki & Richards (1980) convention is used for rake"
+                break;
+            case 'SlipRateColorMap':
+                unit = ' mm/yr';
+                minColorInput.disabled = false;
+                maxColorInput.disabled = false;
+                break;
+            case 'FaultLevelColor':
+            case 'RegionColor':
+            case 'SlipSenseColor':
+                unit = '';
+                minColorInput.value = "";
+                minColorInput.disabled = true;
+                maxColorInput.value = "";
+                maxColorInput.disabled = true;
+                note = "Colors assigned per category";
                 break;
             default:
                 unit = '';
