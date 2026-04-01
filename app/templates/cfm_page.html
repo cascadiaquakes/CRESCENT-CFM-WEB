@@ -27,55 +27,56 @@
 
 <body>
 
-    <div class="container">
-        <div class="top-banner">
-            <div class="logo-container">
-                <a href="https://cascadiaquakes.org/" target="_blank" style="text-decoration: none;">
-                    <img src="/static/images/IMG_6459_NSF.png" alt="Logo" width="250px">
-                </a>
-                <a href="https://cascadiaquakes.org/cfm/" target="_blank" style="text-decoration: none;">
-                    <div class="working-group-name">&nbsp;&nbsp;Community Fault Model (CFM)</div>
-                </a>
-            </div>
-            <nav class="navbar">
-                <ul class="nav-menu">
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">Visualization<span class="chevron">&#9660;</span></a>
-                        <ul class="dropdown">
-                            <li><a href="/">Repository</a></li>
-                            <li><a href="/3d" target=" 3Dviewer">3D Viewer</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">Data<span class="chevron">&#9660;</span></a>
-                        <ul class="dropdown">
-                            <li><a href="/downloads">Download Models</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">More<span class="chevron">&#9660;</span></a>
-                        <ul class="dropdown">
-                            <li><a href="/news">CFM-Web News</a></li>
-                            <li><a href="/request">Contact US</a></li>
-                            <li class="nav-item">
-                                <a href="#" class="nav-link">About<span class="chevron">&#9660;</span></a>
-                                <ul class="dropdown">
-                                    <li><a href="https://cascadiaquakes.org/about-crescent/"
-                                            target="_blank">CRESCENT</a></li>
-                                    <li><a href="https://cascadiaquakes.org/cfm/" target="_blank">CFM</a></li>
-                                    <li><a href="https://cascadiaquakes.org/cvm/" target="_blank">CVM</a></li>
-                                </ul>
-                            </li>
-
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a href="/guide" class="nav-link">Guide<span class="chevron">&#9660;</span></a>
-
-                    </li>
-                </ul>
-            </nav>
+    <header class="app-header">
+        <div class="header-left">
+            <a href="https://cascadiaquakes.org/" target="_blank">
+                <img class="header-logo" src="/static/images/IMG_6459_NSF.png" alt="CRESCENT & NSF Logo">
+            </a>
         </div>
+
+        <div class="header-center">
+            Community Fault Model (CFM)
+            <span class="version-text">Pre-release v0.1</span>
+        </div>
+
+        <nav class="header-right">
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="#" class="nav-link">Visualization <span class="chevron">&#9660;</span></a>
+                    <ul class="dropdown">
+                        <li><a href="/">Repository</a></li>
+                        <li><a href="/3d" target=" 3Dviewer">3D Viewer</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">Data <span class="chevron">&#9660;</span></a>
+                    <ul class="dropdown">
+                        <li><a href="/downloads">Download Models</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">More <span class="chevron">&#9660;</span></a>
+                    <ul class="dropdown">
+                        <li><a href="/news">CFM-Web News</a></li>
+                        <li><a href="/request">Contact Us</a></li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">About <span class="chevron">&#9660;</span></a>
+                            <ul class="dropdown">
+                                <li><a href="https://cascadiaquakes.org/about-crescent/" target="_blank">CRESCENT</a></li>
+                                <li><a href="https://cascadiaquakes.org/cfm/" target="_blank">CFM</a></li>
+                                <li><a href="https://cascadiaquakes.org/cvm/" target="_blank">CVM</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="/guide" class="nav-link">Guide</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
         <div class="description">
             {% block description %}{% endblock %}
         </div>
@@ -84,9 +85,6 @@
         </div>
         <div class="left-right">
             {% block leftpanel%}{% endblock %} {% block rightpanel%}{% endblock %} </div>
-        <div class="footer">
-            <!-- Footer content -->
-        </div>
         {% block scripts %}{% endblock %}
     </div>
 
