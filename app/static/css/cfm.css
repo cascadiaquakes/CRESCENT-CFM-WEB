@@ -225,3 +225,94 @@ body {
     vertical-align: top;
     margin-right: 10px;
 }
+
+/* ── About modal ── */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-box {
+    background: #fff;
+    border-radius: 14px;
+    width: 560px;
+    max-width: 92vw;
+    max-height: 80vh;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.modal-header-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    background: #0b4a53;
+    color: #fff;
+}
+
+.modal-header-bar h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 22px;
+    cursor: pointer;
+    line-height: 1;
+    opacity: 0.8;
+}
+
+.modal-close:hover {
+    opacity: 1;
+}
+
+.modal-body-content {
+    padding: 20px;
+    overflow-y: auto;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #334155;
+}
+
+.modal-body-content h4 {
+    font-size: 14px;
+    font-weight: 700;
+    color: #0b4a53;
+    margin: 12px 0 6px;
+}
+
+.modal-body-content h4:first-child {
+    margin-top: 0;
+}
+
+.modal-body-content hr {
+    border: none;
+    border-top: 1px solid #e2e8f0;
+    margin: 14px 0;
+}
+
+.modal-body-content ul {
+    padding-left: 18px;
+    margin: 6px 0;
+}
+
+.modal-body-content li {
+    margin-bottom: 4px;
+}
+
+.modal-body-content a {
+    color: #0b4a53;
+    font-weight: 600;
+}
