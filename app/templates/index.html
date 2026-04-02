@@ -70,138 +70,110 @@
 
 
 {%endblock%}
-{% block description%}
-<h2>CFM Repository</h2>
-<p>
-    The faults of the CRESCENT Community Fault Model are three-dimensional and non-planar; however, for ease of use, the
-    viewer below offers a simplified two-dimensional map-based representation of the CFM. Click on each fault trace to
-    access its description. Utilize the map controls on the left to refine the display to your desired faults. Select
-    the
-    faults of interest by checking them, then use the <b>View 3D</b> button to examine the chosen faults in three
-    dimensions. For further information and instructions on usage, please refer to the provided <a href="/guide"
-        target="_blank">user guide</a>.
-</p>
-{%endblock%}
-{% block leftpanel%}
-<div id="listPanel">
+{% block body %}
+<!-- Full-width map with floating cards (overrides default container layout) -->
+<div id="viewer2dWrapper">
+    <div id="mapContainer"></div>
 
+    <!-- Toggle button for sidebar -->
+    <button id="toggleSidebar" class="btn-toggle-sidebar" title="Show/Hide Controls">&#9776;</button>
 
-    <h3>CFM Fault Traces</h3>
-    <hr width="100%" />
-    <div id="mapControls">
+    <!-- Floating sidebar -->
+    <div id="sidebarPanel">
 
-        <h4>Location Filters:</h4>
-        <div class="slider-group">
-            <label>Longitude (°East)</label>
-            <span id="minLongitudeValue" class="value">-130°</span>
-            <input type="range" id="minLongitude" min="-135" max="-110" value="-130" step="0.1"
-                oninput="document.getElementById('minLongitudeValue').innerHTML = this.value + '°';">
-            <input type="range" id="maxLongitude" min="-135" max="-110" value="-116" step="0.1"
-                oninput="document.getElementById('maxLongitudeValue').innerHTML = this.value + '°';">
-            <span id="maxLongitudeValue" class="value">-116°</span>
-        </div>
+        <!-- Card 1: Filters -->
+        <div class="card-2d">
+            <div class="card-2d-title">CFM Fault Traces</div>
 
-        <div class="slider-group">
-            <label>Latitude (°North)</label>
-            <span id="minLatitudeValue" class="value">39°</span>
-            <input type="range" id="minLatitude" min="35" max="55" value="39" step="0.1"
-                oninput="document.getElementById('minLatitudeValue').innerHTML = this.value + '°';">
-            <input type="range" id="maxLatitude" min="35" max="55" value="52" step="0.1"
-                oninput="document.getElementById('maxLatitudeValue').innerHTML = this.value + '°';">
-            <span id="maxLatitudeValue" class="value">52°</span>
-        </div>
+            <div id="mapControls">
+                <div class="card-2d-section">Location Filters</div>
+                <div class="slider-row">
+                    <label>Longitude (°East)</label>
+                    <span id="minLongitudeValue" class="slider-val">-130°</span>
+                    <div id="longitudeSlider" class="noUi-target-wrapper"></div>
+                    <span id="maxLongitudeValue" class="slider-val">-116°</span>
+                </div>
+                <div class="slider-row">
+                    <label>Latitude (°North)</label>
+                    <span id="minLatitudeValue" class="slider-val">39°</span>
+                    <div id="latitudeSlider" class="noUi-target-wrapper"></div>
+                    <span id="maxLatitudeValue" class="slider-val">52°</span>
+                </div>
+                <div class="slider-row">
+                    <label>Average Depth (km)</label>
+                    <span id="minDepthValue" class="slider-val">0 km</span>
+                    <div id="depthSlider" class="noUi-target-wrapper"></div>
+                    <span id="maxDepthValue" class="slider-val">50 km</span>
+                </div>
 
-        <div class="slider-group">
-            <label>Average Depth (km)</label>
-            <span id="minDepthValue" class="value">0 km</span>
-            <input type="range" id="minDepth" min="0" max="50" value="0" step="0.1"
-                oninput="document.getElementById('minDepthValue').innerHTML = this.value + ' km';">
-            <input type="range" id="maxDepth" min="0" max="50" value="50" step="0.1"
-                oninput="document.getElementById('maxDepthValue').innerHTML = this.value + ' km';">
-            <span id="maxDepthValue" class="value">50 km</span>
-        </div>
-        <hr width="100%" />
-        <div class="slider-group" style="display: inline-block;">
-            <label for="colorSelector">Fault Color:</label>
-            <select id="colorSelector" onchange="updateLabels()">
-                <option value="Black">Black</option>
-                <option value="Blue">Blue</option>
-                <option value="DipColorMap"
-                    title="Color by average dip (0–90°).">
-                    Color by Dip</option>
-                <option value="RakeColorMap"
-                    title="Color by rake (-180–180°).">
-                    Color by Rake</option>
-                <option value="SlipRateColorMap"
-                    title="Color by NSHM 2023 slip rate.">
-                    Color by Slip Rate</option>
-                <option value="FaultLevelColor"
-                    title="Color by fault level.">
-                    Color by Fault Level</option>
-                <option value="RegionColor"
-                    title="Color by region.">
-                    Color by Region</option>
-                <option value="SlipSenseColor"
-                    title="Color by slip sense.">
-                    Color by Slip Sense</option>
-            </select>
+                <div class="card-2d-section">Fault Color</div>
+                <div class="color-controls">
+                    <select id="colorSelector" onchange="updateLabels()">
+                        <option value="Black">Black</option>
+                        <option value="Blue">Blue</option>
+                        <option value="DipColorMap">Color by Dip</option>
+                        <option value="RakeColorMap">Color by Rake</option>
+                        <option value="SlipRateColorMap">Color by Slip Rate</option>
+                        <option value="FaultLevelColor">Color by Fault Level</option>
+                        <option value="RegionColor">Color by Region</option>
+                        <option value="SlipSenseColor">Color by Slip Sense</option>
+                    </select>
+                    <div class="color-range-row">
+                        <label for="minColor" id="minColorLabel">min.</label>
+                        <input type="number" id="minColor" style="width:48px;" />
+                        <span id="minColorUnit"></span>
+                        <div id="colorBarMin" class="color-bar" style="background-color: red;">&nbsp;</div>
+                        <label for="maxColor" id="maxColorLabel">max.</label>
+                        <input type="number" id="maxColor" style="width:48px;">
+                        <span id="maxColorUnit"></span>
+                        <div id="colorBarMax" class="color-bar" style="background-color: blue;">&nbsp;</div>
+                    </div>
+                    <div id="colorBarNote" class="notes"></div>
+                    <div id="colorLegend" style="display:none;"></div>
+                </div>
 
-            <label for="minColor" id="minColorLabel">min.</label>
-            <input type="number" id="minColor" style="width:50px;" />
-            <span id="minColorUnit"></span>
-            <div id="colorBarMin" class="color-bar" style="background-color: red;">&nbsp;&nbsp;</div>&nbsp;&nbsp;&nbsp;
-
-            <label for="maxColor" id="maxColorLabel">max.</label>
-            <input type="number" id="maxColor" style="width:50px;">
-            <span id="maxColorUnit"></span>
-            <div id="colorBarMax" class="color-bar" style="background-color: blue;">&nbsp;&nbsp;</div>
-
-            <div id="colorBarNote" class="notes">&nbsp;</div>
-            <div class="overlay-toggle">
-                <span class="legend-dot eq-dot" aria-hidden="true"></span>
-                <span>U.S. Geological Survey Earthquake Catalog<sup>1</sup> (M&ge;4, 1970&ndash;Present), Circle Size &prop; Magnitude</span>
-            </div>
-            <div class="overlay-toggle">
-                <label>
-                    <input type="checkbox" id="toggleQFFCheckbox">
-                    U.S. Geological Survey Quaternary Fault and Fold Database<sup>2</sup>
-                    <span id="qffLoading" style="display:none; margin-left:4px; font-size:11px; color:#64748b;">loading…</span>
-                </label>
+                <div class="card-2d-section">Overlays</div>
+                <div class="overlay-toggle">
+                    <label>
+                        <input type="checkbox" id="toggleEQCheckbox" checked>
+                        <span class="legend-dot eq-dot" aria-hidden="true"></span>
+                        U.S. Geological Survey Earthquake Catalog<sup>1</sup> (M&ge;4, 1970&ndash;Present), Circle Size &prop; Magnitude
+                    </label>
+                </div>
+                <div class="overlay-toggle">
+                    <label>
+                        <input type="checkbox" id="toggleQFFCheckbox">
+                        U.S. Geological Survey Quaternary Fault and Fold Database<sup>2</sup>
+                        <span id="qffLoading" style="display:none; margin-left:4px; font-size:11px; color:#94a3b8;">loading…</span>
+                    </label>
+                </div>
             </div>
 
-        </div>
-
-
-        <hr width="100%" />
-    </div>
-    <div id="tableControls">
-        <div>
             <div id="buttonRow">
-                <button id="toggleControlsVisibility">Map Controls</button>
                 <button id="view3DButton">View 3D</button>
-                <button id="downloadSelectedBtn">&#x2B07; Download Selected (1 km)</button>
-                <button id="fullScreenButton" onclick="toggleFullScreen()">&#x26F6; Full Screen Map</button>
+                <button id="downloadSelectedBtn">&#x2B07; Download (1 km)</button>
+                <button id="fullScreenButton" onclick="toggleFullScreen()">&#x26F6; Fullscreen</button>
+                <button id="resetFiltersBtn">&#x21BA; Reset</button>
             </div>
         </div>
-        <br />
-        <input type="checkbox" id="selectAllCheckbox" />
-        <label for="selectAllCheckbox">Select/Deselect All</label>
-        <div id="toggleVisibilityLabel" style="cursor: pointer; display: inline-flex; align-items: center;">
-            <i id="toggleVisibilityIcon" class="fas fa-eye" style="margin-left: 10px;"></i>
-            <span style="margin-left: 5px;">Show/Hide All</span>
+
+        <!-- Card 2: Table -->
+        <div class="card-2d">
+            <div class="card-2d-row">
+                <label class="card-2d-check"><input type="checkbox" id="selectAllCheckbox" /> Select/Deselect All</label>
+                <div id="toggleVisibilityLabel" style="cursor:pointer; display:inline-flex; align-items:center; gap:4px;">
+                    <i id="toggleVisibilityIcon" class="fas fa-eye"></i>
+                    <span>Show/Hide All</span>
+                </div>
+            </div>
+            <div class="table-holder">
+                <table id="lineList">
+                </table>
+            </div>
         </div>
 
-
-    </div>
-    <div class="table-holder">
-        <table id="lineList" class="scrollable-div">
-            <!-- Table for line items will be populated here by JavaScript -->
-        </table>
     </div>
 </div>
-{%endblock%}
-{%block rightpanel%}
-<div id="mapContainer"></div>
 
 
 <script>
@@ -217,61 +189,34 @@
         const url = new URL(window.location.href);
         const branch = url.searchParams.get('branch') || '{{ branch }}';
 
-        // Initializes the input ranges for longitude, latitude, and depth based on the given variables.
-        function initializeSliders() {
-            // Set longitude range and initial values
-            const minLongitudeInput = document.getElementById('minLongitude');
-            const maxLongitudeInput = document.getElementById('maxLongitude');
-            minLongitudeInput.min = west - delta * 5;
-            minLongitudeInput.max = east - delta;
-            minLongitudeInput.value = west;
-            maxLongitudeInput.min = west + delta;
-            maxLongitudeInput.max = east + delta * 5;
-            maxLongitudeInput.value = east;
-
-            // Set latitude range and initial values
-            const minLatitudeInput = document.getElementById('minLatitude');
-            const maxLatitudeInput = document.getElementById('maxLatitude');
-            minLatitudeInput.min = south - delta * 5;
-            minLatitudeInput.max = north - delta;
-            minLatitudeInput.value = south;
-            maxLatitudeInput.min = south + delta;
-            maxLatitudeInput.max = north + delta * 5;
-            maxLatitudeInput.value = north;
-
-            // Set depth range and initial values
-            const minDepthInput = document.getElementById('minDepth');
-            const maxDepthInput = document.getElementById('maxDepth');
-            minDepthInput.min = startDepth - delta * 5;
-            minDepthInput.max = endDepth - delta;
-            minDepthInput.value = startDepth;
-            maxDepthInput.min = startDepth + delta;
-            maxDepthInput.max = endDepth + delta * 5;
-            maxDepthInput.value = endDepth;
-
-            // Adding event listeners with validation to prevent sliders from crossing each other
-            function validateSliderAdjustments(minInput, maxInput, minValue, maxValue, delta) {
-                if (parseFloat(minInput.value) > parseFloat(maxInput.value) - delta) {
-                    alert("Minimum value cannot exceed or meet the maximum value minus a delta!");
-                    minInput.value = Math.min(parseFloat(maxInput.value) - delta, maxValue - delta);
-                }
-                if (parseFloat(maxInput.value) < parseFloat(minInput.value) + delta) {
-                    alert("Maximum value cannot be less than or meet the minimum value plus a delta!");
-                    maxInput.value = Math.max(parseFloat(minInput.value) + delta, minValue + delta);
-                }
-            }
-
-            minLongitudeInput.addEventListener('input', () => validateSliderAdjustments(minLongitudeInput, maxLongitudeInput, west, east, delta));
-            maxLongitudeInput.addEventListener('input', () => validateSliderAdjustments(minLongitudeInput, maxLongitudeInput, west, east, delta));
-            minLatitudeInput.addEventListener('input', () => validateSliderAdjustments(minLatitudeInput, maxLatitudeInput, south, north, delta));
-            maxLatitudeInput.addEventListener('input', () => validateSliderAdjustments(minLatitudeInput, maxLatitudeInput, south, north, delta));
-            minDepthInput.addEventListener('input', () => validateSliderAdjustments(minDepthInput, maxDepthInput, startDepth, endDepth, delta));
-            maxDepthInput.addEventListener('input', () => validateSliderAdjustments(minDepthInput, maxDepthInput, startDepth, endDepth, delta));
+        // ── noUiSlider dual-range sliders ──
+        function createDualSlider(elementId, min, max, startVals, step, minSpanId, maxSpanId, unit) {
+            var el = document.getElementById(elementId);
+            noUiSlider.create(el, {
+                start: startVals,
+                connect: true,
+                step: step,
+                range: { min: min, max: max },
+                tooltips: false
+            });
+            el.noUiSlider.on('update', function (values) {
+                document.getElementById(minSpanId).textContent = parseFloat(values[0]).toFixed(1) + unit;
+                document.getElementById(maxSpanId).textContent = parseFloat(values[1]).toFixed(1) + unit;
+            });
+            return el;
         }
 
+        var lonSlider = createDualSlider('longitudeSlider', west - delta * 5, east + delta * 5, [west, east], 0.1, 'minLongitudeValue', 'maxLongitudeValue', '°');
+        var latSlider = createDualSlider('latitudeSlider', south - delta * 5, north + delta * 5, [south, north], 0.1, 'minLatitudeValue', 'maxLatitudeValue', '°');
+        var depthSlider = createDualSlider('depthSlider', startDepth, endDepth, [startDepth, endDepth], 0.5, 'minDepthValue', 'maxDepthValue', ' km');
 
-        // Initialize sliders on load
-        initializeSliders();
+        // Helper to read slider values (used by updateVisibility and updateFilterRectangle)
+        function getSliderValues() {
+            var lon = lonSlider.noUiSlider.get().map(Number);
+            var lat = latSlider.noUiSlider.get().map(Number);
+            var dep = depthSlider.noUiSlider.get().map(Number);
+            return { minLon: lon[0], maxLon: lon[1], minLat: lat[0], maxLat: lat[1], minDepth: dep[0], maxDepth: dep[1] };
+        }
 
         // To control the "Home" button zoom area:
         // Set the "default" camera view prior to constructing the Viewer widget, 
@@ -306,10 +251,16 @@
         viewer.camera.setView({ destination: areaRectangle });
 
         const view3DButton = document.getElementById('view3DButton');
-        const toggleButton = document.getElementById('toggleControlsVisibility');
+
+        // Sidebar toggle
+        document.getElementById('toggleSidebar').addEventListener('click', function () {
+            var panel = document.getElementById('sidebarPanel');
+            panel.style.display = panel.style.display === 'none' ? '' : 'none';
+        });
 
 
         // Fetch earthquake data from USGS API
+        var eqEntities = [];
         fetch(eqQueryUrl)
             .then(response => response.json())
             .then(data => {
@@ -317,7 +268,7 @@
                     const coords = feature.geometry.coordinates;
                     const magnitude = feature.properties.mag;
 
-                    viewer.entities.add({
+                    var e = viewer.entities.add({
                         position: Cesium.Cartesian3.fromDegrees(coords[0], coords[1]),
                         ellipse: {
                             semiMinorAxis: 50 * Math.pow(magnitude, 3),
@@ -326,9 +277,16 @@
                         },
                         description: `Magnitude: ${magnitude}<br>Location: (${coords[1]}, ${coords[0]})<br>Depth: ${coords[2]} km`
                     });
+                    eqEntities.push(e);
                 });
             })
             .catch(error => console.error('Error fetching earthquake data:', error));
+
+        // Toggle earthquake visibility
+        document.getElementById('toggleEQCheckbox').addEventListener('change', function () {
+            var show = this.checked;
+            eqEntities.forEach(function (e) { e.show = show; });
+        });
 
         // USGS Quaternary Fault and Fold Database toggle
         let qffDataSource = null;
@@ -416,14 +374,39 @@
         });
 
 
-        toggleButton.addEventListener('click', function () {
-            var element = document.getElementById("mapControls");
-            if (element.style.display === "none") {
-                element.style.display = "block";
-            } else {
-                element.style.display = "none";
+        // Map controls are now always visible in the sidebar card
+
+        // Reset all filters to defaults
+        document.getElementById('resetFiltersBtn').addEventListener('click', function () {
+            // Reset sliders
+            lonSlider.noUiSlider.set([west, east]);
+            latSlider.noUiSlider.set([south, north]);
+            depthSlider.noUiSlider.set([startDepth, endDepth]);
+
+            // Reset color
+            document.getElementById('colorSelector').value = 'Black';
+            updateLabels();
+            updateFeatureColors('Black', viewer);
+
+            // Reset filter rectangle + visibility
+            updateFilterRectangle();
+            if (typeof geoJsonEntities !== 'undefined') {
+                updateVisibility(geoJsonEntities, document.getElementById('lineList'));
             }
 
+            // Uncheck QFF if on
+            var qffCb = document.getElementById('toggleQFFCheckbox');
+            if (qffCb.checked) {
+                qffCb.checked = false;
+                qffCb.dispatchEvent(new Event('change'));
+            }
+
+            // Deselect all fault checkboxes
+            document.querySelectorAll('#lineList input[type="checkbox"]:checked').forEach(function (cb) {
+                cb.checked = false;
+                cb.dispatchEvent(new Event('change'));
+            });
+            document.getElementById('selectAllCheckbox').checked = false;
         });
 
         // Get references to the input elements by their IDs
@@ -486,7 +469,7 @@
             Cesium.Color.fromCssColorString('#911eb4'),
             Cesium.Color.fromCssColorString('#42d4f4'),
             Cesium.Color.fromCssColorString('#f032e6'),
-            Cesium.Color.fromCssColorString('#bfef45'),
+            Cesium.Color.fromCssColorString('#aa6e28'),
             Cesium.Color.fromCssColorString('#fabed4'),
             Cesium.Color.fromCssColorString('#469990'),
             Cesium.Color.fromCssColorString('#dcbeff'),
@@ -548,8 +531,30 @@
                     //alert("Color set to:" + color);
                 }
             });
-            // Sometimes changes to entity properties might not visually update until the scene is explicitly refreshed or re-rendered.
             viewer.scene.requestRender();
+
+            // Build legend for categorical modes
+            var legendEl = document.getElementById('colorLegend');
+            var catKey = selectedColor === 'FaultLevelColor' ? 'faultLevel'
+                       : selectedColor === 'RegionColor' ? 'region'
+                       : selectedColor === 'SlipSenseColor' ? 'slipSense'
+                       : null;
+            if (catKey && categoryColorMaps[catKey]) {
+                var entries = Object.entries(categoryColorMaps[catKey]);
+                entries.sort(function (a, b) { return a[0].localeCompare(b[0]); });
+                var html = '<div class="color-legend-title">Legend</div>';
+                entries.forEach(function (pair) {
+                    var label = pair[0] || '(empty)';
+                    var c = pair[1];
+                    var css = 'rgb(' + Math.round(c.red*255) + ',' + Math.round(c.green*255) + ',' + Math.round(c.blue*255) + ')';
+                    html += '<div class="color-legend-item"><span class="color-legend-swatch" style="background:' + css + '"></span>' + label + '</div>';
+                });
+                legendEl.innerHTML = html;
+                legendEl.style.display = '';
+            } else {
+                legendEl.innerHTML = '';
+                legendEl.style.display = 'none';
+            }
         }
 
         function updateColorBars() {
@@ -605,24 +610,16 @@
             }
         });
 
-        // 1) define the updater
+        // Update the filter rectangle overlay on the map
         function updateFilterRectangle() {
-            const minLon = parseFloat(document.getElementById('minLongitude').value);
-            const maxLon = parseFloat(document.getElementById('maxLongitude').value);
-            const minLat = parseFloat(document.getElementById('minLatitude').value);
-            const maxLat = parseFloat(document.getElementById('maxLatitude').value);
-
-            filterRectangle.rectangle.coordinates = Cesium.Rectangle.fromDegrees(minLon, minLat, maxLon, maxLat);
-            // optional: ensure render
+            var v = getSliderValues();
+            filterRectangle.rectangle.coordinates = Cesium.Rectangle.fromDegrees(v.minLon, v.minLat, v.maxLon, v.maxLat);
             viewer.scene.requestRender();
         }
 
-        // 2) wire it to the four sliders
-        ['minLongitude', 'maxLongitude', 'minLatitude', 'maxLatitude'].forEach(id => {
-            document.getElementById(id).addEventListener('input', updateFilterRectangle);
-        });
-
-        // 3) set it once on load
+        // Wire sliders to filter rectangle
+        lonSlider.noUiSlider.on('slide', updateFilterRectangle);
+        latSlider.noUiSlider.on('slide', updateFilterRectangle);
         updateFilterRectangle();
 
 
@@ -669,12 +666,9 @@
 
                 populateLineList(data, lineList, geoJsonEntities, viewer);
 
-                document.getElementById('minLongitude').addEventListener('input', () => updateVisibility(geoJsonEntities, lineList));
-                document.getElementById('maxLongitude').addEventListener('input', () => updateVisibility(geoJsonEntities, lineList));
-                document.getElementById('minLatitude').addEventListener('input', () => updateVisibility(geoJsonEntities, lineList));
-                document.getElementById('maxLatitude').addEventListener('input', () => updateVisibility(geoJsonEntities, lineList));
-                document.getElementById('minDepth').addEventListener('input', () => updateVisibility(geoJsonEntities, lineList));
-                document.getElementById('maxDepth').addEventListener('input', () => updateVisibility(geoJsonEntities, lineList));
+                lonSlider.noUiSlider.on('slide', () => updateVisibility(geoJsonEntities, lineList));
+                latSlider.noUiSlider.on('slide', () => updateVisibility(geoJsonEntities, lineList));
+                depthSlider.noUiSlider.on('slide', () => updateVisibility(geoJsonEntities, lineList));
 
             })
             .catch(error => console.error('Error fetching GeoJSON:', error));
@@ -828,12 +822,13 @@
 
 
         function updateVisibility(entities, list) {
-            const minLongitude = parseFloat(document.getElementById('minLongitude').value);
-            const maxLongitude = parseFloat(document.getElementById('maxLongitude').value);
-            const minLatitude = parseFloat(document.getElementById('minLatitude').value);
-            const maxLatitude = parseFloat(document.getElementById('maxLatitude').value);
-            const minDepth = parseFloat(document.getElementById('minDepth').value);
-            const maxDepth = parseFloat(document.getElementById('maxDepth').value);
+            var sv = getSliderValues();
+            const minLongitude = sv.minLon;
+            const maxLongitude = sv.maxLon;
+            const minLatitude = sv.minLat;
+            const maxLatitude = sv.maxLat;
+            const minDepth = sv.minDepth;
+            const maxDepth = sv.maxDepth;
 
             const rows = list.getElementsByTagName('tr');
             Object.keys(entities).forEach(id => {
@@ -962,5 +957,4 @@
 
 
 </script>
-
-{%endblock%}
+{% endblock %}

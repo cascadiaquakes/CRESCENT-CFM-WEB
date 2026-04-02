@@ -1,66 +1,190 @@
 body,
 html {
-    font-family: 'Arial', sans-serif;
-    /* Sets the font to a common sans-serif type */
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
     margin: 0;
     padding: 0;
     height: 100%;
 }
 
-th,
-td {
-    border: 1px solid rgba(0, 31, 35, 0.5);
-    padding: 8px 10px;
-}
-
-th[scope='col'] {
-    background-color: rgba(0, 31, 35, 1);
-    color: white;
-}
-
-#listPanel {
-    width: 50%;
-    overflow-y: auto;
-    background: #eee;
-    padding: 10px;
+/* ── Full-width 2D viewer layout ── */
+#viewer2dWrapper {
+    position: absolute;
+    top: 100px; /* header height */
+    left: 0;
+    right: 0;
+    bottom: 0;
 }
 
 #mapContainer {
-    width: 50%;
-    background: #fff;
-    padding: 0px;
-    /* Adjust width as needed */
-    height: 1100px;
-    /* Fixed height, but can be adjusted */
+    position: absolute;
+    inset: 0;
+}
+
+/* ── Floating sidebar ── */
+#sidebarPanel {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    bottom: 10px;
+    width: 310px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 10;
     overflow-y: auto;
+    pointer-events: none;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 
-ul {
-    list-style-type: none;
-    /* Removes bullet points */
-    padding: 0;
+#sidebarPanel::-webkit-scrollbar {
+    display: none;
 }
 
-li {
-    padding: 5px;
-    margin-bottom: 5px;
-    /*background-color: #f9f9f9;*/
-    /*border: 1px solid #ddd;*/
+#sidebarPanel > * {
+    pointer-events: auto;
 }
 
-#depthSliders {
+/* ── Toggle sidebar button ── */
+.btn-toggle-sidebar {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 20;
+    display: none;
+    background: rgba(255,255,255,0.95);
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+/* ── Glass cards ── */
+.card-2d {
+    background: rgba(255,255,255,0.96);
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 14px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06);
+    padding: 12px 14px;
+    font-size: 12px;
+    color: #334155;
+}
+
+.card-2d-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+}
+
+.card-2d-section {
+    font-size: 11px;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 10px 0 4px;
+}
+
+.card-2d-section:first-of-type {
+    margin-top: 0;
+}
+
+.card-2d-row {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
-    margin-bottom: 20px;
+    gap: 12px;
+    font-size: 12px;
+    margin-bottom: 6px;
 }
 
-input[type="range"] {
-    margin: 0 10px 0 0;
+.card-2d-check {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    font-weight: 500;
 }
 
-#depthSliders label {
-    margin-right: 5px;
+.color-controls select {
+    width: 100%;
+    padding: 4px 6px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 12px;
+    margin-bottom: 6px;
+}
+
+.color-range-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+    font-size: 11px;
+}
+
+/* ── Table in card ── */
+.table-holder {
+    max-height: 45vh;
+    overflow-y: auto;
+    overflow-x: auto;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    scrollbar-width: thin;
+}
+
+#lineList {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+}
+
+#lineList th {
+    position: sticky;
+    top: 0;
+    background: #0b4a53;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    padding: 6px 8px;
+    text-align: left;
+    white-space: nowrap;
+    border: none;
+}
+
+#lineList td {
+    padding: 5px 8px;
+    border-bottom: 1px solid #f1f5f9;
+    white-space: nowrap;
+    font-size: 11px;
+    color: #334155;
+    border-left: none;
+    border-right: none;
+}
+
+#lineList tbody tr:hover {
+    background: #f0f9fa;
+}
+
+#lineList tbody tr:nth-child(even) {
+    background: #f8fafc;
+}
+
+#lineList tbody tr:nth-child(even):hover {
+    background: #f0f9fa;
+}
+
+/* ── Responsive ── */
+@media (max-width: 800px) {
+    #sidebarPanel {
+        width: 260px;
+    }
 }
 
 #buttonRow {
@@ -87,35 +211,122 @@ input[type="range"] {
     background-color: #0d5e69;
 }
 
-.slider-group {
+.slider-row {
     display: grid;
-    grid-template-columns: auto auto 1fr 1fr auto;
+    grid-template-columns: auto 42px 1fr 42px;
     align-items: center;
-    gap: 10px;
-    /* Space between columns */
+    gap: 6px;
     margin-bottom: 10px;
-    /* Adds space between each slider group */
 }
 
-.slider-group label {
-    font-weight: bold;
+.slider-row label {
+    font-weight: 600;
     white-space: nowrap;
-    /* Ensures the label does not break into multiple lines */
+    font-size: 11px;
+    color: #1e293b;
+    grid-column: 1 / -1;
+    margin-bottom: -4px;
 }
 
-.slider-group .value {
-    min-width: 60px;
-    /* Ensures that the space for the value display is constant */
-    text-align: right;
-    /* Aligns the text to the right */
+.slider-val {
+    font-size: 10px;
+    color: #0b4a53;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    text-align: center;
 }
 
+.noUi-target-wrapper {
+    min-width: 100px;
+    padding: 0 4px;
+}
 
-.slider-group input[type="range"] {
-    flex-grow: 1;
-    /* Allows sliders to grow and fill the space */
-    margin-right: 10px;
-    /* Space between consecutive sliders */
+/* ── noUiSlider theme ── */
+.noUi-target {
+    height: 5px !important;
+    border: none !important;
+    background: #e2e8f0 !important;
+    border-radius: 4px !important;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.08) !important;
+}
+
+.noUi-connect {
+    background: linear-gradient(to right, #0b4a53, #0d6e7a) !important;
+    border-radius: 4px !important;
+}
+
+.noUi-handle {
+    border-radius: 50% !important;
+    width: 14px !important;
+    height: 14px !important;
+    right: -7px !important;
+    top: -5px !important;
+    background: #fff !important;
+    border: 3px solid #0b4a53 !important;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.2) !important;
+    cursor: grab !important;
+    transition: box-shadow 0.15s, transform 0.15s !important;
+}
+
+.noUi-handle:hover {
+    box-shadow: 0 2px 8px rgba(11,74,83,0.35) !important;
+    transform: scale(1.1) !important;
+}
+
+.noUi-handle:active {
+    cursor: grabbing !important;
+    transform: scale(1.15) !important;
+}
+
+.noUi-handle::before,
+.noUi-handle::after {
+    display: none !important;
+}
+
+/* ── Color legend ── */
+#colorLegend {
+    margin-top: 8px;
+    padding: 8px 10px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    max-height: 180px;
+    overflow-y: auto;
+}
+
+.color-legend-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+
+.color-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: #334155;
+    padding: 2px 0;
+}
+
+.color-legend-swatch {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    flex-shrink: 0;
+    border: 1px solid rgba(0,0,0,0.1);
+}
+
+#resetFiltersBtn {
+    background-color: #64748b !important;
+}
+
+#resetFiltersBtn:hover {
+    background-color: #475569 !important;
 }
 
 .scrollable-div {
