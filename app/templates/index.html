@@ -710,7 +710,7 @@
                 // Numeric fields with fallbacks
                 const upperDepth = coerceNumber(props.upper_depth, 0);
                 const lowerDepth = coerceNumber(props.lower_depth, 0);
-                const averageDepth = (upperDepth + lowerDepth) / 2;
+                const averageDepth = Math.abs((upperDepth + lowerDepth) / 2);
                 const rake = coerceNumber(props.rake, 0);
                 const dip = coerceNumber(props.avg_dip != null ? props.avg_dip : props.dip, 0);
                 const slipRate = coerceNumber(props['NSHM23 sliprates'], NaN);

@@ -213,7 +213,7 @@ html {
 
 .slider-row {
     display: grid;
-    grid-template-columns: auto 42px 1fr 42px;
+    grid-template-columns: auto 50px 1fr 50px;
     align-items: center;
     gap: 6px;
     margin-bottom: 10px;
