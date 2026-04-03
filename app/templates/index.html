@@ -74,6 +74,10 @@
 <!-- Full-width map with floating cards (overrides default container layout) -->
 <div id="viewer2dWrapper">
     <div id="mapContainer"></div>
+    <div id="mapLoading" class="map-loading-overlay">
+        <div class="map-spinner"></div>
+        <div class="map-loading-text">Loading fault data…</div>
+    </div>
 
     <!-- Toggle button for sidebar -->
     <button id="toggleSidebar" class="btn-toggle-sidebar" title="Show/Hide Controls">&#9776;</button>
@@ -86,79 +90,113 @@
             <div class="card-2d-title">CFM Fault Traces</div>
 
             <div id="mapControls">
-                <div class="card-2d-section">Location Filters</div>
-                <div class="slider-row">
-                    <label>Longitude (°East)</label>
-                    <span id="minLongitudeValue" class="slider-val">-130°</span>
-                    <div id="longitudeSlider" class="noUi-target-wrapper"></div>
-                    <span id="maxLongitudeValue" class="slider-val">-116°</span>
-                </div>
-                <div class="slider-row">
-                    <label>Latitude (°North)</label>
-                    <span id="minLatitudeValue" class="slider-val">39°</span>
-                    <div id="latitudeSlider" class="noUi-target-wrapper"></div>
-                    <span id="maxLatitudeValue" class="slider-val">52°</span>
-                </div>
-                <div class="slider-row">
-                    <label>Average Depth (km)</label>
-                    <span id="minDepthValue" class="slider-val">0 km</span>
-                    <div id="depthSlider" class="noUi-target-wrapper"></div>
-                    <span id="maxDepthValue" class="slider-val">50 km</span>
-                </div>
-
-                <div class="card-2d-section">Fault Color</div>
-                <div class="color-controls">
-                    <select id="colorSelector" onchange="updateLabels()">
-                        <option value="Black">Black</option>
-                        <option value="Blue">Blue</option>
-                        <option value="DipColorMap">Color by Dip</option>
-                        <option value="RakeColorMap">Color by Rake</option>
-                        <option value="SlipRateColorMap">Color by Slip Rate</option>
-                        <option value="FaultLevelColor">Color by Fault Level</option>
-                        <option value="RegionColor">Color by Region</option>
-                        <option value="SlipSenseColor">Color by Slip Sense</option>
-                    </select>
-                    <div class="color-range-row">
-                        <label for="minColor" id="minColorLabel">min.</label>
-                        <input type="number" id="minColor" style="width:48px;" />
-                        <span id="minColorUnit"></span>
-                        <div id="colorBarMin" class="color-bar" style="background-color: red;">&nbsp;</div>
-                        <label for="maxColor" id="maxColorLabel">max.</label>
-                        <input type="number" id="maxColor" style="width:48px;">
-                        <span id="maxColorUnit"></span>
-                        <div id="colorBarMax" class="color-bar" style="background-color: blue;">&nbsp;</div>
+                <!-- Longitude -->
+                <div class="accordion-section open">
+                    <button class="accordion-header" type="button">
+                        <span class="accordion-arrow">&#9662;</span>
+                        <span class="accordion-label">LONGITUDE (°EAST)</span>
+                        <span class="accordion-range"><span id="minLongitudeValue">-130.0°</span> &ndash; <span id="maxLongitudeValue">-116.0°</span></span>
+                    </button>
+                    <div class="accordion-body">
+                        <div id="longitudeSlider" class="accordion-slider"></div>
                     </div>
-                    <div id="colorBarNote" class="notes"></div>
-                    <div id="colorLegend" style="display:none;"></div>
                 </div>
 
-                <div class="card-2d-section">Overlays</div>
-                <div class="overlay-toggle">
-                    <label>
-                        <input type="checkbox" id="toggleEQCheckbox" checked>
-                        <span class="legend-dot eq-dot" aria-hidden="true"></span>
-                        U.S. Geological Survey Earthquake Catalog<sup>1</sup> (M&ge;4, 1970&ndash;Present), Circle Size &prop; Magnitude
-                    </label>
+                <!-- Latitude -->
+                <div class="accordion-section open">
+                    <button class="accordion-header" type="button">
+                        <span class="accordion-arrow">&#9662;</span>
+                        <span class="accordion-label">LATITUDE (°NORTH)</span>
+                        <span class="accordion-range"><span id="minLatitudeValue">39.0°</span> &ndash; <span id="maxLatitudeValue">52.0°</span></span>
+                    </button>
+                    <div class="accordion-body">
+                        <div id="latitudeSlider" class="accordion-slider"></div>
+                    </div>
                 </div>
-                <div class="overlay-toggle">
-                    <label>
-                        <input type="checkbox" id="toggleQFFCheckbox">
-                        U.S. Geological Survey Quaternary Fault and Fold Database<sup>2</sup>
-                        <span id="qffLoading" style="display:none; margin-left:4px; font-size:11px; color:#94a3b8;">loading…</span>
-                    </label>
+
+                <!-- Depth -->
+                <div class="accordion-section open">
+                    <button class="accordion-header" type="button">
+                        <span class="accordion-arrow">&#9662;</span>
+                        <span class="accordion-label">DEPTH RANGE</span>
+                        <span class="accordion-range"><span id="minDepthValue">0.0 km</span> &ndash; <span id="maxDepthValue">50.0 km</span></span>
+                    </button>
+                    <div class="accordion-body">
+                        <div id="depthSlider" class="accordion-slider"></div>
+                    </div>
+                </div>
+
+                <!-- Fault Color -->
+                <div class="accordion-section open">
+                    <button class="accordion-header" type="button">
+                        <span class="accordion-arrow">&#9662;</span>
+                        <span class="accordion-label">FAULT COLOR</span>
+                    </button>
+                    <div class="accordion-body">
+                        <div class="color-controls">
+                            <select id="colorSelector" onchange="updateLabels()">
+                                <option value="Black">Black</option>
+                                <option value="Blue">Blue</option>
+                                <option value="DipColorMap">Color by Dip</option>
+                                <option value="RakeColorMap">Color by Rake</option>
+                                <option value="SlipRateColorMap">Color by Slip Rate</option>
+                                <option value="FaultLevelColor">Color by Fault Level</option>
+                                <option value="RegionColor">Color by Region</option>
+                                <option value="SlipSenseColor">Color by Slip Sense</option>
+                            </select>
+                            <div class="color-range-row">
+                                <label for="minColor" id="minColorLabel">min.</label>
+                                <input type="number" id="minColor" style="width:48px;" />
+                                <span id="minColorUnit"></span>
+                                <div id="colorBarMin" class="color-bar" style="background-color: red;">&nbsp;</div>
+                                <label for="maxColor" id="maxColorLabel">max.</label>
+                                <input type="number" id="maxColor" style="width:48px;">
+                                <span id="maxColorUnit"></span>
+                                <div id="colorBarMax" class="color-bar" style="background-color: blue;">&nbsp;</div>
+                            </div>
+                            <div id="colorBarNote" class="notes"></div>
+                            <div id="colorLegend" style="display:none;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Overlays -->
+                <div class="accordion-section open">
+                    <button class="accordion-header" type="button">
+                        <span class="accordion-arrow">&#9662;</span>
+                        <span class="accordion-label">OVERLAYS</span>
+                    </button>
+                    <div class="accordion-body">
+                        <div class="overlay-toggle">
+                            <label>
+                                <input type="checkbox" id="toggleEQCheckbox" checked>
+                                <span class="legend-dot eq-dot" aria-hidden="true"></span>
+                                U.S. Geological Survey Earthquake Catalog<sup>1</sup> (M&ge;4, 1970&ndash;Present), Circle Size &prop; Magnitude
+                            </label>
+                        </div>
+                        <div class="overlay-toggle">
+                            <label>
+                                <input type="checkbox" id="toggleQFFCheckbox">
+                                U.S. Geological Survey Quaternary Fault and Fold Database<sup>2</sup>
+                                <span id="qffLoading" style="display:none; margin-left:4px; font-size:11px; color:#94a3b8;">loading&hellip;</span>
+                            </label>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div id="buttonRow">
-                <button id="view3DButton">View 3D</button>
-                <button id="downloadSelectedBtn">&#x2B07; Download (1 km)</button>
-                <button id="fullScreenButton" onclick="toggleFullScreen()">&#x26F6; Fullscreen</button>
-                <button id="resetFiltersBtn">&#x21BA; Reset</button>
+            <div class="accordion-footer">
+                <button id="resetFiltersBtn" class="btn-reset">Reset Filters</button>
             </div>
         </div>
 
-        <!-- Card 2: Table -->
+        <!-- Card 2: Fault Objects -->
         <div class="card-2d">
+            <div class="card-2d-title">CFM Fault Objects <span id="faultCount" class="fault-count-badge"></span></div>
+            <div id="buttonRow">
+                <button id="view3DButton">View 3D</button>
+                <button id="downloadSelectedBtn">&#x2B07; Download (1 km)</button>
+            </div>
             <div class="card-2d-row">
                 <label class="card-2d-check"><input type="checkbox" id="selectAllCheckbox" /> Select/Deselect All</label>
                 <div id="toggleVisibilityLabel" style="cursor:pointer; display:inline-flex; align-items:center; gap:4px;">
@@ -180,6 +218,13 @@
 
 
     document.addEventListener('DOMContentLoaded', function () {
+        // Accordion toggle
+        document.querySelectorAll('.accordion-header').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                this.closest('.accordion-section').classList.toggle('open');
+            });
+        });
+
         // Define the coordinates and other configuration variables
         const delta = 0.1;
         const startDepth = 0;
@@ -666,9 +711,33 @@
 
                 populateLineList(data, lineList, geoJsonEntities, viewer);
 
-                lonSlider.noUiSlider.on('slide', () => updateVisibility(geoJsonEntities, lineList));
-                latSlider.noUiSlider.on('slide', () => updateVisibility(geoJsonEntities, lineList));
-                depthSlider.noUiSlider.on('slide', () => updateVisibility(geoJsonEntities, lineList));
+                // Update fault count badge
+                var totalFaults = Object.keys(geoJsonEntities).length;
+                document.getElementById('faultCount').textContent = totalFaults;
+
+                // Hide loading spinner
+                document.getElementById('mapLoading').style.display = 'none';
+
+                lonSlider.noUiSlider.on('slide', () => {
+                    updateVisibility(geoJsonEntities, lineList);
+                    updateFaultCount();
+                });
+                latSlider.noUiSlider.on('slide', () => {
+                    updateVisibility(geoJsonEntities, lineList);
+                    updateFaultCount();
+                });
+                depthSlider.noUiSlider.on('slide', () => {
+                    updateVisibility(geoJsonEntities, lineList);
+                    updateFaultCount();
+                });
+
+                function updateFaultCount() {
+                    var visible = 0;
+                    Object.keys(geoJsonEntities).forEach(function (id) {
+                        if (geoJsonEntities[id].show) visible++;
+                    });
+                    document.getElementById('faultCount').textContent = visible;
+                }
 
             })
             .catch(error => console.error('Error fetching GeoJSON:', error));
