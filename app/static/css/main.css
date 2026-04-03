@@ -465,19 +465,24 @@ tbody tr:hover {
 }
 
 .overlay-toggle {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 12px;
+    font-size: 11px;
+    line-height: 1.4;
     color: #334155;
     margin-top: 4px;
 }
 
 .overlay-toggle label {
-    display: flex;
-    align-items: center;
-    gap: 4px;
     cursor: pointer;
+}
+
+.overlay-toggle input[type="checkbox"] {
+    vertical-align: middle;
+    margin-right: 4px;
+}
+
+.overlay-toggle .legend-dot {
+    vertical-align: middle;
+    margin-right: 2px;
 }
 
 .overlay-toggle sup {
