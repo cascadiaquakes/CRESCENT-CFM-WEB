@@ -36,31 +36,42 @@ html, body {
     z-index: 10000;
 }
 
-/* ===================== TOGGLE BUTTON ===================== */
-#toggleButton {
+/* ===================== TOP BAR BUTTONS ===================== */
+#topBarButtons {
     position: fixed;
     top: 12px;
     left: 12px;
     z-index: 1100;
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    width: 290px;
+}
 
-    padding: 7px 14px;
+#toggleButton,
+#backTo2DBtn {
+    flex: 1;
+    padding: 7px 0;
+    text-align: center;
     background: rgba(11, 74, 83, 0.88);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     color: white;
     border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 20px;
+    border-radius: 14px;
 
     font-size: 12px;
     font-weight: 600;
     letter-spacing: 0.2px;
     cursor: pointer;
+    text-decoration: none;
 
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
     transition: background 0.2s ease;
 }
 
-#toggleButton:hover {
+#toggleButton:hover,
+#backTo2DBtn:hover {
     background: rgba(11, 74, 83, 1);
 }
 
