@@ -37,6 +37,19 @@ REPOSITORY_FILE = "project.json"
 templates = Jinja2Templates(directory="templates")
 
 
+def _get_cesium_token():
+    """Parse CESIUM_KEYS env var (JSON object or raw token string)."""
+    raw = os.getenv("CESIUM_KEYS", "")
+    if not raw:
+        return "your_access_token"
+    try:
+        parsed = json.loads(raw)
+        return parsed.get("cesium_access_token", "your_access_token")
+    except (json.JSONDecodeError, AttributeError):
+        # Treat as raw token string
+        return raw
+
+
 def get_config(branch):
     """Get the initial configuration file based on the requested branch."""
 
@@ -133,13 +146,10 @@ async def get_cesium_key(request: Request):
     """This must be secured lated to avoid external"""
 
     # Only internal requests are accepted.
-    if os.getenv("CESIUM_KEYS") is None:
-        logging.error("get-token Failed")
-        return {"token": "your_access_token"}
-    else:
-        CESIUM_KEYS = json.loads(os.getenv("CESIUM_KEYS"))
-        access_token = CESIUM_KEYS["cesium_access_token"]
-        return {"token": access_token}
+    access_token = _get_cesium_token()
+    if access_token == "your_access_token":
+        logging.error("get-token: CESIUM_KEYS not configured")
+    return {"token": access_token}
 
 
 # Route to serve favicon
@@ -156,9 +166,7 @@ async def index(request: Request, branch: Optional[str] = Query(None)):
     config = get_config(branch)
     logging.debug("index: url=%s branch=%s", str(request.url), branch)
 
-    # Get the token from environment variables (internal access)
-    CESIUM_KEYS = json.loads(os.getenv("CESIUM_KEYS", "{}"))
-    access_token = CESIUM_KEYS.get("cesium_access_token", "your_access_token")
+    access_token = _get_cesium_token()
 
     # Logging the configuration
     logging.debug("config= %s", config)
@@ -181,9 +189,7 @@ async def downloads(request: Request):
 @router.get("/3d", response_class=HTMLResponse)
 async def threed(request: Request, branch: str = None):
     branch = branch or os.environ.get("ENV", "main")
-    # Get the token from environment variables (internal access)
-    CESIUM_KEYS = json.loads(os.getenv("CESIUM_KEYS", "{}"))
-    access_token = CESIUM_KEYS.get("cesium_access_token", "your_access_token")
+    access_token = _get_cesium_token()
 
     # Pass the branch parameter to the template
     return templates.TemplateResponse(
