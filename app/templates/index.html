@@ -19,7 +19,7 @@
     let branch = "{{ branch }}";
     let configFilePath = `/static/config/${branch === "main" ? "" : branch + "/"}repository_config.js`;
 
-    if (branch !== "main") {
+    if (branch !== "main" && branch !== "prod") {
         alert("[WARN] Loading configuration from the branch: [" + branch + "]\n" + configFilePath);
     }
 

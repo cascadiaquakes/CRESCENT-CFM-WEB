@@ -37,7 +37,7 @@
         let branch = "{{ branch }}";
         let configFilePath = `/static/config/${branch === "main" ? "" : branch + "/"}repository_config.js`;
 
-        if (branch !== "main") {
+        if (branch !== "main" && branch !== "prod") {
             alert("[WARN] Loading configuration from the branch: [" + branch + "]\n" + configFilePath);
         }
 
@@ -55,13 +55,11 @@
                     return branch.charAt(0).toUpperCase() + branch.slice(1);
                 }
                 // Dynamically update the page title if the branch is not "main"
-                if (branch !== "main") {
+                if (branch !== "main" && branch !== "prod") {
                     let currentTitle = document.title;
                     let domain = window.location.hostname;
                     let capitalizedBranch = capitalizeBranchName(branch);
                     document.title = `[${capitalizedBranch} - ${domain}] ${currentTitle}`;
-                    //alert("Page title updated to: " + document.title);
-
                 }
             } else {
                 console.error("Failed to load repository_config.js");
