@@ -76,7 +76,7 @@ const boundaryMarker = ["line"];
 const zoomOutFactor = 2.0; // Increased zoom out factor for better visibility
 
 // CFM data
-const cfmData = ['https://raw.githubusercontent.com/cascadiaquakes/crescent-cfm/main/crescent_cfm_files/crescent_cfm_crustal_3d.geojson'];
+const cfmData = ['https://raw.githubusercontent.com/cascadiaquakes/crescent-cfm/main/crescent_cfm_files/crescent_cfm_crustal_3d_lowres.geojson'];
 const cfmLabel = ['Cascadia Fault Surfaces'];
 const cfmColor = [Cesium.Color.DARKMAGENTA];
 const cfmFillOpacity = [0.5];
