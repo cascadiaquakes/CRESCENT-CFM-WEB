@@ -69,35 +69,6 @@ class CfmStack(Stack):
             ),
         )
 
-        # ── App Runner Service (Prod) ───────────────────────────
-        prod_service = apprunner.Service(
-            self,
-            "CfmProdService",
-            service_name="cfm-web-prod",
-            source=apprunner.Source.from_ecr(
-                repository=repository,
-                image_configuration=apprunner.ImageConfiguration(
-                    port=80,
-                    environment_variables={
-                        "ENV": "prod",
-                    },
-                ),
-                tag_or_digest="dev",  # temporary: swap back to "prod" after bootstrap
-            ),
-            access_role=access_role,
-            instance_role=instance_role,
-            cpu=apprunner.Cpu.ONE_VCPU,
-            memory=apprunner.Memory.TWO_GB,
-            auto_deployments_enabled=False,
-            health_check=apprunner.HealthCheck.http(
-                path="/",
-                interval=Duration.seconds(10),
-                timeout=Duration.seconds(5),
-                healthy_threshold=1,
-                unhealthy_threshold=5,
-            ),
-        )
-
         # ── Outputs ─────────────────────────────────────────────
         CfnOutput(
             self,
@@ -118,18 +89,4 @@ class CfmStack(Stack):
             "DevServiceArn",
             value=dev_service.service_arn,
             description="App Runner dev service ARN (needed for deploy workflow)",
-        )
-
-        CfnOutput(
-            self,
-            "ProdServiceUrl",
-            value=prod_service.service_url,
-            description="App Runner prod service URL",
-        )
-
-        CfnOutput(
-            self,
-            "ProdServiceArn",
-            value=prod_service.service_arn,
-            description="App Runner prod service ARN (needed for deploy workflow)",
         )
