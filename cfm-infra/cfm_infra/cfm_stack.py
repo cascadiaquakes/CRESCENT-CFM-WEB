@@ -82,7 +82,7 @@ class CfmStack(Stack):
                         "ENV": "prod",
                     },
                 ),
-                tag_or_digest="prod",
+                tag_or_digest="dev",  # temporary: swap back to "prod" after bootstrap
             ),
             access_role=access_role,
             instance_role=instance_role,
