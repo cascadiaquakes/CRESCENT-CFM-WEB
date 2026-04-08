@@ -67,7 +67,7 @@ jobs:
           TASK_DEF=$(aws ecs describe-services \
             --cluster "$ECS_CLUSTER" \
             --services "$ECS_SERVICE" \
-            --query 'services[0].taskDefinition' \
+            --query 'services[0].deployments[0].taskDefinition' \
             --output text)
 
           # Get the task definition JSON and update the image
