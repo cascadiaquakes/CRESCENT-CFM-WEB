@@ -18,7 +18,8 @@ concurrency:
 env:
   AWS_REGION: us-west-2
   ECR_REPO: cfm-web
-  APP_RUNNER_SERVICE_ARN: ${{ secrets.CFM_PROD_SERVICE_ARN }}
+  ECS_CLUSTER: default
+  ECS_SERVICE: cfm-web-prod
 
 jobs:
   deploy:
@@ -56,70 +57,49 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPO:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPO:prod
 
-      # ── Deploy to App Runner ──────────────────────────────────
-      - name: Update App Runner service
+      # ── Deploy to ECS Express Mode ────────────────────────────
+      - name: Update ECS service with new image
         env:
           ECR_REGISTRY: ${{ steps.ecr-login.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
-          CESIUM_KEYS: ${{ secrets.CESIUM_KEYS }}
         run: |
-          ACCESS_ROLE=$(aws apprunner describe-service \
-            --service-arn "$APP_RUNNER_SERVICE_ARN" \
-            --query 'Service.SourceConfiguration.AuthenticationConfiguration.AccessRoleArn' \
+          # Get current task definition
+          TASK_DEF=$(aws ecs describe-services \
+            --cluster "$ECS_CLUSTER" \
+            --services "$ECS_SERVICE" \
+            --query 'services[0].taskDefinition' \
             --output text)
 
-          jq -n \
-            --arg image "$ECR_REGISTRY/$ECR_REPO:$IMAGE_TAG" \
-            --arg cesium "$CESIUM_KEYS" \
-            --arg role "$ACCESS_ROLE" \
-            '{
-              ImageRepository: {
-                ImageIdentifier: $image,
-                ImageRepositoryType: "ECR",
-                ImageConfiguration: {
-                  Port: "80",
-                  RuntimeEnvironmentVariables: {
-                    CESIUM_KEYS: $cesium,
-                    ENV: "prod"
-                  }
-                }
-              },
-              AuthenticationConfiguration: {
-                AccessRoleArn: $role
-              }
-            }' > /tmp/source-config.json
+          # Get the task definition JSON and update the image
+          aws ecs describe-task-definition \
+            --task-definition "$TASK_DEF" \
+            --query 'taskDefinition' \
+            | jq --arg IMAGE "$ECR_REGISTRY/$ECR_REPO:$IMAGE_TAG" \
+              '.containerDefinitions[0].image = $IMAGE
+               | del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy)' \
+            > /tmp/task-def.json
 
-          aws apprunner update-service \
-            --service-arn "$APP_RUNNER_SERVICE_ARN" \
-            --source-configuration file:///tmp/source-config.json
+          # Register new task definition
+          NEW_TASK_DEF=$(aws ecs register-task-definition \
+            --cli-input-json file:///tmp/task-def.json \
+            --query 'taskDefinition.taskDefinitionArn' \
+            --output text)
+
+          echo "New task definition: $NEW_TASK_DEF"
+
+          # Update the service to use the new task definition
+          aws ecs update-service \
+            --cluster "$ECS_CLUSTER" \
+            --service "$ECS_SERVICE" \
+            --task-definition "$NEW_TASK_DEF" \
+            --force-new-deployment
 
       # ── Wait for deployment ───────────────────────────────────
-      - name: Wait for App Runner deployment
+      - name: Wait for ECS deployment
         run: |
-          echo "Waiting for App Runner service to stabilize..."
-          for i in $(seq 1 60); do
-            STATUS=$(aws apprunner describe-service \
-              --service-arn "$APP_RUNNER_SERVICE_ARN" \
-              --query 'Service.Status' \
-              --output text)
-
-            echo "Attempt $i: Status = $STATUS"
-
-            if [ "$STATUS" = "RUNNING" ]; then
-              echo "Service is running."
-              SERVICE_URL=$(aws apprunner describe-service \
-                --service-arn "$APP_RUNNER_SERVICE_ARN" \
-                --query 'Service.ServiceUrl' \
-                --output text)
-              echo "Production URL: https://$SERVICE_URL"
-              exit 0
-            elif [ "$STATUS" = "OPERATION_IN_PROGRESS" ]; then
-              sleep 10
-            else
-              echo "Unexpected status: $STATUS"
-              exit 1
-            fi
-          done
-
-          echo "Timed out waiting for deployment"
-          exit 1
+          echo "Waiting for ECS service to stabilize..."
+          aws ecs wait services-stable \
+            --cluster "$ECS_CLUSTER" \
+            --services "$ECS_SERVICE" \
+          && echo "Deployment complete." \
+          || echo "Warning: Timed out waiting, but deployment may still be in progress."

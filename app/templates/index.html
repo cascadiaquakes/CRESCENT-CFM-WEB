@@ -19,7 +19,7 @@
     let branch = "{{ branch }}";
     let configFilePath = `/static/config/${branch === "main" ? "" : branch + "/"}repository_config.js`;
 
-    if (branch !== "main") {
+    if (branch !== "main" && branch !== "prod") {
         alert("[WARN] Loading configuration from the branch: [" + branch + "]\n" + configFilePath);
     }
 
@@ -789,7 +789,14 @@
             });
             lineList.appendChild(headerRow);
 
-            (data.features || []).forEach((feature, index) => {
+            // Sort features alphabetically by name
+            var sortedFeatures = (data.features || []).slice().sort(function (a, b) {
+                var nameA = ((a.properties || {}).name || '').toLowerCase();
+                var nameB = ((b.properties || {}).name || '').toLowerCase();
+                return nameA.localeCompare(nameB);
+            });
+
+            sortedFeatures.forEach((feature, index) => {
                 // Guard geometry
                 if (!feature || !feature.geometry || feature.geometry.type !== 'LineString') return;
 
