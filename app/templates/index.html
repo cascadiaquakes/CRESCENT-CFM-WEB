@@ -522,6 +522,26 @@
         ];
         const categoryColorMaps = {};
 
+        // Discrete slip rate bins (mm/yr) with assigned colors
+        const slipRateBins = [
+            { min: 0, max: 1,       label: '0 – 1',  color: Cesium.Color.fromCssColorString('#2166ac') },
+            { min: 1, max: 2,       label: '1 – 2',  color: Cesium.Color.fromCssColorString('#4393c3') },
+            { min: 2, max: 3,       label: '2 – 3',  color: Cesium.Color.fromCssColorString('#92c5de') },
+            { min: 3, max: 4,       label: '3 – 4',  color: Cesium.Color.fromCssColorString('#d1e5f0') },
+            { min: 4, max: 5,       label: '4 – 5',  color: Cesium.Color.fromCssColorString('#fddbc7') },
+            { min: 5, max: 6,       label: '5 – 6',  color: Cesium.Color.fromCssColorString('#f4a582') },
+            { min: 6, max: 7,       label: '6 – 7',  color: Cesium.Color.fromCssColorString('#d6604d') },
+            { min: 7, max: Infinity, label: '7+',     color: Cesium.Color.fromCssColorString('#b2182b') },
+        ];
+
+        function getSlipRateBinColor(value) {
+            if (!Number.isFinite(value)) return Cesium.Color.GRAY;
+            for (var i = 0; i < slipRateBins.length; i++) {
+                if (value >= slipRateBins[i].min && value < slipRateBins[i].max) return slipRateBins[i].color;
+            }
+            return slipRateBins[slipRateBins.length - 1].color;
+        }
+
         function getCategoryColor(mapName, value) {
             if (!value) return Cesium.Color.GRAY;
             if (!categoryColorMaps[mapName]) categoryColorMaps[mapName] = {};
@@ -547,12 +567,8 @@
                         const maxDip = parseFloat(document.getElementById('maxColor').value);
                         color = getColorFromValue(entity.dip, minDip, maxDip).cesiumColor;
                     } else if (selectedColor === 'SlipRateColorMap' && 'slipRate' in entity) {
-                        toggleColorInputs(true);
-                        const minSR = parseFloat(document.getElementById('minColor').value);
-                        const maxSR = parseFloat(document.getElementById('maxColor').value);
-                        color = Number.isFinite(entity.slipRate)
-                            ? getColorFromValue(entity.slipRate, minSR, maxSR).cesiumColor
-                            : Cesium.Color.GRAY;
+                        toggleColorInputs(false);
+                        color = getSlipRateBinColor(entity.slipRate);
                     } else if (selectedColor === 'FaultLevelColor') {
                         toggleColorInputs(false);
                         color = getCategoryColor('faultLevel', entity.faultLevel);
@@ -580,25 +596,38 @@
 
             // Build legend for categorical modes
             var legendEl = document.getElementById('colorLegend');
-            var catKey = selectedColor === 'FaultLevelColor' ? 'faultLevel'
-                       : selectedColor === 'RegionColor' ? 'region'
-                       : selectedColor === 'SlipSenseColor' ? 'slipSense'
-                       : null;
-            if (catKey && categoryColorMaps[catKey]) {
-                var entries = Object.entries(categoryColorMaps[catKey]);
-                entries.sort(function (a, b) { return a[0].localeCompare(b[0]); });
-                var html = '<div class="color-legend-title">Legend</div>';
-                entries.forEach(function (pair) {
-                    var label = pair[0] || '(empty)';
-                    var c = pair[1];
+            if (selectedColor === 'SlipRateColorMap') {
+                var html = '<div class="color-legend-title">Slip Rate (mm/yr)</div>';
+                slipRateBins.forEach(function (bin) {
+                    var c = bin.color;
                     var css = 'rgb(' + Math.round(c.red*255) + ',' + Math.round(c.green*255) + ',' + Math.round(c.blue*255) + ')';
-                    html += '<div class="color-legend-item"><span class="color-legend-swatch" style="background:' + css + '"></span>' + label + '</div>';
+                    html += '<div class="color-legend-item"><span class="color-legend-swatch" style="background:' + css + '"></span>' + bin.label + '</div>';
                 });
+                // Add gray for unknown
+                html += '<div class="color-legend-item"><span class="color-legend-swatch" style="background:gray"></span>No data</div>';
                 legendEl.innerHTML = html;
                 legendEl.style.display = '';
             } else {
-                legendEl.innerHTML = '';
-                legendEl.style.display = 'none';
+                var catKey = selectedColor === 'FaultLevelColor' ? 'faultLevel'
+                           : selectedColor === 'RegionColor' ? 'region'
+                           : selectedColor === 'SlipSenseColor' ? 'slipSense'
+                           : null;
+                if (catKey && categoryColorMaps[catKey]) {
+                    var entries = Object.entries(categoryColorMaps[catKey]);
+                    entries.sort(function (a, b) { return a[0].localeCompare(b[0]); });
+                    var html = '<div class="color-legend-title">Legend</div>';
+                    entries.forEach(function (pair) {
+                        var label = pair[0] || '(empty)';
+                        var c = pair[1];
+                        var css = 'rgb(' + Math.round(c.red*255) + ',' + Math.round(c.green*255) + ',' + Math.round(c.blue*255) + ')';
+                        html += '<div class="color-legend-item"><span class="color-legend-swatch" style="background:' + css + '"></span>' + label + '</div>';
+                    });
+                    legendEl.innerHTML = html;
+                    legendEl.style.display = '';
+                } else {
+                    legendEl.innerHTML = '';
+                    legendEl.style.display = 'none';
+                }
             }
         }
 
@@ -782,7 +811,7 @@
                 const averageDepth = Math.abs((upperDepth + lowerDepth) / 2);
                 const rake = coerceNumber(props.rake, 0);
                 const dip = coerceNumber(props.avg_dip != null ? props.avg_dip : props.dip, 0);
-                const slipRate = coerceNumber(props['NSHM23 sliprates'], NaN);
+                const slipRate = coerceNumber(props['NSHM sliprates (MedWgtd)'], NaN);
 
                 // Categorical fields
                 const faultLevel = toStr(props.fault_level, '');
@@ -964,8 +993,11 @@
                 break;
             case 'SlipRateColorMap':
                 unit = ' mm/yr';
-                minColorInput.disabled = false;
-                maxColorInput.disabled = false;
+                minColorInput.value = "";
+                minColorInput.disabled = true;
+                maxColorInput.value = "";
+                maxColorInput.disabled = true;
+                note = "Discrete bins (mm/yr)";
                 break;
             case 'FaultLevelColor':
             case 'RegionColor':

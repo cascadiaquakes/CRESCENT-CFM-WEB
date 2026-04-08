@@ -442,7 +442,21 @@
                         [auxLineWidth[selectedValue]],
                         [auxFillOpacity[selectedValue]],
                         auxDataSources,
-                        false
+                        false,
+                        function (dataSource, index) {
+                            var surfaceName = auxLabel[selectedValue];
+                            dataSource.entities.values.forEach(function (entity) {
+                                entity.name = surfaceName;
+                                var description = '<b>' + surfaceName + '</b><br/>';
+                                var properties = entity.properties;
+                                for (var prop in properties) {
+                                    if (properties.hasOwnProperty(prop) && typeof properties[prop] !== 'function') {
+                                        description += prop.replace(/^_/, '') + ': ' + properties[prop] + '<br/>';
+                                    }
+                                }
+                                entity.description = description;
+                            });
+                        }
                     );
                 });
 
@@ -488,7 +502,9 @@
             });
 
             const dropdown = document.getElementById('select2dSurface');
-            dropdown.options[0].selected = true;
+            // Default to Slab2 - Hayes model
+            var slab2Idx = Array.from(dropdown.options).findIndex(function (o) { return o.text.indexOf('Slab2') !== -1; });
+            dropdown.options[slab2Idx !== -1 ? slab2Idx : 0].selected = true;
             const checkbox = document.getElementById('toggle2dSurfaceCheckbox');
             checkbox.checked = true;
             enforceSelectionLimit();
@@ -608,6 +624,7 @@
                     });
                 }
             );
+
         });
 
 
