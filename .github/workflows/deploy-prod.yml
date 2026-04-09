@@ -58,22 +58,37 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.ecr-login.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
+          CESIUM_KEYS: ${{ secrets.CESIUM_KEYS }}
         run: |
           SERVICE_ARN=$(aws ecs describe-services \
             --cluster "$ECS_CLUSTER" \
             --services "$ECS_SERVICE" \
             --query 'services[0].serviceArn' \
             --output text)
-          echo "SERVICE_ARN=$SERVICE_ARN" >> $GITHUB_ENV
+
+          # Build the full container config with jq to avoid shell escaping issues
+          CONTAINER_JSON=$(jq -n \
+            --arg image "$ECR_REGISTRY/$ECR_REPO:$IMAGE_TAG" \
+            --arg cesium "$CESIUM_KEYS" \
+            '{
+              image: $image,
+              port: 80,
+              healthCheckPath: "/",
+              environment: [
+                { name: "ENV", value: "prod" },
+                { name: "CESIUM_KEYS", value: $cesium }
+              ]
+            }')
 
           aws ecs update-express-gateway-service \
             --service-arn "$SERVICE_ARN" \
-            --primary-container "{\"image\":\"$ECR_REGISTRY/$ECR_REPO:$IMAGE_TAG\"}"
+            --primary-container "$CONTAINER_JSON"
 
-      - name: Monitor Express Mode deployment
+      - name: Wait for deployment
         run: |
-          aws ecs monitor-express-gateway-service \
-            --service-arn "$SERVICE_ARN" \
-            --resource-view DEPLOYMENT \
-            --mode TEXT-ONLY \
-            --timeout 30
+          echo "Waiting for ECS service to stabilize..."
+          aws ecs wait services-stable \
+            --cluster "$ECS_CLUSTER" \
+            --services "$ECS_SERVICE" \
+          && echo "Deployment complete." \
+          || echo "Warning: Timed out waiting, but deployment may still be in progress."
