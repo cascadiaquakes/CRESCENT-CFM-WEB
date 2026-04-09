@@ -1,12 +1,12 @@
 name: Deploy Production
 
 on:
-  workflow_dispatch: # Manual trigger only until Express Mode deploy is stable
-  # push:
-  #   branches: [main]
-  #   paths-ignore:
-  #     - "**.md"
-  #     - "cfm-infra/**"
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: "Type 'deploy' to confirm production deployment"
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -24,14 +24,13 @@ env:
 
 jobs:
   deploy:
+    if: ${{ inputs.confirm == 'deploy' }}
     runs-on: ubuntu-latest
     environment: production
 
     steps:
-      # ── Checkout ──────────────────────────────────────────────
       - uses: actions/checkout@v4
 
-      # ── Authenticate to AWS via OIDC ──────────────────────────
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -39,12 +38,10 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
           role-session-name: gha-deploy-cfm-prod
 
-      # ── Login to ECR ──────────────────────────────────────────
       - name: Login to Amazon ECR
         id: ecr-login
         uses: aws-actions/amazon-ecr-login@v2
 
-      # ── Build & push image ────────────────────────────────────
       - name: Build and push Docker image
         env:
           ECR_REGISTRY: ${{ steps.ecr-login.outputs.registry }}
@@ -54,33 +51,29 @@ jobs:
             -t $ECR_REGISTRY/$ECR_REPO:$IMAGE_TAG \
             -t $ECR_REGISTRY/$ECR_REPO:prod \
             .
-
           docker push $ECR_REGISTRY/$ECR_REPO:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPO:prod
 
-      # ── Deploy via Express Mode API ───────────────────────────
       - name: Update Express Mode service
         env:
           ECR_REGISTRY: ${{ steps.ecr-login.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          # Get the full service ARN
           SERVICE_ARN=$(aws ecs describe-services \
             --cluster "$ECS_CLUSTER" \
             --services "$ECS_SERVICE" \
             --query 'services[0].serviceArn' \
             --output text)
+          echo "SERVICE_ARN=$SERVICE_ARN" >> $GITHUB_ENV
 
           aws ecs update-express-gateway-service \
-            --service "$SERVICE_ARN" \
+            --service-arn "$SERVICE_ARN" \
             --primary-container "{\"image\":\"$ECR_REGISTRY/$ECR_REPO:$IMAGE_TAG\"}"
 
-      # ── Wait for deployment ───────────────────────────────────
-      - name: Wait for ECS deployment
+      - name: Monitor Express Mode deployment
         run: |
-          echo "Waiting for ECS service to stabilize..."
-          aws ecs wait services-stable \
-            --cluster "$ECS_CLUSTER" \
-            --services "$ECS_SERVICE" \
-          && echo "Deployment complete." \
-          || echo "Warning: Timed out waiting, but deployment may still be in progress."
+          aws ecs monitor-express-gateway-service \
+            --service-arn "$SERVICE_ARN" \
+            --resource-view DEPLOYMENT \
+            --mode TEXT-ONLY \
+            --timeout 30
