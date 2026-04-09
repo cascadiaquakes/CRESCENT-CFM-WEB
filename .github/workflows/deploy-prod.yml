@@ -63,9 +63,15 @@ jobs:
           ECR_REGISTRY: ${{ steps.ecr-login.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          aws ecs update-express-gateway-service \
+          # Get the full service ARN
+          SERVICE_ARN=$(aws ecs describe-services \
             --cluster "$ECS_CLUSTER" \
-            --service "$ECS_SERVICE" \
+            --services "$ECS_SERVICE" \
+            --query 'services[0].serviceArn' \
+            --output text)
+
+          aws ecs update-express-gateway-service \
+            --service "$SERVICE_ARN" \
             --primary-container "{\"image\":\"$ECR_REGISTRY/$ECR_REPO:$IMAGE_TAG\"}"
 
       # ── Wait for deployment ───────────────────────────────────
