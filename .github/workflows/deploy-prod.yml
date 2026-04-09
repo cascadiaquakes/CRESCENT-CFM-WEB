@@ -83,11 +83,5 @@ jobs:
             --service-arn "$SERVICE_ARN" \
             --primary-container "$CONTAINER_JSON"
 
-      - name: Wait for deployment
-        run: |
-          echo "Waiting for ECS service to stabilize..."
-          aws ecs wait services-stable \
-            --cluster "$ECS_CLUSTER" \
-            --services "$ECS_SERVICE" \
-          && echo "Deployment complete." \
-          || echo "Warning: Timed out waiting, but deployment may still be in progress."
+      # Express Mode handles canary rollout automatically with built-in rollback.
+      # No wait step needed — the update-express-gateway-service call is sufficient.
