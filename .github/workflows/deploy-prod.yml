@@ -72,8 +72,7 @@ jobs:
             --arg cesium "$CESIUM_KEYS" \
             '{
               image: $image,
-              port: 80,
-              healthCheckPath: "/",
+              containerPort: 80,
               environment: [
                 { name: "ENV", value: "prod" },
                 { name: "CESIUM_KEYS", value: $cesium }
