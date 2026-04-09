@@ -1,11 +1,12 @@
 name: Deploy Production
 
 on:
-  push:
-    branches: [main]
-    paths-ignore:
-      - "**.md"
-      - "cfm-infra/**"
+  workflow_dispatch: # Manual trigger only until Express Mode deploy is stable
+  # push:
+  #   branches: [main]
+  #   paths-ignore:
+  #     - "**.md"
+  #     - "cfm-infra/**"
 
 permissions:
   contents: read
