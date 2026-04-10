@@ -313,7 +313,15 @@
                                     }
 
                                     dataSourcesArray.push(dataSource);
-                                    viewer.dataSources.add(dataSource);
+                                    // Wait for viewer to be initialized before adding data
+                                    function addWhenReady() {
+                                        if (typeof viewer !== 'undefined' && viewer.dataSources) {
+                                            viewer.dataSources.add(dataSource);
+                                        } else {
+                                            setTimeout(addWhenReady, 100);
+                                        }
+                                    }
+                                    addWhenReady();
                                 }).catch(function (error) {
                                     console.error('Error loading GeoJSON:', error);
                                 });
