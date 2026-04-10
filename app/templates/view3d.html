@@ -309,7 +309,11 @@
                                     }
 
                                     if (extraLogic) {
-                                        extraLogic(dataSource, index);
+                                        try {
+                                            extraLogic(dataSource, index);
+                                        } catch (e) {
+                                            console.error('Error in extraLogic:', e);
+                                        }
                                     }
 
                                     dataSourcesArray.push(dataSource);
@@ -549,15 +553,19 @@
                         }
                         if (ok) {
                             if (Cesium.defined(entity.polygon)) {
-                                var coordinates = entity.polygon.hierarchy.getValue().positions;
-                                coordinates.forEach(function (coordinate) {
-                                    Cesium.Cartographic.fromCartesian(coordinate);
-                                });
+                                var hierarchy = entity.polygon.hierarchy.getValue();
+                                if (hierarchy && hierarchy.positions) {
+                                    hierarchy.positions.forEach(function (coordinate) {
+                                        Cesium.Cartographic.fromCartesian(coordinate);
+                                    });
+                                }
                             } else if (Cesium.defined(entity.polyline)) {
                                 var positions = entity.polyline.positions.getValue();
-                                positions.forEach(function (position) {
-                                    Cesium.Cartographic.fromCartesian(position);
-                                });
+                                if (positions) {
+                                    positions.forEach(function (position) {
+                                        Cesium.Cartographic.fromCartesian(position);
+                                    });
+                                }
                             }
                             var description = '';
                             var properties = entity.properties;
@@ -603,15 +611,19 @@
                         }
                         if (ok) {
                             if (Cesium.defined(entity.polygon)) {
-                                var coordinates = entity.polygon.hierarchy.getValue().positions;
-                                coordinates.forEach(function (coordinate) {
-                                    Cesium.Cartographic.fromCartesian(coordinate);
-                                });
+                                var hierarchy = entity.polygon.hierarchy.getValue();
+                                if (hierarchy && hierarchy.positions) {
+                                    hierarchy.positions.forEach(function (coordinate) {
+                                        Cesium.Cartographic.fromCartesian(coordinate);
+                                    });
+                                }
                             } else if (Cesium.defined(entity.polyline)) {
                                 var positions = entity.polyline.positions.getValue();
-                                positions.forEach(function (position) {
-                                    Cesium.Cartographic.fromCartesian(position);
-                                });
+                                if (positions) {
+                                    positions.forEach(function (position) {
+                                        Cesium.Cartographic.fromCartesian(position);
+                                    });
+                                }
                             }
                             var description = '';
                             var properties = entity.properties;
