@@ -18,11 +18,9 @@
 
 <h3>GeoJSON Files</h3>
 <ul>
-    <li style="width:40%"><a
-            href="https://raw.githubusercontent.com/cascadiaquakes/crescent-cfm/main/crescent_cfm_files/crescent_cfm_crustal_traces.geojson">CRESCENT
+    <li style="width:40%"><a href="#" onclick="downloadFile('https://raw.githubusercontent.com/cascadiaquakes/crescent-cfm/main/crescent_cfm_files/crescent_cfm_crustal_traces.geojson', 'crescent_cfm_crustal_traces.geojson'); return false;">CRESCENT
             Cascadia 2D Fault traces (GeoJSON)</a></li>
-    <li style="width:40%"><a
-            href="https://raw.githubusercontent.com/cascadiaquakes/crescent-cfm/main/crescent_cfm_files/crescent_cfm_crustal_3d.geojson">CRESCENT
+    <li style="width:40%"><a href="#" onclick="downloadFile('https://raw.githubusercontent.com/cascadiaquakes/crescent-cfm/main/crescent_cfm_files/crescent_cfm_crustal_3d.geojson', 'crescent_cfm_crustal_3d.geojson'); return false;">CRESCENT
             Cascadia 3D Fault Surfaces (GeoJSON)</a></li>
 </ul>
 <p>Coming soon, we will have .tsurf files available for 3D geometries.</p>
@@ -32,9 +30,28 @@
     The CFM metadata table contains detailed fault attributes, references, and source information for all faults in the model:
 </p>
 <ul>
-    <li style="width:40%"><a
-            href="https://raw.githubusercontent.com/cascadiaquakes/CRESCENT-CFM/main/misc_data/metadata/cfm_metadata.csv"
-            download>CFM Metadata Table (CSV)</a></li>
+    <li style="width:40%"><a href="#" onclick="downloadFile('https://raw.githubusercontent.com/cascadiaquakes/CRESCENT-CFM/main/misc_data/metadata/cfm_metadata.csv', 'cfm_metadata.csv'); return false;">CFM
+            Metadata Table (CSV)</a></li>
 </ul>
+
+<script>
+async function downloadFile(url, filename) {
+    try {
+        const resp = await fetch(url);
+        if (!resp.ok) throw new Error(resp.status);
+        const blob = await resp.blob();
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(a.href);
+    } catch (err) {
+        console.error('Download failed:', err);
+        alert('Download failed. Please try again.');
+    }
+}
+</script>
 
 {%endblock%}
