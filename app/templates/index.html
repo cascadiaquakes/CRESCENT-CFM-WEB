@@ -370,25 +370,30 @@
                 alert('Please select at least one fault before downloading.');
                 return;
             }
-            const ids = Array.from(checkboxes).map(cb => cb.value);
+            const faults = Array.from(checkboxes).map(cb => {
+                var row = cb.closest('tr');
+                var name = row ? row.querySelector('td:nth-child(3)') : null;
+                return { id: cb.value, name: name ? name.textContent.trim() : cb.value };
+            });
             const baseUrl = 'https://raw.githubusercontent.com/cascadiaquakes/CRESCENT-CFM/'
                 + encodeURIComponent(branch) + '/crescent_cfm_files/hires_faults/';
 
-            for (const id of ids) {
-                const url = baseUrl + id + '_hires.geojson';
+            for (const fault of faults) {
+                const url = baseUrl + fault.id + '_hires.geojson';
+                var filename = fault.name.replace(/\s+/g, '_') + '_hires.geojson';
                 try {
                     const resp = await fetch(url);
                     if (!resp.ok) throw new Error(resp.status);
                     const blob = await resp.blob();
                     const a = document.createElement('a');
                     a.href = URL.createObjectURL(blob);
-                    a.download = id + '_hires.geojson';
+                    a.download = filename;
                     document.body.appendChild(a);
                     a.click();
                     a.remove();
                     URL.revokeObjectURL(a.href);
                 } catch (err) {
-                    console.error('Failed to download fault ' + id + ':', err);
+                    console.error('Failed to download fault ' + fault.id + ':', err);
                 }
             }
         });
