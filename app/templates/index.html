@@ -818,7 +818,7 @@
                 const averageDepth = Math.abs((upperDepth + lowerDepth) / 2);
                 const rake = coerceNumber(props.rake, 0);
                 const dip = coerceNumber(props.avg_dip != null ? props.avg_dip : props.dip, 0);
-                const slipRate = coerceNumber(props['NSHM sliprates (MedWgtd)'], NaN);
+                const slipRate = coerceNumber(props['NSHM23_sliprates'] != null ? props['NSHM23_sliprates'] : props['NSHM sliprates (MedWgtd)'], NaN);
 
                 // Categorical fields
                 const faultLevel = toStr(props.fault_level, '');
