@@ -10,35 +10,22 @@
 </style>
 {%endblock%}
 {% block description%}
-<h2>CFM GeoPackage (.gpkg) &amp; KML (.kml) File Downloads</h2>
+<h2>CFM File Downloads</h2>
 <p>
     Below you can access CFM
     geospatial data for fault traces in both 2D and 3D formats.
 </p>
 
-<h3>GeoPackage Files (.gpkg)</h3>
-<p>
-    The GeoPackage files available here are designed for use with GIS software, including ArcGIS. These files offer
-    efficient, and versatile storage for both 2D and 3D fault trace data:
-</p>
+<h3>GeoJSON Files</h3>
 <ul>
     <li style="width:40%"><a
-            href="https://github.com/cascadiaquakes/crescent-cfm/raw/main/crescent_cfm_files/crescent_cfm_crustal_traces.gpkg">CRESCENT
-            Cascadia 2D Crustal Fault traces (GeoPackage)</a></li>
+            href="https://raw.githubusercontent.com/cascadiaquakes/crescent-cfm/main/crescent_cfm_files/crescent_cfm_crustal_traces.geojson">CRESCENT
+            Cascadia 2D Crustal Fault traces (GeoJSON)</a></li>
     <li style="width:40%"><a
-            href="https://github.com/cascadiaquakes/crescent-cfm/raw/main/crescent_cfm_files/crescent_cfm_crustal_3d.gpkg">Download
-            CRESCENT Cascadia 3D Crustal Fault Surfaces (GeoPackage)</a></li>
+            href="https://raw.githubusercontent.com/cascadiaquakes/crescent-cfm/main/crescent_cfm_files/crescent_cfm_crustal_3d.geojson">CRESCENT
+            Cascadia 3D Crustal Fault Surfaces (GeoJSON)</a></li>
 </ul>
-
-<h3>KML Files (.kml)</h3>
-<p>
-    For those using Google Earth, the KML files available here for the 2D fault traces:
-</p>
-<ul>
-    <li style="width:40%"><a
-            href="https://raw.githubusercontent.com/cascadiaquakes/crescent-cfm/main/crescent_cfm_files/crescent_cfm_crustal_traces.kml">CRESCENT
-            Cascadia 2D Crustal Fault traces (KML)</a></li>
-</ul>
+<p>Coming soon, we will have .tsurf files available for 3D geometries.</p>
 
 <h3>Metadata</h3>
 <p>
@@ -46,8 +33,8 @@
 </p>
 <ul>
     <li style="width:40%"><a
-            href="https://raw.githubusercontent.com/cascadiaquakes/CRESCENT-CFM/main/misc_data/metadata/cfm_metadata.csv">CFM
-            Metadata Table (CSV)</a></li>
+            href="https://raw.githubusercontent.com/cascadiaquakes/CRESCENT-CFM/main/misc_data/metadata/cfm_metadata.csv"
+            download>CFM Metadata Table (CSV)</a></li>
 </ul>
 
 {%endblock%}
