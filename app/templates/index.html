@@ -808,7 +808,7 @@
 
                 // Safe name/id/source
                 const rawName = toStr(props.name, '').trim();
-                const id = toStr(feature.id != null ? feature.id : (props.id != null ? props.id : `feat-${index}`));
+                const id = toStr(props.CFM_ID != null ? props.CFM_ID : (feature.id != null ? feature.id : (props.id != null ? props.id : `feat-${index}`)));
                 const lineName = rawName || (id ? `Fault trace ${id}` : `Fault trace ${index}`);
                 const source = toStr(props.source, '');
 
