@@ -115,7 +115,7 @@
             </button>
             <div class="acc-body">
                 <div class="acc-hint">Select faults to view in full 3D resolution (max ~10).</div>
-                <select id="selectHighResFaults" multiple size="4"></select>
+                <select id="selectHighResFaults" multiple size="10"></select>
                 <button id="loadHighResBtn">Load Selected</button>
                 <button id="resetHighResBtn">Reset</button>
                 <div id="highResStatus"></div>
@@ -309,11 +309,23 @@
                                     }
 
                                     if (extraLogic) {
-                                        extraLogic(dataSource, index);
+                                        try {
+                                            extraLogic(dataSource, index);
+                                        } catch (e) {
+                                            console.error('Error in extraLogic:', e);
+                                        }
                                     }
 
                                     dataSourcesArray.push(dataSource);
-                                    viewer.dataSources.add(dataSource);
+                                    // Wait for viewer to be initialized before adding data
+                                    function addWhenReady() {
+                                        if (typeof viewer !== 'undefined' && viewer.dataSources) {
+                                            viewer.dataSources.add(dataSource);
+                                        } else {
+                                            setTimeout(addWhenReady, 100);
+                                        }
+                                    }
+                                    addWhenReady();
                                 }).catch(function (error) {
                                     console.error('Error loading GeoJSON:', error);
                                 });
@@ -541,15 +553,19 @@
                         }
                         if (ok) {
                             if (Cesium.defined(entity.polygon)) {
-                                var coordinates = entity.polygon.hierarchy.getValue().positions;
-                                coordinates.forEach(function (coordinate) {
-                                    Cesium.Cartographic.fromCartesian(coordinate);
-                                });
+                                var hierarchy = entity.polygon.hierarchy.getValue();
+                                if (hierarchy && hierarchy.positions) {
+                                    hierarchy.positions.forEach(function (coordinate) {
+                                        Cesium.Cartographic.fromCartesian(coordinate);
+                                    });
+                                }
                             } else if (Cesium.defined(entity.polyline)) {
                                 var positions = entity.polyline.positions.getValue();
-                                positions.forEach(function (position) {
-                                    Cesium.Cartographic.fromCartesian(position);
-                                });
+                                if (positions) {
+                                    positions.forEach(function (position) {
+                                        Cesium.Cartographic.fromCartesian(position);
+                                    });
+                                }
                             }
                             var description = '';
                             var properties = entity.properties;
@@ -595,15 +611,19 @@
                         }
                         if (ok) {
                             if (Cesium.defined(entity.polygon)) {
-                                var coordinates = entity.polygon.hierarchy.getValue().positions;
-                                coordinates.forEach(function (coordinate) {
-                                    Cesium.Cartographic.fromCartesian(coordinate);
-                                });
+                                var hierarchy = entity.polygon.hierarchy.getValue();
+                                if (hierarchy && hierarchy.positions) {
+                                    hierarchy.positions.forEach(function (coordinate) {
+                                        Cesium.Cartographic.fromCartesian(coordinate);
+                                    });
+                                }
                             } else if (Cesium.defined(entity.polyline)) {
                                 var positions = entity.polyline.positions.getValue();
-                                positions.forEach(function (position) {
-                                    Cesium.Cartographic.fromCartesian(position);
-                                });
+                                if (positions) {
+                                    positions.forEach(function (position) {
+                                        Cesium.Cartographic.fromCartesian(position);
+                                    });
+                                }
                             }
                             var description = '';
                             var properties = entity.properties;
