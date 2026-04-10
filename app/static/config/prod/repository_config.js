@@ -51,10 +51,10 @@ const cvmLineWidth = 4;
 
 
 // Auxiliary data.
-const auxData = ["https://raw.githubusercontent.com/cascadiaquakes/crescent-cfm/main/crescent_cfm_files/cascadia_subduction_interface_temp.geojson",
-    "https://raw.githubusercontent.com/cascadiaquakes/crescent-cfm/main/crescent_cfm_files/casie21_plate_boundary_multipart.geojson",
-    "https://raw.githubusercontent.com/cascadiaquakes/crescent-cfm/main/crescent_cfm_files/mccrory_2012_cascadia_interface.geojson",
-    "https://raw.githubusercontent.com/cascadiaquakes/crescent-cfm/main/crescent_cfm_files/slab2_cascadia_interface_multipart.geojson"
+const auxData = ["https://raw.githubusercontent.com/cascadiaquakes/crescent-cfm/dev/crescent_cfm_files/cascadia_subduction_interface_temp.geojson",
+    "https://raw.githubusercontent.com/cascadiaquakes/crescent-cfm/dev/crescent_cfm_files/casie21_plate_boundary_multipart.geojson",
+    "https://raw.githubusercontent.com/cascadiaquakes/crescent-cfm/dev/crescent_cfm_files/mccrory_2012_cascadia_interface.geojson",
+    "https://raw.githubusercontent.com/cascadiaquakes/crescent-cfm/dev/crescent_cfm_files/slab2_cascadia_interface_multipart.geojson"
 ];
 const auxLabel = ["Cascadia subduction interface - Graham et al., 2018", "Cascadia plate boundary - Carbotte et al., 2024", "Cascadia plate boundary - McCrory et al., 2012", "Cascadia plate boundary from Slab2 - Hayes et al., 2018"];
 const auxColor = [Cesium.Color.OLIVE.withAlpha(0.7), Cesium.Color.SIENNA.withAlpha(0.7), Cesium.Color.SANDYBROWN.withAlpha(0.7), Cesium.Color.GREEN.withAlpha(0.7)];
@@ -76,7 +76,7 @@ const boundaryMarker = ["line"];
 const zoomOutFactor = 2.0; // Increased zoom out factor for better visibility
 
 // CFM data
-const cfmData = ['https://raw.githubusercontent.com/cascadiaquakes/crescent-cfm/main/crescent_cfm_files/crescent_cfm_crustal_3d_lowres.geojson'];
+const cfmData = ['https://raw.githubusercontent.com/cascadiaquakes/crescent-cfm/dev/crescent_cfm_files/crescent_cfm_crustal_3d_lowres.geojson'];
 const cfmLabel = ['Cascadia Fault Surfaces'];
 const cfmColor = [Cesium.Color.DARKMAGENTA];
 const cfmFillOpacity = [1.0];
@@ -84,7 +84,7 @@ const cfmLineWidth = [2];
 const cfmMarker = ["rectangle"];
 
 // CFM Trace data
-const cfmTraceData = ['https://raw.githubusercontent.com/cascadiaquakes/crescent-cfm/main/crescent_cfm_files/crescent_cfm_crustal_traces.geojson'];
+const cfmTraceData = ['https://raw.githubusercontent.com/cascadiaquakes/crescent-cfm/dev/crescent_cfm_files/crescent_cfm_crustal_traces.geojson'];
 const cfmTraceLabel = ['Cascadia Fault Traces'];
 const cfmTraceColor = [Cesium.Color.CRIMSON];
 const cfmTraceFillOpacity = [0.5];
