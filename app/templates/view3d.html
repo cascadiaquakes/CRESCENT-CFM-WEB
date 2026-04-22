@@ -269,12 +269,30 @@
                     if (checked) {
                         for (var i = 0; i < dataArray.length; i++) {
                             (function (index) {
-                                Cesium.GeoJsonDataSource.load(dataArray[index], {
-                                    label: labelArray[index],
-                                    stroke: colorArray[index],
-                                    fill: colorArray[index].withAlpha(fillOpacityArray[index]),
-                                    strokeWidth: lineWidthArray[index],
-                                    markerSymbol: '?'
+                                fetch(dataArray[index])
+                                .then(function(response) { return response.json(); })
+                                .then(function(geojson) {
+                                    if (geojson.crs) {
+                                        const crsName = (geojson.crs.properties && geojson.crs.properties.name) || '';
+                                        const wgs84Names = [
+                                            'epsg:4326', 'epsg:4979',
+                                            'urn:ogc:def:crs:ogc:1.3:crs84',
+                                            'urn:ogc:def:crs:ogc::crs84',
+                                            'urn:ogc:def:crs:epsg::4326',
+                                            'urn:ogc:def:crs:epsg::4979',
+                                        ];
+                                        if (!wgs84Names.includes(crsName.toLowerCase())) {
+                                            throw new Error('Unsupported CRS "' + crsName + '" in ' + dataArray[index] + '. Only WGS84 (EPSG:4326 / EPSG:4979) is supported.');
+                                        }
+                                        delete geojson.crs;
+                                    }
+                                    return Cesium.GeoJsonDataSource.load(geojson, {
+                                        label: labelArray[index],
+                                        stroke: colorArray[index],
+                                        fill: colorArray[index].withAlpha(fillOpacityArray[index]),
+                                        strokeWidth: lineWidthArray[index],
+                                        markerSymbol: '?'
+                                    });
                                 }).then(function (dataSource) {
                                     if (applyBoundingBoxFilter) {
                                         const now = Cesium.JulianDate.now();
