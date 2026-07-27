@@ -378,8 +378,12 @@
                 var name = row ? row.querySelector('td:nth-child(3)') : null;
                 return { id: cb.value, name: name ? name.textContent.trim() : cb.value };
             });
+            // The prod viewer's config files already source from the main
+            // data branch; the data repo has no 'prod' branch. Mirror that
+            // routing here so hi-res per-fault downloads don't 404.
+            var dataBranch = (branch === 'prod') ? 'main' : branch;
             const baseUrl = 'https://raw.githubusercontent.com/cascadiaquakes/CRESCENT-CFM/'
-                + encodeURIComponent(branch) + '/crescent_cfm_files/hires_faults/';
+                + encodeURIComponent(dataBranch) + '/crescent_cfm_files/hires_faults/';
 
             const triggerDownload = (blob, filename) => {
                 const a = document.createElement('a');
