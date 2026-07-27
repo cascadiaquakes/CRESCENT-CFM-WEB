@@ -1,20 +1,14 @@
+import json
+import logging
 import os
-
-from fastapi import HTTPException
-from fastapi.responses import HTMLResponse, JSONResponse, FileResponse
-
-from fastapi import APIRouter, Request, Query
-from typing import Optional
-
-from fastapi.templating import Jinja2Templates
-from PIL import Image, ImageDraw
+from datetime import UTC, datetime
 from io import BytesIO
 
-from datetime import datetime, timezone
-import json
 import httpx
-
-import logging
+from fastapi import APIRouter, HTTPException, Query, Request
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
+from fastapi.templating import Jinja2Templates
+from PIL import Image, ImageDraw
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -71,7 +65,7 @@ def get_config(branch):
         )
 
     # Read the JSON file
-    with open(file_path, "r") as jsonfile:
+    with open(file_path) as jsonfile:
         config = json.load(jsonfile)
 
     return config
@@ -80,7 +74,7 @@ def get_config(branch):
 def utc_now():
     """Return the current UTC time."""
     try:
-        _utc = datetime.now(tz=timezone.utc)
+        _utc = datetime.now(tz=UTC)
         utc = {
             "date_time": _utc.strftime("%Y-%m-%dT%H:%M:%S"),
             "datetime": _utc,
@@ -159,7 +153,7 @@ async def favicon():
 
 
 @router.get("/")
-async def index(request: Request, branch: Optional[str] = Query(None)):
+async def index(request: Request, branch: str | None = Query(None)):
     branch = branch or os.environ.get("ENV", "main")
     branch = (branch or "main").strip()
 
@@ -187,7 +181,7 @@ async def downloads(request: Request):
 
 
 @router.get("/3d", response_class=HTMLResponse)
-async def threed(request: Request, branch: str = None):
+async def threed(request: Request, branch: str | None = None):
     branch = branch or os.environ.get("ENV", "main")
     access_token = _get_cesium_token()
 
@@ -227,7 +221,7 @@ def models_drop_down_coverage():
             logging.warning(f"Expected *.json file, skipping {filename}")
             continue
         # Opening the file and loading the data
-        with open(os.path.join(json_directory, filename), "r") as file:
+        with open(os.path.join(json_directory, filename)) as file:
             try:
                 json_data = json.load(file)
                 logging.debug(f"json_data {json_data}")
@@ -272,13 +266,13 @@ def models_drop_down_coverage():
     for i, filename in enumerate(model_list):
         selected = " selected" if i == 0 else ""
         dropdown_html += (
-            f'<option value="{coords_list[i]}"{selected}>{model_list[i]}</option>'
+            f'<option value="{coords_list[i]}"{selected}>{filename}</option>'
         )
     return dropdown_html
 
 
 @router.get("/geojson")
-async def get_geojson(request: Request, branch: Optional[str] = Query(None)):
+async def get_geojson(request: Request, branch: str | None = Query(None)):
     branch = (branch or os.environ.get("ENV", "main")).strip()
     config = get_config(branch)
 
