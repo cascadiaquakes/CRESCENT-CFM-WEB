@@ -378,9 +378,8 @@
                 var name = row ? row.querySelector('td:nth-child(3)') : null;
                 return { id: cb.value, name: name ? name.textContent.trim() : cb.value };
             });
-            var dataBranch = (branch === 'prod') ? 'dev' : branch;
             const baseUrl = 'https://raw.githubusercontent.com/cascadiaquakes/CRESCENT-CFM/'
-                + encodeURIComponent(dataBranch) + '/crescent_cfm_files/hires_faults/';
+                + encodeURIComponent(branch) + '/crescent_cfm_files/hires_faults/';
 
             const triggerDownload = (blob, filename) => {
                 const a = document.createElement('a');
