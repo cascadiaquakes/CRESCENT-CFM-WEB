@@ -8,6 +8,7 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider/distribute/nouislider.min.css">
 <script src="https://cdn.jsdelivr.net/npm/nouislider/distribute/nouislider.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 
 <!-- Load repository_config.js synchronously 
          Synchronous XHR ensures loading order: The browser halts execution until repository_config.js is fetched and executed, 
@@ -363,8 +364,10 @@
             }
         });
 
-        // Download selected high-res (1 km) fault GeoJSON files
+        // Single fault: direct download. Multi: fetch in parallel, JSZip bundle, one .zip.
         document.getElementById('downloadSelectedBtn').addEventListener('click', async function () {
+            const btn = this;
+            const originalLabel = btn.innerHTML;
             const checkboxes = document.querySelectorAll('#lineList input[type="checkbox"]:checked');
             if (checkboxes.length === 0) {
                 alert('Please select at least one fault before downloading.');
@@ -375,27 +378,92 @@
                 var name = row ? row.querySelector('td:nth-child(3)') : null;
                 return { id: cb.value, name: name ? name.textContent.trim() : cb.value };
             });
-            var dataBranch = (branch === 'prod') ? 'dev' : branch;
+            // The prod viewer's config files already source from the main
+            // data branch; the data repo has no 'prod' branch. Mirror that
+            // routing here so hi-res per-fault downloads don't 404.
+            var dataBranch = (branch === 'prod') ? 'main' : branch;
             const baseUrl = 'https://raw.githubusercontent.com/cascadiaquakes/CRESCENT-CFM/'
                 + encodeURIComponent(dataBranch) + '/crescent_cfm_files/hires_faults/';
 
-            for (const fault of faults) {
+            const triggerDownload = (blob, filename) => {
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                URL.revokeObjectURL(a.href);
+            };
+
+            // Single fault: skip the zip, just download the file directly.
+            if (faults.length === 1) {
+                const fault = faults[0];
                 const url = baseUrl + fault.id + '_hires.geojson';
-                var filename = fault.name.replace(/\s+/g, '_') + '_hires.geojson';
+                const filename = fault.name.replace(/\s+/g, '_') + '_hires.geojson';
+                btn.disabled = true;
+                btn.innerHTML = 'Downloading...';
                 try {
                     const resp = await fetch(url);
-                    if (!resp.ok) throw new Error(resp.status);
-                    const blob = await resp.blob();
-                    const a = document.createElement('a');
-                    a.href = URL.createObjectURL(blob);
-                    a.download = filename;
-                    document.body.appendChild(a);
-                    a.click();
-                    a.remove();
-                    URL.revokeObjectURL(a.href);
+                    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+                    triggerDownload(await resp.blob(), filename);
                 } catch (err) {
                     console.error('Failed to download fault ' + fault.id + ':', err);
+                    alert('Download failed for ' + fault.name + '. See the console for details.');
+                } finally {
+                    btn.disabled = false;
+                    btn.innerHTML = originalLabel;
                 }
+                return;
+            }
+
+            // Multi-fault: fetch all in parallel, bundle into a zip, one download.
+            btn.disabled = true;
+            const zip = new JSZip();
+            let completed = 0;
+            const failures = [];
+            const updateLabel = () => {
+                btn.innerHTML = 'Bundling ' + completed + ' / ' + faults.length + '...';
+            };
+            updateLabel();
+
+            await Promise.all(faults.map(async (fault) => {
+                const url = baseUrl + fault.id + '_hires.geojson';
+                const filename = fault.name.replace(/\s+/g, '_') + '_hires.geojson';
+                try {
+                    const resp = await fetch(url);
+                    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+                    zip.file(filename, await resp.blob());
+                } catch (err) {
+                    console.error('Failed to fetch fault ' + fault.id + ':', err);
+                    failures.push(fault.name);
+                } finally {
+                    completed += 1;
+                    updateLabel();
+                }
+            }));
+
+            if (failures.length === faults.length) {
+                btn.disabled = false;
+                btn.innerHTML = originalLabel;
+                alert('All ' + faults.length + ' downloads failed. See the console for details.');
+                return;
+            }
+
+            btn.innerHTML = 'Zipping...';
+            try {
+                const zipBlob = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE' });
+                const stamp = new Date().toISOString().slice(0, 10);
+                triggerDownload(zipBlob, 'crescent_cfm_hires_faults_' + stamp + '.zip');
+                if (failures.length > 0) {
+                    alert('Downloaded ' + (faults.length - failures.length) + ' of ' + faults.length
+                        + ' faults. Failed: ' + failures.join(', '));
+                }
+            } catch (err) {
+                console.error('Failed to build zip:', err);
+                alert('Failed to build the zip file. See the console for details.');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalLabel;
             }
         });
 

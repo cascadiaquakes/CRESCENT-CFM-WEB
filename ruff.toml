@@ -1,0 +1,23 @@
+line-length = 100
+target-version = "py313"
+
+[lint]
+# Curated rule set: catches real bugs and imports drift without policing
+# every stylistic default ruff ships. Broader rule set can be introduced
+# incrementally once the current codebase is refactored to match.
+select = [
+    "E",   # pycodestyle errors
+    "F",   # pyflakes
+    "W",   # pycodestyle warnings
+    "I",   # isort
+    "UP",  # pyupgrade
+    "RUF", # ruff-specific
+    "PLR1736", # list index lookup in enumerate loop
+]
+
+ignore = [
+    "E501",  # line too long; enforced via line-length above
+]
+
+[lint.per-file-ignores]
+"app/__init__.py" = ["F401"]  # re-exports commonly appear "unused"

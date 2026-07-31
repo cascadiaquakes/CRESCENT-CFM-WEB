@@ -1,5 +1,6 @@
-import os
 import json
+import os
+
 
 def read_json_files(directory):
     """
@@ -14,7 +15,7 @@ def read_json_files(directory):
     json_files = []
     for filename in os.listdir(directory):
         if filename.endswith('.json'):
-            with open(os.path.join(directory, filename), 'r') as f:
+            with open(os.path.join(directory, filename)) as f:
                 json_data = json.load(f)
                 json_files.append({'filename': filename, 'content': json_data})
     return json_files
