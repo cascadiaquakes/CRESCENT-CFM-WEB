@@ -6,7 +6,7 @@ from io import BytesIO
 
 import httpx
 from fastapi import APIRouter, HTTPException, Query, Request
-from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from PIL import Image, ImageDraw
 
@@ -202,9 +202,9 @@ async def news(request: Request):
     return templates.TemplateResponse("news.html", {"request": request})
 
 
-@router.get("/guide", response_class=HTMLResponse)
-async def guide(request: Request):
-    return templates.TemplateResponse("guide.html", {"request": request})
+@router.get("/guide")
+async def guide():
+    return RedirectResponse("https://cascadiaquakes.github.io/cfm-book/user-guide/", status_code=301)
 
 
 # Route to create html for model dropdown.

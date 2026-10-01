@@ -66,6 +66,19 @@
             }
         };
         xhr.send(null);
+
+        // The config only ships a placeholder; the real Cesium Ion token comes from the server.
+        let tokenXhr = new XMLHttpRequest();
+        tokenXhr.open('GET', '/get-token', false);
+        tokenXhr.send(null);
+        if (tokenXhr.status === 200) {
+            const ionToken = JSON.parse(tokenXhr.responseText).token;
+            if (ionToken && ionToken !== 'your_access_token') {
+                Cesium.Ion.defaultAccessToken = ionToken;
+            }
+        } else {
+            console.error('Failed to load Cesium Ion token; imagery and terrain will not load.');
+        }
     </script>
     <style>
         @import url(https://cesium.com/downloads/cesiumjs/releases/1.116/Build/Cesium/Widgets/widgets.css);
@@ -94,8 +107,8 @@
             </button>
             <div class="acc-body">
                 <div id="toggleCheckboxGrid">
-                    <label><input type="checkbox" id="toggleGlobeCheckbox"> Imagery layer</label>
-                    <label><input type="checkbox" id="toggleTerrainOcclusionCheckbox" checked> Terrain Occlusion</label>
+                    <label title="Show satellite imagery draped on terrain"><input type="checkbox" id="toggleGlobeCheckbox"> Satellite imagery</label>
+                    <label id="terrainOcclusionLabel" title="Turn on Satellite imagery to use this"><input type="checkbox" id="toggleTerrainOcclusionCheckbox" disabled> Hide below ground</label>
                     <label><input type="checkbox" id="toggleCFMTraceCheckbox" checked> CFM traces</label>
                     <label><input type="checkbox" id="toggleCFMCheckbox" checked> CFM surfaces</label>
                     <label><input type="checkbox" id="showEarthquakesCheckbox"> Earthquakes</label>
@@ -146,55 +159,12 @@
                     <input type="text" id="centerCoordinates" value="-123.0,45.5" />
                     <button id="homeViewButton">Tilted</button>
                 </div>
+                <label class="measure-label"><input type="checkbox" id="clearCheckbox"> Measure distance</label>
+                <div id="distanceDisplay">Click distances will appear here</div>
             </div>
         </div>
     </div>
 
-    <!-- Card 2: CVM -->
-    <div id="controlContainer2">
-        <div class="panel-title" style="display:flex; align-items:center; justify-content:center; gap:8px;">
-            CVM <input type="checkbox" id="toggleCVMCheckbox">
-        </div>
-            <div id="cvmContent" style="display:none;">
-                <select id="data-file" name="data_file"></select>
-                <div class="cvm-slider-group">
-                    <b>Latitude:</b>
-                    <div class="sliderContainer">
-                        <label class="sliderLabel">Min. <input type="range" id="minLatSlider" min="47" max="50.9" step="0.1" value="47"></label>
-                        <span id="minLatValue">47</span>
-                    </div>
-                    <div class="sliderContainer">
-                        <label class="sliderLabel">Max. <input type="range" id="maxLatSlider" min="47" max="50.9" step="0.1" value="50.9"></label>
-                        <span id="maxLatValue">50.9</span>
-                    </div>
-                    <b>Longitude:</b>
-                    <div class="sliderContainer">
-                        <label class="sliderLabel">Min. <input type="range" id="minLonSlider" min="-126" max="-121.1" step="0.1" value="-126"></label>
-                        <span id="minLonValue">-126</span>
-                    </div>
-                    <div class="sliderContainer">
-                        <label class="sliderLabel">Max. <input type="range" id="maxLonSlider" min="-126" max="-121.1" step="0.1" value="-121.1"></label>
-                        <span id="maxLonValue">-121.1</span>
-                    </div>
-                    <b>Depth (km):</b>
-                    <div class="sliderContainer">
-                        <label class="sliderLabel">Min. <input type="range" id="minDepthSlider" min="0" max="93" step="1" value="0"></label>
-                        <span id="minDepthValue">0</span>
-                    </div>
-                    <div class="sliderContainer">
-                        <label class="sliderLabel">Max. <input type="range" id="maxDepthSlider" min="0" max="93" step="1" value="93"></label>
-                        <span id="maxDepthValue">93</span>
-                    </div>
-                    <b>Opacity:</b>
-                    <div class="sliderContainer">
-                        <label class="sliderLabel"><input type="range" id="alphaSlider" min="0" max="1" step="0.1" value="0.3"></label>
-                        <span id="alphaValue">0.3</span>
-                    </div>
-                </div>
-                <label><input type="checkbox" id="clearCheckbox"> <b>Measure Distance</b></label>
-                <div id="distanceDisplay">Click distances will appear here</div>
-            </div>
-    </div>
     </div><!-- end #cardWrapper -->
 
     <div id="mapControls">
@@ -217,6 +187,8 @@
 
         // Opacity for the items outside the study area.
         const outsideOpacity = 0.15
+        // Lines need a higher floor than polygon outlines to stay visible on the dark globe.
+        const outsideLineOpacity = 0.6
 
         let earthquakeDataSource;
 
@@ -233,24 +205,6 @@
                 btn.addEventListener('click', function () {
                     this.closest('.acc-section').classList.toggle('open');
                 });
-            });
-
-            // Call loadDropdown when the page has finished loading
-            loadDropdown();
-
-            // CVM toggle: hidden by default, show/hide content + box entities
-            document.getElementById('toggleCVMCheckbox').addEventListener('change', function () {
-                var content = document.getElementById('cvmContent');
-                if (this.checked) {
-                    content.style.display = '';
-                    updateSlidersFromDropdown();
-                } else {
-                    content.style.display = 'none';
-                    if (typeof boxEntities !== 'undefined' && boxEntities.length) {
-                        boxEntities.forEach(function (e) { viewer.entities.remove(e); });
-                        boxEntities.length = 0;
-                    }
-                }
             });
 
             // Load the logo after the HTML is loaded.
@@ -299,10 +253,9 @@
                                                     entity.polygon.outlineColor = colorArray[index].withAlpha(outsideOpacity);
                                                 }
                                                 if (entity.polyline) {
-                                                    entity.polyline.material = new Cesium.PolylineGlowMaterialProperty({
-                                                        glowPower: 0,
-                                                        color: colorArray[index].withAlpha(outsideOpacity)
-                                                    });
+                                                    entity.polyline.material = new Cesium.ColorMaterialProperty(
+                                                        colorArray[index].withAlpha(outsideLineOpacity)
+                                                    );
                                                 }
                                             }
                                         });
@@ -389,18 +342,12 @@
                     const selectedValue = option.value;
                     const color = auxColor[selectedValue];  // Get the color for the selected option
 
-                    // Create a new legend item
                     const legendItem = document.createElement('div');
-                    legendItem.style.display = 'flex';
-                    legendItem.style.alignItems = 'center';
-                    legendItem.style.marginBottom = '5px';
+                    legendItem.classList.add('legendItem');
 
-                    // Create a colored box for the legend
                     const colorBox = document.createElement('div');
-                    colorBox.style.width = '20px';
-                    colorBox.style.height = '20px';
-                    colorBox.style.backgroundColor = color.toCssColorString();  // Assuming auxColor is a Cesium Color object
-                    colorBox.style.marginRight = '10px';
+                    colorBox.classList.add('legendColor');
+                    colorBox.style.backgroundColor = color.toCssColorString();
 
                     // Create a label for the legend item
                     const label = document.createElement('span');
@@ -459,11 +406,9 @@
                                 entity.name = surfaceName;
                                 var description = '<b>' + surfaceName + '</b><br/>';
                                 var properties = entity.properties;
-                                for (var prop in properties) {
-                                    if (properties.hasOwnProperty(prop) && typeof properties[prop] !== 'function') {
-                                        description += prop.replace(/^_/, '') + ': ' + properties[prop] + '<br/>';
-                                    }
-                                }
+                                properties.propertyNames.forEach(function (prop) {
+                                    description += prop + ': ' + properties[prop].getValue() + '<br/>';
+                                });
                                 entity.description = description;
                             });
                         }
@@ -569,12 +514,9 @@
                             }
                             var description = '';
                             var properties = entity.properties;
-                            for (var propertyName in properties) {
-                                if (properties.hasOwnProperty(propertyName) && typeof properties[propertyName] !== 'function') {
-                                    var propNameWithoutUnderscore = propertyName.replace(/^_/, '');
-                                    description += propNameWithoutUnderscore + ': ' + properties[propertyName] + '<br />';
-                                }
-                            }
+                            properties.propertyNames.forEach(function (propertyName) {
+                                description += propertyName + ': ' + properties[propertyName].getValue() + '<br />';
+                            });
                             entity.description = description;
                         }
                     });
@@ -627,12 +569,9 @@
                             }
                             var description = '';
                             var properties = entity.properties;
-                            for (var propertyName in properties) {
-                                if (properties.hasOwnProperty(propertyName) && typeof properties[propertyName] !== 'function') {
-                                    var propNameWithoutUnderscore = propertyName.replace(/^_/, '');
-                                    description += propNameWithoutUnderscore + ': ' + properties[propertyName] + '<br />';
-                                }
-                            }
+                            properties.propertyNames.forEach(function (propertyName) {
+                                description += propertyName + ': ' + properties[propertyName].getValue() + '<br />';
+                            });
                             entity.description = description;
                         }
                     });
@@ -658,7 +597,10 @@
             skyAtmosphere: false, // Disable sky atmosphere
             enableCollisionDetection: false,
             navigationInstructionsInitiallyVisible: true,
-            baseLayer: Cesium.ImageryLayer.fromProviderAsync(Cesium.IonImageryProvider.fromAssetId(3954)),
+            baseLayer: Cesium.ImageryLayer.fromProviderAsync(
+                Cesium.IonImageryProvider.fromAssetId(3954)
+                    .catch(function () { return Cesium.IonImageryProvider.fromAssetId(2); })
+            ),
             globe: new Cesium.Globe(Cesium.Ellipsoid.WGS84, {
                 minimumZoomDistance: 0.0
             })
@@ -683,6 +625,35 @@
 
         // Bind updateNorthArrow to the postRender event
         viewer.scene.postRender.addEventListener(updateNorthArrow);
+
+        // Let users drag the north arrow off whatever it covers (e.g. the info box).
+        (function () {
+            const arrow = document.getElementById('northArrow');
+            let offsetX = 0, offsetY = 0;
+            arrow.title = 'Drag to move';
+            arrow.addEventListener('pointerdown', function (e) {
+                // offsetLeft/Top ignore the heading rotation, so the arrow doesn't jump on grab.
+                offsetX = e.clientX - arrow.offsetLeft;
+                offsetY = e.clientY - arrow.offsetTop;
+                arrow.setPointerCapture(e.pointerId);
+                arrow.classList.add('is-dragging');
+                e.preventDefault();
+            });
+            arrow.addEventListener('pointermove', function (e) {
+                if (!arrow.hasPointerCapture(e.pointerId)) return;
+                const maxX = window.innerWidth - arrow.offsetWidth;
+                const maxY = window.innerHeight - arrow.offsetHeight;
+                arrow.style.left = Math.min(Math.max(0, e.clientX - offsetX), maxX) + 'px';
+                arrow.style.top = Math.min(Math.max(0, e.clientY - offsetY), maxY) + 'px';
+                arrow.style.right = 'auto';
+            });
+            function endDrag(e) {
+                if (arrow.hasPointerCapture(e.pointerId)) arrow.releasePointerCapture(e.pointerId);
+                arrow.classList.remove('is-dragging');
+            }
+            arrow.addEventListener('pointerup', endDrag);
+            arrow.addEventListener('pointercancel', endDrag);
+        })();
 
         // ---- High-res button in the infoBox popup ----
         // Expose a global so the button inside the infoBox iframe can call back out
@@ -844,14 +815,18 @@
         viewer.scene.globe.show = false;
         viewer.scene.fog.enabled = false;
         viewer.scene.globe.showGroundAtmosphere = false;
-        viewer.scene.globe.depthTestAgainstTerrain = true;
+        // Off by default: every fault is below ground, so occlusion would hide them all.
+        viewer.scene.globe.depthTestAgainstTerrain = false;
 
         const toggleTerrainOcclusionCheckbox = document.getElementById('toggleTerrainOcclusionCheckbox');
         toggleTerrainOcclusionCheckbox.addEventListener('change', function () {
             viewer.scene.globe.depthTestAgainstTerrain = toggleTerrainOcclusionCheckbox.checked;
         });
 
-        viewer.scene.setTerrain(new Cesium.Terrain(Cesium.CesiumTerrainProvider.fromIonAssetId(2426648)));
+        viewer.scene.setTerrain(new Cesium.Terrain(
+            Cesium.CesiumTerrainProvider.fromIonAssetId(2426648)
+                .catch(function () { return Cesium.CesiumTerrainProvider.fromIonAssetId(1); })
+        ));
         const scene = viewer.scene;
         const globe = scene.globe;
         const camera = scene.camera;
@@ -897,16 +872,17 @@
 
                 const entities = dataSource.entities.values;
                 const circleSizeSlider = document.getElementById('circleSizeSlider');
+                const now = Cesium.JulianDate.now();
                 entities.forEach(function (entity) {
                     entity.billboard = undefined;
                     if (entity.position) {
-                        let coordinates = Cesium.Cartographic.fromCartesian(entity.position.getValue(Cesium.JulianDate.now()));
-                        let depthInMeters = coordinates.height * 1000;
-                        entity.position = new Cesium.ConstantPositionProperty(Cesium.Cartesian3.fromDegrees(
-                            Cesium.Math.toDegrees(coordinates.longitude),
-                            Cesium.Math.toDegrees(coordinates.latitude),
-                            -depthInMeters
-                        ));
+                        // USGS GeoJSON stores depth (km) as the third coordinate, which Cesium reads as height.
+                        let coordinates = Cesium.Cartographic.fromCartesian(entity.position.getValue(now));
+                        const lon = Cesium.Math.toDegrees(coordinates.longitude);
+                        const lat = Cesium.Math.toDegrees(coordinates.latitude);
+                        const depthKm = coordinates.height;
+                        entity.position = new Cesium.ConstantPositionProperty(Cesium.Cartesian3.fromDegrees(lon, lat, -depthKm * 1000));
+                        describeEarthquake(entity, lon, lat, depthKm, now);
                     }
                     entity.point = new Cesium.PointGraphics({
                         pixelSize: calculateMarkerSize(circleSizeSlider.value, entity.properties.mag.getValue()),
@@ -916,6 +892,39 @@
             } catch (error) {
                 console.log('Error loading earthquake data:', error);
             }
+        }
+
+        function escapeHtml(value) {
+            return String(value).replace(/[&<>"']/g, function (c) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+            });
+        }
+
+        function describeEarthquake(entity, lon, lat, depthKm, now) {
+            const p = entity.properties;
+            const get = function (key) { return p[key] ? p[key].getValue(now) : undefined; };
+            const comcatId = (get('net') || '') + (get('code') || '') || entity.id;
+            const mag = get('mag');
+            const magType = get('magType');
+            const time = get('time');
+            const place = get('place');
+            const url = get('url');
+
+            const rows = [
+                ['ComCat ID', url
+                    ? '<a href="' + escapeHtml(url) + '" target="_blank" rel="noopener">' + escapeHtml(comcatId) + '</a>'
+                    : escapeHtml(comcatId)],
+                ['Magnitude', mag != null ? escapeHtml(mag.toFixed(1) + (magType ? ' ' + magType : '')) : 'n/a'],
+                ['Latitude', lat.toFixed(4) + '&deg;'],
+                ['Longitude', lon.toFixed(4) + '&deg;'],
+                ['Depth', depthKm.toFixed(1) + ' km'],
+                ['Time (UTC)', time != null ? escapeHtml(new Date(time).toISOString().replace('T', ' ').slice(0, 19)) : 'n/a'],
+                ['Location', place ? escapeHtml(place) : 'n/a']
+            ];
+            entity.name = 'ComCat ID: ' + comcatId;
+            entity.description = '<table class="cesium-infoBox-defaultTable"><tbody>' +
+                rows.map(function (r) { return '<tr><th>' + r[0] + '</th><td>' + r[1] + '</td></tr>'; }).join('') +
+                '</tbody></table>';
         }
 
         // Earthquakes
@@ -1038,197 +1047,8 @@
             legendContainer.appendChild(legendItem);
         });
 
-        // Load the CVM models to the drop-down.
-        async function loadDropdown() {
-            try {
-                const response = await fetch('/models_drop_down_coverage');
-                if (response.ok) {
-                    const dropdownHTML = await response.text();
-                    document.getElementById('data-file').innerHTML = dropdownHTML;
-                    // Initialize sliders based on the first dropdown option
-                    updateSlidersFromDropdown();
-                } else {
-                    console.error('Failed to load dropdown:', response.statusText);
-                    document.getElementById('data-file').textContent = 'Failed to load dropdown.';
-                }
-            } catch (error) {
-                console.error('Error fetching dropdown:', error);
-                document.getElementById('data-file').textContent = 'Error loading dropdown.';
-            }
-        }
-
-        // Outline box for CVM — only draw when CVM is toggled on.
-        function updateBoxOutline(minLat, maxLat, minLon, maxLon, minDepth, maxDepth, alpha) {
-            if (!document.getElementById('toggleCVMCheckbox').checked) return;
-            const minDepthScaled = minDepth * -1000;
-            const maxDepthScaled = maxDepth * -1000;
-
-            const topPositions = Cesium.Cartesian3.fromDegreesArrayHeights([
-                minLon, minLat, minDepthScaled,
-                maxLon, minLat, minDepthScaled,
-                maxLon, maxLat, minDepthScaled,
-                minLon, maxLat, minDepthScaled
-            ]);
-
-            const bottomPositions = Cesium.Cartesian3.fromDegreesArrayHeights([
-                minLon, minLat, maxDepthScaled,
-                maxLon, minLat, maxDepthScaled,
-                maxLon, maxLat, maxDepthScaled,
-                minLon, maxLat, maxDepthScaled
-            ]);
-
-            const northPositions = Cesium.Cartesian3.fromDegreesArrayHeights([
-                minLon, maxLat, minDepthScaled,
-                maxLon, maxLat, minDepthScaled,
-                maxLon, maxLat, maxDepthScaled,
-                minLon, maxLat, maxDepthScaled
-            ]);
-
-            const southPositions = Cesium.Cartesian3.fromDegreesArrayHeights([
-                minLon, minLat, minDepthScaled,
-                maxLon, minLat, minDepthScaled,
-                maxLon, minLat, maxDepthScaled,
-                minLon, minLat, maxDepthScaled
-            ]);
-
-            const eastPositions = Cesium.Cartesian3.fromDegreesArrayHeights([
-                maxLon, minLat, minDepthScaled,
-                maxLon, maxLat, minDepthScaled,
-                maxLon, maxLat, maxDepthScaled,
-                maxLon, minLat, maxDepthScaled
-            ]);
-
-            const westPositions = Cesium.Cartesian3.fromDegreesArrayHeights([
-                minLon, minLat, minDepthScaled,
-                minLon, maxLat, minDepthScaled,
-                minLon, maxLat, maxDepthScaled,
-                minLon, minLat, maxDepthScaled
-            ]);
-
-            // Helper function to create and add polygon entity
-            function addPolygonEntity(positions, alpha, name) {
-                // Add a polyline entity for a thicker outline with transparency
-                const line = viewer.entities.add({ name: name + " outline", polyline: { positions, width: cvmLineWidth[0], material: cvmOutlineColor.withAlpha(1.0) } });
-                const poly = viewer.entities.add({ name: name, polygon: { hierarchy: new Cesium.PolygonHierarchy(positions), material: cvmFaceColor.withAlpha(alpha), perPositionHeight: true, outline: true, outlineColor: cvmOutlineColor } });
-                return [poly, line];
-
-            }
-
-            // Remove existing entities if they exist
-            if (boxEntities) {
-                boxEntities.forEach(entity => viewer.entities.remove(entity));
-            }
-            boxEntities = [];
-
-            // Add polygons for all six faces
-            boxEntities.push(...addPolygonEntity(topPositions, alpha, 'Top Surface'));
-            boxEntities.push(...addPolygonEntity(bottomPositions, alpha, 'Bottom Surface'));
-            boxEntities.push(...addPolygonEntity(northPositions, alpha, 'North Surface'));
-            boxEntities.push(...addPolygonEntity(southPositions, alpha, 'South Surface'));
-            boxEntities.push(...addPolygonEntity(eastPositions, alpha, 'East Surface'));
-            boxEntities.push(...addPolygonEntity(westPositions, alpha, 'West Surface'));
-        }
-
-
-        // Array to keep track of the box entities
-        let boxEntities = [];
-
-
-        // Sliders.
-        function updateSlidersFromDropdown() {
-            const coords = document.getElementById('data-file').value;
-            if (coords.length > 0) {
-                document.getElementById('alphaSlider').disabled = false;
-                const limits = coords.replace(/[()]/g, '').split(',');
-                const minLonSlider = document.getElementById('minLonSlider');
-                const maxLonSlider = document.getElementById('maxLonSlider');
-                const minLatSlider = document.getElementById('minLatSlider');
-                const maxLatSlider = document.getElementById('maxLatSlider');
-                const minDepthSlider = document.getElementById('minDepthSlider');
-                const maxDepthSlider = document.getElementById('maxDepthSlider');
-
-                minLonSlider.min = parseFloat(limits[0]);
-                minLonSlider.max = parseFloat(limits[1]);
-                minLonSlider.value = parseFloat(limits[0]);
-                document.getElementById('minLonValue').textContent = minLonSlider.value;
-
-                maxLonSlider.min = parseFloat(limits[0]);
-                maxLonSlider.max = parseFloat(limits[1]);
-                maxLonSlider.value = parseFloat(limits[1]);
-                document.getElementById('maxLonValue').textContent = maxLonSlider.value;
-
-                minLatSlider.min = parseFloat(limits[2]);
-                minLatSlider.max = parseFloat(limits[3]);
-                minLatSlider.value = parseFloat(limits[2]);
-                document.getElementById('minLatValue').textContent = minLatSlider.value;
-
-                maxLatSlider.min = parseFloat(limits[2]);
-                maxLatSlider.max = parseFloat(limits[3]);
-                maxLatSlider.value = parseFloat(limits[3]);
-                document.getElementById('maxLatValue').textContent = maxLatSlider.value;
-
-                minDepthSlider.min = parseFloat(limits[4]);
-                minDepthSlider.max = parseFloat(limits[5]);
-                minDepthSlider.value = parseFloat(limits[4]);
-                document.getElementById('minDepthValue').textContent = minDepthSlider.value;
-
-                maxDepthSlider.min = parseFloat(limits[4]);
-                maxDepthSlider.max = parseFloat(limits[5]);
-                maxDepthSlider.value = parseFloat(limits[5]);
-                document.getElementById('maxDepthValue').textContent = maxDepthSlider.value;
-
-                updateBoxOutline(parseFloat(minLatSlider.value), parseFloat(maxLatSlider.value), parseFloat(minLonSlider.value), parseFloat(maxLonSlider.value), parseFloat(minDepthSlider.value), parseFloat(maxDepthSlider.value), parseFloat(document.getElementById('alphaSlider').value));
-            } else {
-                document.getElementById('alphaSlider').disabled = true;
-                if (boxEntities) {
-                    boxEntities.forEach(e => viewer.entities.remove(e));
-                }
-                boxEntities = [];
-
-            }
-        }
-
-
-        // Event listeners for the sliders
-        document.getElementById('minLatSlider').addEventListener('input', function () {
-            document.getElementById('minLatValue').textContent = this.value;
-            updateBoxOutline(parseFloat(this.value), parseFloat(document.getElementById('maxLatSlider').value), parseFloat(document.getElementById('minLonSlider').value), parseFloat(document.getElementById('maxLonSlider').value), parseFloat(document.getElementById('minDepthSlider').value), parseFloat(document.getElementById('maxDepthSlider').value), parseFloat(document.getElementById('alphaSlider').value));
-        });
-
-        document.getElementById('maxLatSlider').addEventListener('input', function () {
-            document.getElementById('maxLatValue').textContent = this.value;
-            updateBoxOutline(parseFloat(document.getElementById('minLatSlider').value), parseFloat(this.value), parseFloat(document.getElementById('minLonSlider').value), parseFloat(document.getElementById('maxLonSlider').value), parseFloat(document.getElementById('minDepthSlider').value), parseFloat(document.getElementById('maxDepthSlider').value), parseFloat(document.getElementById('alphaSlider').value));
-        });
-
-        document.getElementById('minLonSlider').addEventListener('input', function () {
-            document.getElementById('minLonValue').textContent = this.value;
-            updateBoxOutline(parseFloat(document.getElementById('minLatSlider').value), parseFloat(document.getElementById('maxLatSlider').value), parseFloat(this.value), parseFloat(document.getElementById('maxLonSlider').value), parseFloat(document.getElementById('minDepthSlider').value), parseFloat(document.getElementById('maxDepthSlider').value), parseFloat(document.getElementById('alphaSlider').value));
-        });
-
-        document.getElementById('maxLonSlider').addEventListener('input', function () {
-            document.getElementById('maxLonValue').textContent = this.value;
-            updateBoxOutline(parseFloat(document.getElementById('minLatSlider').value), parseFloat(document.getElementById('maxLatSlider').value), parseFloat(document.getElementById('minLonSlider').value), parseFloat(this.value), parseFloat(document.getElementById('minDepthSlider').value), parseFloat(document.getElementById('maxDepthSlider').value), parseFloat(document.getElementById('alphaSlider').value));
-        });
-
-        document.getElementById('minDepthSlider').addEventListener('input', function () {
-            document.getElementById('minDepthValue').textContent = this.value;
-            updateBoxOutline(parseFloat(document.getElementById('minLatSlider').value), parseFloat(document.getElementById('maxLatSlider').value), parseFloat(document.getElementById('minLonSlider').value), parseFloat(document.getElementById('maxLonSlider').value), parseFloat(this.value), parseFloat(document.getElementById('maxDepthSlider').value), parseFloat(document.getElementById('alphaSlider').value));
-        });
-
-        document.getElementById('maxDepthSlider').addEventListener('input', function () {
-            document.getElementById('maxDepthValue').textContent = this.value;
-            updateBoxOutline(parseFloat(document.getElementById('minLatSlider').value), parseFloat(document.getElementById('maxLatSlider').value), parseFloat(document.getElementById('minLonSlider').value), parseFloat(document.getElementById('maxLonSlider').value), parseFloat(document.getElementById('minDepthSlider').value), parseFloat(this.value), parseFloat(document.getElementById('alphaSlider').value));
-        });
-
-        document.getElementById('alphaSlider').addEventListener('input', function () {
-            document.getElementById('alphaValue').textContent = this.value;
-            updateBoxOutline(parseFloat(document.getElementById('minLatSlider').value), parseFloat(document.getElementById('maxLatSlider').value), parseFloat(document.getElementById('minLonSlider').value), parseFloat(document.getElementById('maxLonSlider').value), parseFloat(document.getElementById('minDepthSlider').value), parseFloat(document.getElementById('maxDepthSlider').value), parseFloat(this.value));
-        });
-
-        document.getElementById('data-file').addEventListener('change', updateSlidersFromDropdown);
-
-        // Load initial dropdown and update sliders
-        loadDropdown();
+        // Subducting plate surface entries join the bottom legend so the legend toggle hides them too.
+        legendContainer.appendChild(document.getElementById('legend'));
 
         var points = [];
         var distanceDisplay = document.getElementById('distanceDisplay');
@@ -1275,6 +1095,12 @@
 
         document.getElementById('toggleGlobeCheckbox').addEventListener('change', function () {
             viewer.scene.globe.show = this.checked;
+            // Occlusion needs the terrain surface, which only renders while the globe is shown.
+            const occlusion = document.getElementById('toggleTerrainOcclusionCheckbox');
+            occlusion.disabled = !this.checked;
+            document.getElementById('terrainOcclusionLabel').title = this.checked
+                ? 'Hide faults and earthquakes that are below the terrain surface'
+                : 'Turn on Satellite imagery to use this';
         });
 
 // =====================================================================
