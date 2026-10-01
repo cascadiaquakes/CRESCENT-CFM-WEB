@@ -1,8 +1,8 @@
-// CVM area display parameters.
-const cvmAreaOutlineColor = [Cesium.Color.CYAN];
-const cvmAreaFaceColor = [Cesium.Color.CYAN];
-const cvmAreaLabel = ["CVM & Study (—) Areas; Filters (- -)"];
-const cvmAreaFillOpacity = [0.1];
+// CFM study area display parameters.
+const studyAreaOutlineColor = [Cesium.Color.CYAN];
+const studyAreaFaceColor = [Cesium.Color.CYAN];
+const studyAreaLabel = ["CFM Study Area (—); Filters (- -)"];
+const studyAreaFillOpacity = [0.1];
 
 // Configuration.
 Cesium.Ion.defaultAccessToken = "your_access_token";
@@ -23,8 +23,8 @@ const initialRoll = 0.3;
 const logoFile = "/static/images/crescent_logos_horizontal_transparent.png";
 
 // Earthquakes
-const eqQueryUrl = 'https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=1970-01-01&minmagnitude=4&minlatitude=' + south + '&maxlatitude=' + north + '&minlongitude=' + west + '&maxlongitude=' + east;
-const eqLabel = ['Earthquakes (M ≥ 4), Circle Size ∝ Magnitude'];
+const eqQueryUrl = 'https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=1970-01-01&minmagnitude=3&minlatitude=' + south + '&maxlatitude=' + north + '&minlongitude=' + west + '&maxlongitude=' + east;
+const eqLabel = ['Earthquakes (M ≥ 3), Circle Size ∝ Magnitude'];
 const eqColor = Cesium.Color.YELLOW;
 const eqMarker = ["circle"];
 
@@ -41,13 +41,6 @@ const cesiumColorList = [
     Cesium.Color.PINK
 ];
 
-// CVM display parameters.
-const cvmOutlineColor = Cesium.Color.BLUE;
-const cvmFaceColor = Cesium.Color.BLUE;
-const cvmLabel = ["CVM Coverage"];
-const cvmColor = [cvmFaceColor];
-const cvmMarker = ["rectangle"];
-const cvmLineWidth = 4;
 
 
 // Auxiliary data.
@@ -64,13 +57,13 @@ const auxMarker = ["rectangle", "rectangle", "rectangle", "rectangle"];
 
 // Boundary data.
 const boundaryData = [
-    '/static/boundary_geojson/us-states.json',
-    '/static/boundary_geojson/georef-canada-province-public.geojson'
+    '/static/boundary_geojson/ne10m-us-states.geojson',
+    '/static/boundary_geojson/ne10m-canada-provinces.geojson'
 ];
 const boundaryLabel = ['US', 'Canada'];
 const boundaryColor = [Cesium.Color.GRAY, Cesium.Color.DIMGRAY];
 const boundaryFillOpacity = [0.0, 0.0];
-const boundaryLineWidth = [2, 0.5];
+const boundaryLineWidth = [1, 1];
 const boundaryMarker = ["line"];
 
 const zoomOutFactor = 2.0; // Increased zoom out factor for better visibility
@@ -100,8 +93,8 @@ const dataSourceCheckboxMapping = {
 // Legends
 const primaryLegendLabel = cfmLabel.concat(cfmTraceLabel);
 const primaryLegendColor = cfmColor.concat(cfmTraceColor);
-const auxLegendLabel = cvmAreaLabel.concat(cvmLabel).concat(eqLabel);//.concat(boundaryLabel);
-const auxLegendColor = cvmAreaOutlineColor.concat(cvmColor).concat(eqColor);//.concat(boundaryColor);
+const auxLegendLabel = studyAreaLabel.concat(eqLabel);//.concat(boundaryLabel);
+const auxLegendColor = studyAreaOutlineColor.concat(eqColor);//.concat(boundaryColor);
 
 // Legacy support.
 const data = cfmData.concat(cfmTraceData)
