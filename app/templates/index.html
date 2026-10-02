@@ -149,11 +149,11 @@
                                 <label for="minColor" id="minColorLabel">min.</label>
                                 <input type="number" id="minColor" style="width:48px;" />
                                 <span id="minColorUnit"></span>
-                                <div id="colorBarMin" class="color-bar" style="background-color: red;">&nbsp;</div>
+                                <div id="colorBarMin" class="color-bar" style="background-color: rgb(68, 1, 84);">&nbsp;</div>
                                 <label for="maxColor" id="maxColorLabel">max.</label>
                                 <input type="number" id="maxColor" style="width:48px;">
                                 <span id="maxColorUnit"></span>
-                                <div id="colorBarMax" class="color-bar" style="background-color: blue;">&nbsp;</div>
+                                <div id="colorBarMax" class="color-bar" style="background-color: rgb(253, 231, 37);">&nbsp;</div>
                             </div>
                             <div id="colorBarNote" class="notes"></div>
                             <div id="colorLegend" style="display:none;"></div>
@@ -555,44 +555,41 @@
         }
 
 
+        // Viridis (colorblind-safe) stops, sampled evenly from 0 to 1.
+        const viridisStops = [
+            [68, 1, 84], [72, 40, 120], [62, 74, 137], [49, 104, 142], [38, 130, 142],
+            [31, 158, 137], [53, 183, 121], [109, 205, 89], [180, 222, 44], [253, 231, 37]
+        ];
+
         function getColorFromValue(value, minValue, maxValue) {
-            // Normalize the value within the range of minValue to maxValue
             const fraction = (value - minValue) / (maxValue - minValue);
-            const clampedFraction = Math.max(0, Math.min(1, fraction));
-
-            // Calculate the red and blue components based on the clamped fraction
-            const red = Math.floor(255 * (1 - clampedFraction));
-            const blue = Math.floor(255 * clampedFraction);
-            const green = 0;
-
-            // Create a Cesium Color object
-            const cesiumColor = Cesium.Color.fromBytes(red, green, blue);
-
-            // Create an RGB string
-            const rgbString = `rgb(${red}, ${green}, ${blue})`;
-
-            // Return both the Cesium Color object and the RGB string
+            const t = Math.max(0, Math.min(1, Number.isFinite(fraction) ? fraction : 0)) * (viridisStops.length - 1);
+            const i = Math.min(Math.floor(t), viridisStops.length - 2);
+            const f = t - i;
+            const [red, green, blue] = viridisStops[i].map((c, k) => Math.round(c + (viridisStops[i + 1][k] - c) * f));
             return {
-                cesiumColor: cesiumColor,
-                rgbString: rgbString
+                cesiumColor: Cesium.Color.fromBytes(red, green, blue),
+                rgbString: `rgb(${red}, ${green}, ${blue})`
             };
         }
 
 
         // Categorical color palette for discrete values
+        // Colorblind-safe: Okabe-Ito, extended with Paul Tol "muted" for the 11 regions.
+        // Yellow comes last so it doesn't clash with the yellow earthquake overlay.
         const categoryPalette = [
-            Cesium.Color.fromCssColorString('#e6194b'),
-            Cesium.Color.fromCssColorString('#3cb44b'),
-            Cesium.Color.fromCssColorString('#4363d8'),
-            Cesium.Color.fromCssColorString('#f58231'),
-            Cesium.Color.fromCssColorString('#911eb4'),
-            Cesium.Color.fromCssColorString('#42d4f4'),
-            Cesium.Color.fromCssColorString('#f032e6'),
-            Cesium.Color.fromCssColorString('#aa6e28'),
-            Cesium.Color.fromCssColorString('#fabed4'),
-            Cesium.Color.fromCssColorString('#469990'),
-            Cesium.Color.fromCssColorString('#dcbeff'),
-            Cesium.Color.fromCssColorString('#ffe119'),
+            Cesium.Color.fromCssColorString('#0072B2'),
+            Cesium.Color.fromCssColorString('#E69F00'),
+            Cesium.Color.fromCssColorString('#009E73'),
+            Cesium.Color.fromCssColorString('#D55E00'),
+            Cesium.Color.fromCssColorString('#56B4E9'),
+            Cesium.Color.fromCssColorString('#CC79A7'),
+            Cesium.Color.fromCssColorString('#000000'),
+            Cesium.Color.fromCssColorString('#882255'),
+            Cesium.Color.fromCssColorString('#999933'),
+            Cesium.Color.fromCssColorString('#332288'),
+            Cesium.Color.fromCssColorString('#44AA99'),
+            Cesium.Color.fromCssColorString('#F0E442'),
         ];
         const categoryColorMaps = {};
 
