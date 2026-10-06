@@ -172,7 +172,7 @@
                             <label>
                                 <input type="checkbox" id="toggleEQCheckbox" checked>
                                 <span class="legend-dot eq-dot" aria-hidden="true"></span>
-                                U.S. Geological Survey Earthquake Catalog<sup>1</sup> (M&ge;4, 1970&ndash;Present), Circle Size &prop; Magnitude
+                                U.S. Geological Survey Earthquake Catalog<sup>1</sup> (M&ge;3, 1970&ndash;Present), Circle Size &prop; Magnitude
                             </label>
                         </div>
                         <div class="overlay-toggle">
@@ -305,6 +305,43 @@
         });
 
 
+        function escapeHtml(value) {
+            return String(value).replace(/[&<>"']/g, function (c) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+            });
+        }
+
+        // Some USGS events have null coordinates or depth.
+        function fmt(value, digits, unit) {
+            return Number.isFinite(value) ? value.toFixed(digits) + unit : 'n/a';
+        }
+
+        function comcatIdOf(feature) {
+            const p = feature.properties;
+            return (p.net || '') + (p.code || '') || feature.id;
+        }
+
+        // Same fields and layout as the 3D viewer's earthquake popup.
+        function describeEarthquake(feature) {
+            const p = feature.properties;
+            const [lon, lat, depthKm] = feature.geometry.coordinates;
+            const id = comcatIdOf(feature);
+            const rows = [
+                ['ComCat ID', p.url
+                    ? '<a href="' + escapeHtml(p.url) + '" target="_blank" rel="noopener">' + escapeHtml(id) + '</a>'
+                    : escapeHtml(id)],
+                ['Magnitude', Number.isFinite(p.mag) ? escapeHtml(p.mag.toFixed(1) + (p.magType ? ' ' + p.magType : '')) : 'n/a'],
+                ['Latitude', fmt(lat, 4, '&deg;')],
+                ['Longitude', fmt(lon, 4, '&deg;')],
+                ['Depth', fmt(depthKm, 1, ' km')],
+                ['Time (UTC)', p.time != null ? escapeHtml(new Date(p.time).toISOString().replace('T', ' ').slice(0, 19)) : 'n/a'],
+                ['Location', p.place ? escapeHtml(p.place) : 'n/a']
+            ];
+            return '<table class="cesium-infoBox-defaultTable"><tbody>' +
+                rows.map(function (r) { return '<tr><th>' + r[0] + '</th><td>' + r[1] + '</td></tr>'; }).join('') +
+                '</tbody></table>';
+        }
+
         // Fetch earthquake data from USGS API
         var eqEntities = [];
         fetch(eqQueryUrl)
@@ -315,13 +352,14 @@
                     const magnitude = feature.properties.mag;
 
                     var e = viewer.entities.add({
+                        name: 'ComCat ID: ' + comcatIdOf(feature),
                         position: Cesium.Cartesian3.fromDegrees(coords[0], coords[1]),
                         ellipse: {
                             semiMinorAxis: 50 * Math.pow(magnitude, 3),
                             semiMajorAxis: 50 * Math.pow(magnitude, 3),
                             material: Cesium.Color.YELLOW.withAlpha(0.5)
                         },
-                        description: `Magnitude: ${magnitude}<br>Location: (${coords[1]}, ${coords[0]})<br>Depth: ${coords[2]} km`
+                        description: describeEarthquake(feature)
                     });
                     eqEntities.push(e);
                 });
