@@ -11,6 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/view3d.css">
     <script src="https://cesium.com/downloads/cesiumjs/releases/1.116/Build/Cesium/Cesium.js"></script>
+    <script src="/static/js/map_tools.js"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag() { dataLayer.push(arguments); }
@@ -780,8 +781,20 @@
         });
 
 
-        // Home view.
-        function homeView() {
+        // Map view: straight down over the study area with north up.
+        function mapView(duration) {
+            viewer.camera.flyTo({
+                // Pad the study area so the whole box and some context fit on screen.
+                destination: Cesium.Rectangle.fromDegrees(
+                    west - (east - west) * 0.25, south - (north - south) * 0.12,
+                    east + (east - west) * 0.25, north + (north - south) * 0.12),
+                orientation: { heading: 0.0, pitch: Cesium.Math.toRadians(-90.0), roll: 0.0 },
+                duration: duration
+            });
+        }
+
+        // Tilted view from the southwest.
+        function tiltedView() {
             viewer.camera.flyTo({
                 destination: Cesium.Cartesian3.fromDegrees(initialFlyTO[0], initialFlyTO[1], initialFlyTO[2]),
                 orientation: {
@@ -791,17 +804,14 @@
                 }
             });
         }
-        // Override the home button functionality
+        // The home button returns to the north-up map view.
         viewer.homeButton.viewModel.command.beforeExecute.addEventListener(function (e) {
-            e.cancel = true; // Prevent the default home button action
-            homeView()
-
+            e.cancel = true;
+            mapView();
         });
 
-        // Add the home button functionality
         document.getElementById("homeViewButton").addEventListener('click', function () {
-            homeView()
-
+            tiltedView();
         });
 
         // Function to read and clear an item from localStorage
@@ -857,14 +867,8 @@
 
         globe.maximumScreenSpaceError = 1.0;
 
-        viewer.camera.flyTo({
-            destination: Cesium.Cartesian3.fromDegrees(initialFlyTO[0], initialFlyTO[1], initialFlyTO[2]),
-            orientation: {
-                heading: Cesium.Math.toRadians(initialHeading),
-                pitch: Cesium.Math.toRadians(initialPitch),
-                roll: initialRoll
-            }
-        });
+        mapView(0);
+        CfmMapTools.init(viewer, { scalePosition: 'bottom-left', zoomBottom: '180px', zoomRight: '18px', coordsBottom: '74px' });
 
         viewer.animation.container.style.visibility = 'hidden';
         viewer.timeline.container.style.visibility = 'hidden';
