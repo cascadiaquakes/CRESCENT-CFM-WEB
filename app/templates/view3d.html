@@ -587,6 +587,14 @@
 
 
         console.log("Setting the viewer ");// + Cesium.Ion.defaultAccessToken)
+        // Imagery layers our Cesium ion account can load. Sentinel-2, Blue Marble and Earth at
+        // night are not in the account (404), and Stadia styles need an API key in production.
+        const workingImagery = Cesium.createDefaultImageryProviderViewModels().filter(function (vm) {
+            return !/Sentinel-2|Blue Marble|Earth at night|Stadia/i.test(vm.name);
+        });
+        const defaultImagery = workingImagery.find(function (vm) { return vm.name === 'Bing Maps Aerial'; });
+        const terrainChoices = Cesium.createDefaultTerrainProviderViewModels();
+
         var viewer = new Cesium.Viewer('cesiumContainer', {
             depthPlaneEllipsoidOffset: 10000,
             nearToFarRatio: 1e6,
@@ -597,10 +605,11 @@
             skyAtmosphere: false, // Disable sky atmosphere
             enableCollisionDetection: false,
             navigationInstructionsInitiallyVisible: true,
-            baseLayer: Cesium.ImageryLayer.fromProviderAsync(
-                Cesium.IonImageryProvider.fromAssetId(3954)
-                    .catch(function () { return Cesium.IonImageryProvider.fromAssetId(2); })
-            ),
+            // Letting the layer picker own the base layer gives its button an icon.
+            imageryProviderViewModels: workingImagery,
+            selectedImageryProviderViewModel: defaultImagery,
+            terrainProviderViewModels: terrainChoices,
+            selectedTerrainProviderViewModel: terrainChoices.find(function (vm) { return /World Terrain/.test(vm.name); }),
             globe: new Cesium.Globe(Cesium.Ellipsoid.WGS84, {
                 minimumZoomDistance: 0.0
             })
@@ -1090,6 +1099,15 @@
         document.getElementById('clearCheckbox').addEventListener('change', function () {
             if (!this.checked) {
                 clearDistance();
+            }
+        });
+
+        // Picking a layer in the imagery picker should show it, so turn Satellite imagery on.
+        Cesium.knockout.getObservable(viewer.baseLayerPicker.viewModel, 'selectedImagery').subscribe(function () {
+            const globeBox = document.getElementById('toggleGlobeCheckbox');
+            if (!globeBox.checked) {
+                globeBox.checked = true;
+                globeBox.dispatchEvent(new Event('change'));
             }
         });
 
