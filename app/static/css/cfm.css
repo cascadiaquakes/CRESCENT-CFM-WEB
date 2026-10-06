@@ -455,3 +455,13 @@ body {
     justify-content: center;
     flex-wrap: wrap;
 }
+
+.color-legend-note {
+    margin-top: 6px;
+    font-size: 11px;
+    color: #64748b;
+}
+
+.color-legend-note a {
+    color: #0e7490;
+}

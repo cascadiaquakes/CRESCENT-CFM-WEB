@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider/distribute/nouislider.min.css">
 <script src="https://cdn.jsdelivr.net/npm/nouislider/distribute/nouislider.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+<script src="/static/js/map_tools.js"></script>
 
 <!-- Load repository_config.js synchronously 
          Synchronous XHR ensures loading order: The browser halts execution until repository_config.js is fetched and executed, 
@@ -295,6 +296,7 @@
         viewer.timeline.container.style.visibility = 'hidden';
         const areaRectangle = Cesium.Rectangle.fromDegrees(west, south, east, north);
         viewer.camera.setView({ destination: areaRectangle });
+        CfmMapTools.init(viewer, { scalePosition: 'bottom-right', zoomBottom: '84px', zoomRight: '12px', coordsBottom: '14px' });
 
         const view3DButton = document.getElementById('view3DButton');
 
@@ -724,13 +726,17 @@
                 if (catKey && categoryColorMaps[catKey]) {
                     var entries = Object.entries(categoryColorMaps[catKey]);
                     entries.sort(function (a, b) { return a[0].localeCompare(b[0]); });
-                    var html = '<div class="color-legend-title">Legend</div>';
+                    var isLevel = catKey === 'faultLevel';
+                    var html = '<div class="color-legend-title">' + (isLevel ? 'CFM Fault Classification' : 'Legend') + '</div>';
                     entries.forEach(function (pair) {
-                        var label = pair[0] || '(empty)';
+                        var label = pair[0] ? (isLevel ? 'Level ' + pair[0] : pair[0]) : '(empty)';
                         var c = pair[1];
                         var css = 'rgb(' + Math.round(c.red*255) + ',' + Math.round(c.green*255) + ',' + Math.round(c.blue*255) + ')';
                         html += '<div class="color-legend-item"><span class="color-legend-swatch" style="background:' + css + '"></span>' + label + '</div>';
                     });
+                    if (isLevel) {
+                        html += '<div class="color-legend-note">See the <a href="https://github.com/cascadiaquakes/CRESCENT-CFM#readme" target="_blank" rel="noopener">CFM ReadMe</a> for the definition of each level.</div>';
+                    }
                     legendEl.innerHTML = html;
                     legendEl.style.display = '';
                 } else {
