@@ -580,3 +580,41 @@ tbody tr:hover {
     font-size: 9px;
     color: #64748b;
 }
+
+.lasso-overlay {
+    position: fixed;
+    display: none;
+    pointer-events: none;
+    z-index: 1250;
+}
+
+#buttonRow #clearSelectionBtn {
+    background: #fff;
+    color: #0b4a53;
+    box-shadow: inset 0 0 0 1px #0b4a53;
+}
+
+#buttonRow #clearSelectionBtn:hover {
+    background: #eef6f7;
+}
+
+#lassoButton.is-active {
+    background: #0e7490;
+    color: #fff;
+}
+
+.selection-hint {
+    font-size: 11px;
+    color: #0e7490;
+    min-height: 14px;
+    margin: 4px 0 2px;
+}
+
+.color-legend-item.is-selectable {
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.color-legend-item.is-selectable:hover {
+    background: rgba(14, 116, 144, 0.08);
+}
