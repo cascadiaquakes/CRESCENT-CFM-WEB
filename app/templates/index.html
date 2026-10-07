@@ -1,7 +1,7 @@
 {% extends 'cfm_page.html' %}
 
 {% block style%}
-<link rel="stylesheet" href="/static/css/main.css" />
+<link rel="stylesheet" href="/static/css/main.css?v=20261006" />
 <script src="https://cesium.com/downloads/cesiumjs/releases/1.82/Build/Cesium/Cesium.js"></script>
 <link href="https://cesium.com/downloads/cesiumjs/releases/1.82/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
 <!-- Include Font Awesome -->
@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider/distribute/nouislider.min.css">
 <script src="https://cdn.jsdelivr.net/npm/nouislider/distribute/nouislider.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
-<script src="/static/js/map_tools.js"></script>
+<script src="/static/js/map_tools.js?v=20261006"></script>
 
 <!-- Load repository_config.js synchronously 
          Synchronous XHR ensures loading order: The browser halts execution until repository_config.js is fetched and executed, 
@@ -198,7 +198,10 @@
             <div id="buttonRow">
                 <button id="view3DButton">View 3D</button>
                 <button id="downloadSelectedBtn">&#x2B07; Download (1 km)</button>
+                <button id="lassoButton" title="Draw a loop on the map to select the faults inside it">Lasso</button>
+                <button id="clearSelectionBtn" title="Untick all faults and remove drawn loops">Clear</button>
             </div>
+            <div id="selectionHint" class="selection-hint" aria-live="polite"></div>
             <div class="card-2d-row">
                 <label class="card-2d-check"><input type="checkbox" id="selectAllCheckbox" /> Select/Deselect All</label>
                 <div id="toggleVisibilityLabel" style="cursor:pointer; display:inline-flex; align-items:center; gap:4px;">
@@ -699,6 +702,9 @@
                         color = Cesium.Color.BLACK;
                         toggleColorInputs(false);
                     }
+                    // Keep selected faults highlighted across color changes
+                    const cb = document.querySelector('#lineList input[type="checkbox"][value="' + CSS.escape(entity.id) + '"]');
+                    if (cb && cb.checked) color = Cesium.Color.MAGENTA;
                     entity.polyline.material = new Cesium.ColorMaterialProperty(color);
                     //alert("Color set to:" + color);
                 }
@@ -732,13 +738,21 @@
                         var label = pair[0] ? (isLevel ? 'Level ' + pair[0] : pair[0]) : '(empty)';
                         var c = pair[1];
                         var css = 'rgb(' + Math.round(c.red*255) + ',' + Math.round(c.green*255) + ',' + Math.round(c.blue*255) + ')';
-                        html += '<div class="color-legend-item"><span class="color-legend-swatch" style="background:' + css + '"></span>' + label + '</div>';
+                        html += '<div class="color-legend-item is-selectable" data-value="' + escapeHtml(pair[0]) + '" title="Click to select these faults"><span class="color-legend-swatch" style="background:' + css + '"></span>' + escapeHtml(label) + '</div>';
                     });
+                    html += '<div class="color-legend-note">Click an entry to select those faults (Shift+click to add).</div>';
                     if (isLevel) {
                         html += '<div class="color-legend-note">See the <a href="https://github.com/cascadiaquakes/CRESCENT-CFM#readme" target="_blank" rel="noopener">CFM ReadMe</a> for the definition of each level.</div>';
                     }
                     legendEl.innerHTML = html;
                     legendEl.style.display = '';
+                    legendEl.querySelectorAll('.color-legend-item.is-selectable').forEach(function (item) {
+                        item.addEventListener('click', function (e) {
+                            const value = item.getAttribute('data-value');
+                            if (!e.shiftKey) clearSelection();
+                            selectFaultsWhere(function (entity) { return entity[catKey] === value; });
+                        });
+                    });
                 } else {
                     legendEl.innerHTML = '';
                     legendEl.style.display = 'none';
@@ -814,6 +828,158 @@
 
         const geoJsonEntities = {};
 
+        // Tick the checkbox of every currently visible fault that matches.
+        function selectFaultsWhere(matches) {
+            let added = 0;
+            Object.keys(geoJsonEntities).forEach(function (id) {
+                const entity = geoJsonEntities[id];
+                const cb = document.querySelector('#lineList input[type="checkbox"][value="' + CSS.escape(id) + '"]');
+                if (!cb || !entity.show || cb.closest('tr').style.display === 'none') return;
+                if (!cb.checked && matches(entity)) {
+                    cb.checked = true;
+                    cb.dispatchEvent(new Event('change'));
+                    added++;
+                }
+            });
+            const total = document.querySelectorAll('#lineList input[type="checkbox"]:checked').length;
+            document.getElementById('selectionHint').textContent =
+                total + ' fault' + (total === 1 ? '' : 's') + ' selected (listed first). Use View 3D to open them.';
+            sortSelectedFirst();
+        }
+
+        // Drawn lasso loops live in their own data source so fault recoloring never touches them.
+        const lassoLoops = new Cesium.CustomDataSource('lasso');
+        viewer.dataSources.add(lassoLoops);
+        viewer.selectedEntityChanged.addEventListener(function (e) {
+            if (e && lassoLoops.entities.contains(e)) viewer.selectedEntity = undefined;
+        });
+
+        // Untick everything, drop drawn loops and restore the color mode.
+        function clearSelection(message) {
+            lassoLoops.entities.removeAll();
+            document.querySelectorAll('#lineList input[type="checkbox"]').forEach(function (cb) { cb.checked = false; });
+            document.getElementById('selectAllCheckbox').checked = false;
+            updateAllFeatureColors(viewer);
+            sortSelectedFirst();
+            document.getElementById('selectionHint').textContent = message || '';
+        }
+
+        // Selected faults first, then alphabetical, so a lasso result is visible in the table.
+        function sortSelectedFirst() {
+            const lineList = document.getElementById('lineList');
+            const rows = Array.from(lineList.querySelectorAll('tr')).filter(function (tr) { return tr.querySelector('input[type="checkbox"]'); });
+            const name = function (tr) { return tr.children[2].textContent.toLowerCase(); };
+            rows.sort(function (a, b) {
+                const sel = b.querySelector('input').checked - a.querySelector('input').checked;
+                return sel || name(a).localeCompare(name(b));
+            });
+            rows.forEach(function (tr) { lineList.appendChild(tr); });
+            lineList.closest('.table-holder').scrollTop = 0;
+        }
+
+        // Lasso: drag a loop on the map; faults with any trace vertex inside it get selected.
+        (function () {
+            const button = document.getElementById('lassoButton');
+            const overlay = document.createElement('canvas');
+            overlay.className = 'lasso-overlay';
+            document.body.appendChild(overlay);
+            const ctx = overlay.getContext('2d');
+            const controller = viewer.scene.screenSpaceCameraController;
+            const handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
+            let active = false, drawing = false, points = [];
+
+            // Keep the loop on the map (as lon/lat) so it stays put when panning or zooming.
+            function keepLoop(loop) {
+                const positions = loop.map(function (p) { return viewer.camera.pickEllipsoid(p); }).filter(Boolean);
+                if (positions.length < 3) return;
+                positions.push(positions[0]);
+                lassoLoops.entities.add({
+                    polyline: {
+                        positions: positions,
+                        width: 2,
+                        material: new Cesium.PolylineDashMaterialProperty({ color: Cesium.Color.fromCssColorString('#0e7490') })
+                    }
+                });
+            }
+
+            document.getElementById('clearSelectionBtn').addEventListener('click', function () {
+                if (active) setActive(false);
+                clearSelection('Selection cleared.');
+            });
+
+            function setActive(on) {
+                active = on;
+                controller.enableInputs = !on;
+                button.classList.toggle('is-active', on);
+                viewer.scene.canvas.style.cursor = on ? 'crosshair' : '';
+                overlay.style.display = on ? 'block' : 'none';
+                document.getElementById('selectionHint').textContent = on ? 'Drag a loop around the faults to select. Esc to cancel.' : '';
+                if (!on) { points = []; drawing = false; ctx.clearRect(0, 0, overlay.width, overlay.height); }
+            }
+
+            function redraw() {
+                ctx.clearRect(0, 0, overlay.width, overlay.height);
+                if (points.length < 2) return;
+                ctx.beginPath();
+                ctx.moveTo(points[0].x, points[0].y);
+                points.forEach(function (p) { ctx.lineTo(p.x, p.y); });
+                ctx.closePath();
+                ctx.fillStyle = 'rgba(14, 116, 144, 0.15)';
+                ctx.strokeStyle = '#0e7490';
+                ctx.lineWidth = 2;
+                ctx.fill();
+                ctx.stroke();
+            }
+
+            function inside(pt, poly) {
+                let hit = false;
+                for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+                    if ((poly[i].y > pt.y) !== (poly[j].y > pt.y) &&
+                        pt.x < (poly[j].x - poly[i].x) * (pt.y - poly[i].y) / (poly[j].y - poly[i].y) + poly[i].x) hit = !hit;
+                }
+                return hit;
+            }
+
+            button.addEventListener('click', function () { setActive(!active); });
+            document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && active) setActive(false); });
+
+            handler.setInputAction(function (e) {
+                if (!active) return;
+                // Pin the drawing layer exactly over the map canvas
+                const rect = viewer.scene.canvas.getBoundingClientRect();
+                overlay.style.left = rect.left + 'px';
+                overlay.style.top = rect.top + 'px';
+                overlay.style.width = rect.width + 'px';
+                overlay.style.height = rect.height + 'px';
+                overlay.width = rect.width;
+                overlay.height = rect.height;
+                clearSelection('Drag a loop around the faults to select. Esc to cancel.');
+                drawing = true;
+                points = [Cesium.Cartesian2.clone(e.position)];
+            }, Cesium.ScreenSpaceEventType.LEFT_DOWN);
+
+            handler.setInputAction(function (e) {
+                if (!drawing) return;
+                points.push(Cesium.Cartesian2.clone(e.endPosition));
+                redraw();
+            }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
+
+            handler.setInputAction(function () {
+                if (!drawing) return;
+                const loop = points.slice();
+                setActive(false);
+                if (loop.length < 3) return;
+                keepLoop(loop);
+                const now = Cesium.JulianDate.now();
+                selectFaultsWhere(function (entity) {
+                    return entity.polyline.positions.getValue(now).some(function (pos) {
+                        const win = Cesium.SceneTransforms.wgs84ToWindowCoordinates(viewer.scene, pos);
+                        return win && inside(win, loop);
+                    });
+                });
+            }, Cesium.ScreenSpaceEventType.LEFT_UP);
+        })();
+
         // include branch when call the GEOJSON route
         const GeojsonData = `/geojson?branch=${encodeURIComponent(branch)}`
         console.log("Loading GeojsonData= %s", GeojsonData)
@@ -854,6 +1020,17 @@
                 });
 
                 populateLineList(data, lineList, geoJsonEntities, viewer);
+
+                // Coming back from the 3D viewer: re-tick the faults it was showing.
+                let restore = null;
+                try {
+                    restore = JSON.parse(localStorage.getItem('cfmRestoreSelection') || 'null');
+                    localStorage.removeItem('cfmRestoreSelection');
+                } catch (e) { restore = null; }
+                if (Array.isArray(restore) && restore.length) {
+                    const wanted = new Set(restore.map(String));
+                    selectFaultsWhere(function (entity) { return wanted.has(String(entity.id)); });
+                }
 
                 // Update fault count badge
                 var totalFaults = Object.keys(geoJsonEntities).length;

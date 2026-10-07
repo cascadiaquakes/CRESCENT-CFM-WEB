@@ -619,3 +619,61 @@ input[type="range"]::-moz-range-thumb {
     opacity: 0.45;
     cursor: not-allowed;
 }
+
+/* ===================== SELECTION BANNER (faults carried over from 2D) ===================== */
+#selectionBanner {
+    position: fixed;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1100;
+    max-width: min(640px, calc(100vw - 640px));
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    background: rgba(11, 74, 83, 0.92);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 14px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+#selectionBanner button {
+    background: #fff;
+    color: #0b4a53;
+    border: 0;
+    border-radius: 10px;
+    padding: 3px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+#selectionBanner button:hover {
+    background: #e2f0f2;
+}
+
+#selectionBanner .selection-names {
+    flex-basis: 100%;
+    max-height: 40vh;
+    overflow-y: auto;
+    margin: 4px 0 0;
+    padding-left: 18px;
+    font-weight: 400;
+    columns: 2;
+}
+
+@media (max-width: 1100px) {
+    #selectionBanner {
+        top: 56px;
+        left: auto;
+        right: 12px;
+        transform: none;
+        max-width: calc(100vw - 330px);
+    }
+}

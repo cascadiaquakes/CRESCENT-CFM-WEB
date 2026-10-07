@@ -9,9 +9,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/static/css/view3d.css">
+    <link rel="stylesheet" href="/static/css/view3d.css?v=20261006">
     <script src="https://cesium.com/downloads/cesiumjs/releases/1.116/Build/Cesium/Cesium.js"></script>
-    <script src="/static/js/map_tools.js"></script>
+    <script src="/static/js/map_tools.js?v=20261006"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag() { dataLayer.push(arguments); }
@@ -94,6 +94,7 @@
         <div id="toggleButton"><span style="color: red;">&#9660;&nbsp;</span>Show/Hide Controls</div>
         <a id="backTo2DBtn" href="/?branch={{ branch | default('main') }}">&#8592; 2D Viewer</a>
     </div>
+    <div id="selectionBanner" style="display:none;"></div>
     <!-- Scrollable wrapper for both cards -->
     <div id="cardWrapper">
     <!-- Card 1: Layers & View -->
@@ -540,6 +541,7 @@
                 cfmTraceDataSources,
                 false,
                 function (dataSource, index) {
+                    var totalFaults = dataSource.entities.values.length;
                     var entitiesToRemove = [];
                     dataSource.entities.values.forEach(function (entity) {
                         var ok = true;
@@ -580,6 +582,10 @@
                     entitiesToRemove.forEach(function (entity) {
                         dataSource.entities.remove(entity);
                     });
+                    updateSelectionBanner(totalFaults, dataSource.entities.values.map(function (entity) {
+                        var n = entity.properties && entity.properties.name;
+                        return n ? String(n.getValue ? n.getValue() : n) : (entity.name || '');
+                    }));
                 }
             );
 
@@ -826,9 +832,61 @@
             return item !== null ? JSON.parse(item) : null;
         }
 
-        // Usage example to get selectedLines
-        const selectedLines = readAndClearLocalStorageItem('selectedLines') || [];
+        // The 2D viewer hands its selection over once through localStorage. Keep it in this
+        // tab's sessionStorage so a refresh, or switching to all faults and back, keeps it.
+        function sessionGet(key) { try { return sessionStorage.getItem(key); } catch (e) { return null; } }
+        function sessionSet(key, value) { try { sessionStorage.setItem(key, value); } catch (e) { } }
+        const handedOver = readAndClearLocalStorageItem('selectedLines');
+        if (handedOver && handedOver.length) {
+            sessionSet('cfmSelection', JSON.stringify(handedOver));
+            sessionSet('cfmShowAll', '0');
+        }
+        const savedSelection = JSON.parse(sessionGet('cfmSelection') || '[]');
+        const showAllFaults = sessionGet('cfmShowAll') === '1';
+        const selectedLines = showAllFaults ? [] : savedSelection;
         console.log('Selected lines:', selectedLines);
+
+        // Back to 2D with the same faults ticked.
+        document.getElementById('backTo2DBtn').addEventListener('click', function () {
+            if (savedSelection.length) {
+                try { localStorage.setItem('cfmRestoreSelection', JSON.stringify(savedSelection)); } catch (e) { }
+            }
+        });
+
+        // Banner saying which faults are on screen, with a switch between the selection and all faults.
+        function updateSelectionBanner(total, names) {
+            const el = document.getElementById('selectionBanner');
+            if (!savedSelection.length) return;
+            const esc = function (v) {
+                return String(v).replace(/[&<>"']/g, function (c) {
+                    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+                });
+            };
+            if (showAllFaults) {
+                el.innerHTML = '<span>Showing all ' + total + ' faults.</span>' +
+                    '<button type="button" data-act="mine">Show my selection (' + savedSelection.length + ')</button>';
+            } else {
+                names.sort(function (a, b) { return a.localeCompare(b); });
+                el.innerHTML = '<span>Showing ' + names.length + ' of ' + total + ' faults selected in the 2D viewer.</span>' +
+                    '<button type="button" data-act="list">List</button>' +
+                    '<button type="button" data-act="all">Show all faults</button>' +
+                    '<ul class="selection-names" hidden>' + names.map(function (n) { return '<li>' + esc(n) + '</li>'; }).join('') + '</ul>';
+            }
+            el.querySelectorAll('button').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    const act = btn.getAttribute('data-act');
+                    if (act === 'list') {
+                        const list = el.querySelector('.selection-names');
+                        list.hidden = !list.hidden;
+                        btn.textContent = list.hidden ? 'List' : 'Hide list';
+                    } else {
+                        sessionSet('cfmShowAll', act === 'all' ? '1' : '0');
+                        location.reload();
+                    }
+                });
+            });
+            el.style.display = '';
+        }
 
         viewer.scene.globe.frontFaceAlphaByDistance = new Cesium.NearFarScalar(50.0, 0.0, 100.0, 1.0);
         viewer.scene.globe.show = false;
