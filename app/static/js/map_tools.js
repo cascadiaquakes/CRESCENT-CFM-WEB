@@ -49,6 +49,18 @@
         });
     }
 
+    // Add the keyboard shortcuts to the mouse tab of Cesium's "?" help panel.
+    function addKeyboardHelp(viewer) {
+        const table = viewer.container.querySelector('.cesium-navigation-help-instructions table');
+        if (!table) return;
+        const row = document.createElement('tr');
+        row.innerHTML = '<td class="map-keyboard-help__icon" aria-hidden="true">&#9000;</td>' +
+            '<td><div class="map-keyboard-help__title">Keyboard</div>' +
+            '<div class="cesium-navigation-help-details">+ / &minus; to zoom</div>' +
+            '<div class="cesium-navigation-help-details">Arrow keys to pan</div></td>';
+        (table.tBodies[0] || table).appendChild(row);
+    }
+
     function niceDistance(maxMeters) {
         const pow = Math.pow(10, Math.floor(Math.log10(maxMeters)));
         const steps = [5, 2, 1];
@@ -132,6 +144,8 @@
                 font: 600 12px Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
                 color: rgba(255, 255, 255, 0.92); box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18); }
             .map-coords__sep { color: rgba(255, 255, 255, 0.7); }
+            .map-keyboard-help__icon { font-size: 26px; text-align: center; color: #fff; padding: 0 4px; }
+            .map-keyboard-help__title { color: #f472b6; font-weight: bold; }
         `;
         const style = document.createElement('style');
         style.id = 'cfm-map-tools-style';
@@ -146,6 +160,7 @@
             addStyles();
             addZoomButtons(viewer, options.zoomBottom || '90px', options.zoomRight || '12px');
             addKeyboardNavigation(viewer);
+            addKeyboardHelp(viewer);
             addScaleBar(viewer, options.scalePosition);
             addCoordinateReadout(viewer, options.coordsBottom || '14px');
         }
