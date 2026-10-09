@@ -194,11 +194,6 @@
 
         let earthquakeDataSource;
 
-        // CFM area display parameters.
-        const cfmAreaOutlineColor = [Cesium.Color.CYAN]
-        const cfmAreaFaceColor = [Cesium.Color.CYAN]
-        const cfmAreaLabel = ["CFM Study Area"]
-        const cfmAreaFillOpacity = [0.1]
 
         // Handling the 2D Geojson data.
         document.addEventListener('DOMContentLoaded', function () {
@@ -787,10 +782,10 @@
         });
 
 
-        // Map view: straight down over the study area with north up.
+        // Map view: straight down over the CFM region with north up.
         function mapView(duration) {
             viewer.camera.flyTo({
-                // Pad the study area so the whole box and some context fit on screen.
+                // Pad the region bounds so all the faults and some context fit on screen.
                 destination: Cesium.Rectangle.fromDegrees(
                     west - (east - west) * 0.25, south - (north - south) * 0.12,
                     east + (east - west) * 0.25, north + (north - south) * 0.12),
@@ -1028,55 +1023,7 @@
             });
         });
 
-        // Draw a polygon showing the study area
-        // Create the positions for the polygon
-        const positions = Cesium.Cartesian3.fromDegreesArray([
-            west, north,
-            east, north,
-            east, south,
-            west, south
-        ]);
-
-        // Add the polygon entity to the viewer
-        viewer.entities.add({
-            name: "study area",
-            polygon: {
-                hierarchy: new Cesium.PolygonHierarchy(positions),
-                material: cfmAreaFaceColor[0].withAlpha(cfmAreaFillOpacity[0]), // Cyan color with 50% transparency
-                perPositionHeight: true, // Allow different heights for each vertex
-                outline: true,
-                outlineColor: cfmAreaOutlineColor[0]
-            }
-        });
-
-        // Define the corner coordinates with labels
-        const corners = [
-            { lon: west, lat: north, label: 'NW', coordinates: `${west.toFixed(1)}, ${north.toFixed(1)}` },
-            { lon: east, lat: north, label: 'NE', coordinates: `${east.toFixed(1)}, ${north.toFixed(1)}` },
-            { lon: east, lat: south, label: 'SE', coordinates: `${east.toFixed(1)}, ${south.toFixed(1)}` },
-            { lon: west, lat: south, label: 'SW', coordinates: `${west.toFixed(1)}, ${south.toFixed(1)}` }
-        ];
-
-        // Add labels to each corner
-        corners.forEach(corner => {
-            viewer.entities.add({
-                position: Cesium.Cartesian3.fromDegrees(corner.lon, corner.lat),
-                point: {
-                    pixelSize: 10,
-                    color: Cesium.Color.RED
-                },
-                label: {
-                    text: `${corner.label}\n${corner.coordinates}`,
-                    font: '14pt sans-serif',
-                    fillColor: Cesium.Color.YELLOW,
-                    outlineColor: Cesium.Color.BLACK,
-                    outlineWidth: 2,
-                    style: Cesium.LabelStyle.FILL_AND_OUTLINE,
-                    verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
-                    pixelOffset: new Cesium.Cartesian2(0, -20) // Adjust label position
-                }
-            });
-        });
+        // No study-area rectangle: its bounds aren't the real extent the CFM draws faults from.
 
         // Primary legends.
         var legendContainer = document.getElementById('legendContainer');
