@@ -93,8 +93,8 @@ const dataSourceCheckboxMapping = {
 // Legends
 const primaryLegendLabel = cfmLabel.concat(cfmTraceLabel);
 const primaryLegendColor = cfmColor.concat(cfmTraceColor);
-const auxLegendLabel = studyAreaLabel.concat(eqLabel);//.concat(boundaryLabel);
-const auxLegendColor = studyAreaOutlineColor.concat(eqColor);//.concat(boundaryColor);
+const auxLegendLabel = eqLabel;//.concat(boundaryLabel);
+const auxLegendColor = [].concat(eqColor);//.concat(boundaryColor);
 
 // Legacy support.
 const data = cfmData.concat(cfmTraceData)
