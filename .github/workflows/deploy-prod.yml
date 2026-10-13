@@ -83,5 +83,17 @@ jobs:
             --service-arn "$SERVICE_ARN" \
             --primary-container "$CONTAINER_JSON"
 
-      # Express Mode handles canary rollout automatically with built-in rollback.
-      # No wait step needed — the update-express-gateway-service call is sufficient.
+      # The update call returns before the canary rollout finishes, so wait for the
+      # site itself. Three 200s in a row so the 5% canary traffic can't pass it alone.
+      - name: Wait for the site to come up
+        run: |
+          ok=0
+          for i in $(seq 1 60); do
+            code=$(curl -s -o /dev/null -w '%{http_code}' https://cfm.cascadiaquakes.org/)
+            if [ "$code" = "200" ]; then ok=$((ok+1)); else ok=0; fi
+            echo "attempt $i: $code"
+            [ "$ok" -ge 3 ] && { echo "cfm.cascadiaquakes.org is up"; exit 0; }
+            sleep 10
+          done
+          echo "cfm.cascadiaquakes.org did not come up within 10 minutes"
+          exit 1
