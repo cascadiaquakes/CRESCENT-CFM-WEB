@@ -1,7 +1,7 @@
 {% extends 'cfm_page.html' %}
 
 {% block style%}
-<link rel="stylesheet" href="/static/css/main.css?v=20261006" />
+<link rel="stylesheet" href="/static/css/main.css?v=20261106" />
 <script src="https://cesium.com/downloads/cesiumjs/releases/1.82/Build/Cesium/Cesium.js"></script>
 <link href="https://cesium.com/downloads/cesiumjs/releases/1.82/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
 <!-- Include Font Awesome -->
@@ -198,6 +198,10 @@
             <div id="buttonRow">
                 <button id="view3DButton">View 3D</button>
                 <button id="downloadSelectedBtn">&#x2B07; Download (1 km)</button>
+                <select id="downloadFormat" aria-label="Download file format" title="Download file format">
+                    <option value="geojson">GeoJSON</option>
+                    <option value="tsurf">TSurf (.ts)</option>
+                </select>
                 <button id="lassoButton" title="Draw a loop on the map to select the faults inside it">Lasso</button>
                 <button id="clearSelectionBtn" title="Untick all faults and remove drawn loops">Clear</button>
             </div>
@@ -425,8 +429,16 @@
             // data branch; the data repo has no 'prod' branch. Mirror that
             // routing here so hi-res per-fault downloads don't 404.
             var dataBranch = (branch === 'prod') ? 'main' : branch;
-            const baseUrl = 'https://raw.githubusercontent.com/cascadiaquakes/CRESCENT-CFM/'
-                + encodeURIComponent(dataBranch) + '/crescent_cfm_files/hires_faults/';
+            const dataRoot = 'https://raw.githubusercontent.com/cascadiaquakes/CRESCENT-CFM/'
+                + encodeURIComponent(dataBranch) + '/crescent_cfm_files/';
+            const format = document.getElementById('downloadFormat').value;
+            // GeoJSON files are keyed by CFM ID, TSurf files by fault name.
+            const fileFor = (fault) => {
+                const safeName = fault.name.replace(/\s+/g, '_');
+                return format === 'tsurf'
+                    ? { url: dataRoot + 'tsurf/' + encodeURIComponent(safeName) + '.ts', filename: safeName + '.ts' }
+                    : { url: dataRoot + 'hires_faults/' + fault.id + '_hires.geojson', filename: safeName + '_hires.geojson' };
+            };
 
             const triggerDownload = (blob, filename) => {
                 const a = document.createElement('a');
@@ -441,8 +453,7 @@
             // Single fault: skip the zip, just download the file directly.
             if (faults.length === 1) {
                 const fault = faults[0];
-                const url = baseUrl + fault.id + '_hires.geojson';
-                const filename = fault.name.replace(/\s+/g, '_') + '_hires.geojson';
+                const { url, filename } = fileFor(fault);
                 btn.disabled = true;
                 btn.innerHTML = 'Downloading...';
                 try {
@@ -470,8 +481,7 @@
             updateLabel();
 
             await Promise.all(faults.map(async (fault) => {
-                const url = baseUrl + fault.id + '_hires.geojson';
-                const filename = fault.name.replace(/\s+/g, '_') + '_hires.geojson';
+                const { url, filename } = fileFor(fault);
                 try {
                     const resp = await fetch(url);
                     if (!resp.ok) throw new Error('HTTP ' + resp.status);
@@ -496,7 +506,7 @@
             try {
                 const zipBlob = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE' });
                 const stamp = new Date().toISOString().slice(0, 10);
-                triggerDownload(zipBlob, 'crescent_cfm_hires_faults_' + stamp + '.zip');
+                triggerDownload(zipBlob, 'crescent_cfm_' + (format === 'tsurf' ? 'tsurf' : 'hires') + '_faults_' + stamp + '.zip');
                 if (failures.length > 0) {
                     alert('Downloaded ' + (faults.length - failures.length) + ' of ' + faults.length
                         + ' faults. Failed: ' + failures.join(', '));
