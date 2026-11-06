@@ -261,6 +261,17 @@ html {
     background-color: #0d5e69;
 }
 
+#buttonRow #downloadFormat {
+    padding: 5px 6px;
+    border: 1px solid #0b4a53;
+    border-radius: 8px;
+    background: #fff;
+    color: #0b4a53;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
 /* ── Accordion sections ── */
 .accordion-section {
     border: 1px solid #e8ecf0;
