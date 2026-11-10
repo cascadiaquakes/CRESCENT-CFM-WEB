@@ -2,23 +2,38 @@ cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
 type: software
 title: "The Cascadia Region Earthquake Science Center (CRESCENT) Community Fault Model viewer"
-version: "1.0.1"
+version: "2.0.0"
 doi: 10.5281/zenodo.15021860
-date-released: 2025-03-26
 license: BSD-3-Clause
 repository-code: "https://github.com/cascadiaquakes/CRESCENT-CFM-WEB"
 url: "https://cfm.cascadiaquakes.org"
 authors:
+  - family-names: Marfo
+    given-names: William
+    orcid: "https://orcid.org/0009-0003-0631-2750"
+    affiliation: "Cascadia Region Earthquake Science Center, University of California, Davis"
+  - family-names: Fildes
+    given-names: Rebecca
+    orcid: "https://orcid.org/0000-0002-5210-5205"
+    affiliation: "University of California, Davis"
+  - family-names: Thomas
+    given-names: Amanda M.
+    orcid: "https://orcid.org/0000-0001-6997-3140"
+    affiliation: "Department of Earth and Planetary Sciences, University of California, Davis"
   - family-names: Bahavar
     given-names: Manochehr
+    orcid: "https://orcid.org/0000-0001-8128-4890"
+    affiliation: "EarthScope Consortium"
   - family-names: Styron
     given-names: Richard
+    orcid: "https://orcid.org/0000-0002-2374-9431"
+    affiliation: "Global Earthquake Model Foundation"
   - family-names: Streig
     given-names: Ashley
-  - family-names: Thomas
-    given-names: Amanda
-    orcid: "https://orcid.org/0000-0001-6997-3140"
+    orcid: "https://orcid.org/0000-0002-9310-6132"
+    affiliation: "Washington Geological Survey, Washington State Department of Natural Resources"
   - family-names: Bachelot
     given-names: Loïc
     orcid: "https://orcid.org/0000-0003-0711-8581"
+    affiliation: "Cascadia Region Earthquake Science Center, University of Oregon"
   - name: "CRESCENT CFM working group"

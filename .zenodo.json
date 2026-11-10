@@ -1,0 +1,68 @@
+{
+  "title": "The Cascadia Region Earthquake Science Center (CRESCENT) Community Fault Model viewer",
+  "description": "The CRESCENT Community Fault Model (CFM) Viewer is a web-based platform for visualizing and analyzing 3D, non-planar fault systems surrounding the Cascadia Subduction Zone. The viewer contains 2D fault traces, 3D fault surfaces, multiple interface geometries, terrain, geographic information, and seismicity providing spatial context for fault analysis. The viewer allows users to filter faults by location, depth, and other characteristics while enabling interactive 3D exploration. Built with CesiumJS and FastAPI, it dynamically loads GeoJSON-based fault and earthquake data for real-time rendering. Users can export fault data in GeoPackage (.gpkg) and KML (.kml) formats for further analysis.",
+  "upload_type": "software",
+  "access_right": "open",
+  "license": "BSD-3-Clause",
+  "version": "2.0.0",
+  "creators": [
+    {
+      "name": "Marfo, William",
+      "orcid": "0009-0003-0631-2750",
+      "affiliation": "Cascadia Region Earthquake Science Center, University of California, Davis"
+    },
+    {
+      "name": "Fildes, Rebecca",
+      "orcid": "0000-0002-5210-5205",
+      "affiliation": "University of California, Davis"
+    },
+    {
+      "name": "Thomas, Amanda M.",
+      "orcid": "0000-0001-6997-3140",
+      "affiliation": "Department of Earth and Planetary Sciences, University of California, Davis"
+    },
+    {
+      "name": "Bahavar, Manochehr",
+      "orcid": "0000-0001-8128-4890",
+      "affiliation": "EarthScope Consortium"
+    },
+    {
+      "name": "Styron, Richard",
+      "orcid": "0000-0002-2374-9431",
+      "affiliation": "Global Earthquake Model Foundation"
+    },
+    {
+      "name": "Streig, Ashley",
+      "orcid": "0000-0002-9310-6132",
+      "affiliation": "Washington Geological Survey, Washington State Department of Natural Resources"
+    },
+    {
+      "name": "Bachelot, Loïc",
+      "orcid": "0000-0003-0711-8581",
+      "affiliation": "Cascadia Region Earthquake Science Center, University of Oregon"
+    },
+    {
+      "name": "CRESCENT CFM working group"
+    }
+  ],
+  "keywords": [
+    "community fault model",
+    "active faults",
+    "Cascadia Subduction Zone",
+    "CRESCENT",
+    "cyberinfrastructure",
+    "geospatial visualization"
+  ],
+  "grants": [
+    {
+      "id": "10.13039/100000001::2225286"
+    }
+  ],
+  "related_identifiers": [
+    {
+      "relation": "isSupplementTo",
+      "identifier": "https://github.com/cascadiaquakes/CRESCENT-CFM-WEB",
+      "resource_type": "software"
+    }
+  ]
+}
