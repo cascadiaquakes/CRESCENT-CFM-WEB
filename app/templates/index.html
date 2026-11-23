@@ -439,6 +439,10 @@
                     ? { url: dataRoot + 'tsurf/' + encodeURIComponent(safeName) + '.ts', filename: safeName + '.ts' }
                     : { url: dataRoot + 'hires_faults/' + fault.id + '_hires.geojson', filename: safeName + '_hires.geojson' };
             };
+            // Some data branches don't have a TSurf file for every fault yet.
+            const failHint = format === 'tsurf'
+                ? ' TSurf files are not available for every fault yet. Try GeoJSON.'
+                : ' See the console for details.';
 
             const triggerDownload = (blob, filename) => {
                 const a = document.createElement('a');
@@ -462,7 +466,7 @@
                     triggerDownload(await resp.blob(), filename);
                 } catch (err) {
                     console.error('Failed to download fault ' + fault.id + ':', err);
-                    alert('Download failed for ' + fault.name + '. See the console for details.');
+                    alert('Download failed for ' + fault.name + '.' + failHint);
                 } finally {
                     btn.disabled = false;
                     btn.innerHTML = originalLabel;
@@ -498,7 +502,7 @@
             if (failures.length === faults.length) {
                 btn.disabled = false;
                 btn.innerHTML = originalLabel;
-                alert('All ' + faults.length + ' downloads failed. See the console for details.');
+                alert('All ' + faults.length + ' downloads failed.' + failHint);
                 return;
             }
 
@@ -508,8 +512,10 @@
                 const stamp = new Date().toISOString().slice(0, 10);
                 triggerDownload(zipBlob, 'crescent_cfm_' + (format === 'tsurf' ? 'tsurf' : 'hires') + '_faults_' + stamp + '.zip');
                 if (failures.length > 0) {
+                    const more = failures.length - 10;
+                    const names = failures.slice(0, 10).join(', ') + (more > 0 ? ', and ' + more + ' more' : '');
                     alert('Downloaded ' + (faults.length - failures.length) + ' of ' + faults.length
-                        + ' faults. Failed: ' + failures.join(', '));
+                        + ' faults. Failed: ' + names + '.' + (format === 'tsurf' ? failHint : ''));
                 }
             } catch (err) {
                 console.error('Failed to build zip:', err);
