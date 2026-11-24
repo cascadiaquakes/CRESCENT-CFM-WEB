@@ -1,6 +1,6 @@
 # Community Fault Model (CFM) Web Interface
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15021860.svg)](https://doi.org/10.5281/zenodo.15021860)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24486130.svg)](https://doi.org/10.5281/zenodo.24486130)
 [![License: BSD-3-Clause](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](LICENSE)
 
 The **Community Fault Model (CFM) Web Interface** is a FastAPI-based platform for visualizing and exploring 2D and 3D fault models of the Cascadia Subduction Zone. This project integrates [CesiumJS](https://cesium.com/platform/cesiumjs) for interactive mapping and provides tools for filtering, visualizing, and downloading fault model data.
@@ -126,7 +126,7 @@ For detailed infrastructure notes, see `cfm-infra/`.
 
 If you use the viewer, please cite:
 
-> Bahavar, M., Styron, R., Streig, A., Thomas, A., Bachelot, L., & CRESCENT CFM working group. (2025). *The Cascadia Region Earthquake Science Center (CRESCENT) Community Fault Model viewer* (v1.0.1). Zenodo. https://doi.org/10.5281/zenodo.15021860
+> Marfo, W., Fildes, R., Thomas, A. M., Bahavar, M., Styron, R., Streig, A., Bachelot, L., & CRESCENT CFM working group. (2026). *The Cascadia Region Earthquake Science Center (CRESCENT) Community Fault Model viewer* (v2.0.0). Zenodo. https://doi.org/10.5281/zenodo.24486130
 
 For the fault model itself, see [CRESCENT-CFM](https://github.com/cascadiaquakes/CRESCENT-CFM).
 
