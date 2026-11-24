@@ -3,7 +3,7 @@ message: "If you use this software, please cite it as below."
 type: software
 title: "The Cascadia Region Earthquake Science Center (CRESCENT) Community Fault Model viewer"
 version: "2.0.0"
-doi: 10.5281/zenodo.15021860
+doi: 10.5281/zenodo.24486130
 license: BSD-3-Clause
 repository-code: "https://github.com/cascadiaquakes/CRESCENT-CFM-WEB"
 url: "https://cfm.cascadiaquakes.org"
