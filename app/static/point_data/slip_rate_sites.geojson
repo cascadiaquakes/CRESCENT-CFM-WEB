@@ -1,0 +1,1521 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -121.9835,
+     44.03161
+    ]
+   },
+   "properties": {
+    "Fault": "White Branch Fault Zone",
+    "Site": "White Branch Fault Zone",
+    "Max rate (mm/yr)": 2.1,
+    "Min rate (mm/yr)": 0.5,
+    "Preferred rate (mm/yr)": 0.6,
+    "Dating method": "Absolute, Helium 3 cosmogenic dating",
+    "Time span": "1,000 - 12,000 years, intermediate",
+    "Notes": "Used scarp profiles from offset glacial deposits, slip values range from 0.3 to 12.7 m.",
+    "Reference code": "CC22",
+    "Reference": "Alexander and others, 2022",
+    "Peer reviewed": "Yes",
+    "Site ID": "SR_1",
+    "CFM ID": "203",
+    "USGS QFFD #": "1809"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -121.648,
+     43.66572
+    ]
+   },
+   "properties": {
+    "Fault": "La Pine Graben",
+    "Site": "Dilman Meadows Fault",
+    "Max rate (mm/yr)": 0.3,
+    "Min rate (mm/yr)": 0.1,
+    "Preferred rate (mm/yr)": 0.3,
+    "Dating method": "Absolute, Helium 3 cosmogenic dating",
+    "Time span": "1,000 - 12,000 years, intermediate",
+    "Notes": "Oblique slip rate. Used scarp profiles from glacial moraines using lidar to calculate displacement from faulting.",
+    "Reference code": "CC22",
+    "Reference": "Alexander and others, 2022",
+    "Peer reviewed": "Yes",
+    "Site ID": "SR_2",
+    "CFM ID": "96",
+    "USGS QFFD #": "838",
+    "NSHM23 ID": "2567"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -119.4028,
+     39.81257
+    ]
+   },
+   "properties": {
+    "Fault": "Pyramid Lake",
+    "Site": "Pyramid Lake",
+    "Max rate (mm/yr)": 0.4,
+    "Min rate (mm/yr)": 0.5,
+    "Preferred rate (mm/yr)": 1.3,
+    "Dating method": "Other",
+    "Time span": "1,000 - 12,000 years, intermediate",
+    "Notes": "ating was done by relating units displaced with lacustrine elevation levels from Lake Lahotan. Fault style is right lateral, and the slip rate was caluclated by the offset of shoreline features.",
+    "Reference code": "CC23",
+    "Reference": "Angster and others, 2016",
+    "Peer reviewed": "Yes",
+    "Site ID": "SR_3",
+    "USGS QFFD #": "1669",
+    "NSHM23 ID": "1094"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.2352,
+     40.1835
+    ]
+   },
+   "properties": {
+    "Fault": "Red Bluff",
+    "Site": "Red Bluff",
+    "Max rate (mm/yr)": 0.8,
+    "Min rate (mm/yr)": 0.4,
+    "Preferred rate (mm/yr)": 0.6,
+    "Dating method": "Absolute, Optically Stimulated Luminescence",
+    "Time span": "12,000 - 130,000 years, long-term",
+    "Notes": "Horizontal offset could not be measured due to the erosion from the Sacramento River.",
+    "Reference code": "CC25",
+    "Reference": "Angster and others, 2020",
+    "Peer reviewed": "Yes",
+    "Site ID": "SR_4",
+    "CFM ID": "129",
+    "USGS QFFD #": "158",
+    "NSHM23 ID": "334"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.1796,
+     40.31798
+    ]
+   },
+   "properties": {
+    "Fault": "Inks Creek",
+    "Site": "Hooker Dome",
+    "Max rate (mm/yr)": 0.3,
+    "Min rate (mm/yr)": 0.1,
+    "Preferred rate (mm/yr)": 0.2,
+    "Dating method": "Absolute, Optically Stimulated Luminescence",
+    "Time span": "12,000 - 130,000 years, long-term",
+    "Notes": "Horizontal offset could not be measured due to the erosion from the Sacramento River.",
+    "Reference code": "CC25",
+    "Reference": "Angster and others, 2020",
+    "Peer reviewed": "Yes",
+    "Site ID": "SR_5",
+    "CFM ID": "86",
+    "NSHM23 ID": "321"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -123.152,
+     47.48419
+    ]
+   },
+   "properties": {
+    "Fault": "Saddle Mountains",
+    "Site": "Banana Slug Trench",
+    "Max rate (mm/yr)": 3.2,
+    "Min rate (mm/yr)": 2.7,
+    "Preferred rate (mm/yr)": 0.2,
+    "Dating method": "Absolute, Radiocarbon dating",
+    "Time span": "1,000 - 12,000 years, intermediate",
+    "Notes": "Apparent late Holocene vertical rate. Re-excavated a trench by Wilson 1975, Barnett et al. collected detrital charcoal to date disturbed stratigraphic layers. Offset across the fault reported to be 0.5-2.1 m.",
+    "Reference code": "CC26",
+    "Reference": "Barnett and others, 2015",
+    "Peer reviewed": "Yes",
+    "Site ID": "SR_6",
+    "CFM ID": "24",
+    "WGS ID": "111",
+    "USGS QFFD #": "575",
+    "NSHM23 ID": "2829"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -123.1594,
+     47.46929
+    ]
+   },
+   "properties": {
+    "Fault": "Saddle Mountains",
+    "Site": "Alligator Lizard Trench",
+    "Max rate (mm/yr)": 1.6,
+    "Min rate (mm/yr)": 1.5,
+    "Preferred rate (mm/yr)": 0.2,
+    "Dating method": "Absolute, Radiocarbon dating",
+    "Time span": "1,000 - 12,000 years, intermediate",
+    "Notes": "Apparent late Holocene vertical rate. Detrital charcoal was found and used to date disturbed stratigraphic layers. Offset across the fault reported to be 0.5-2.1 m.",
+    "Reference code": "CC26",
+    "Reference": "Barnett and others, 2015",
+    "Peer reviewed": "Yes",
+    "Site ID": "SR_7",
+    "CFM ID": "24",
+    "WGS ID": "111",
+    "USGS QFFD #": "575",
+    "NSHM23 ID": "2829"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -120.4607,
+     46.8252
+    ]
+   },
+   "properties": {
+    "Fault": "Manastash Ridge",
+    "Site": "Multiple Sites along the Yakima folds",
+    "Max rate (mm/yr)": 0.11,
+    "Min rate (mm/yr)": 0.05,
+    "Preferred rate (mm/yr)": 0.8,
+    "Dating method": "10Be",
+    "Time span": "750,000 - 2,580,000 years",
+    "Reference code": "CC49",
+    "Reference": "Bender and others, 2016",
+    "Peer reviewed": "Yes",
+    "Site ID": "SR_8",
+    "CFM ID": "108",
+    "WGS ID": "7",
+    "USGS QFFD #": "562",
+    "NSHM23 ID": "2836"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -121.4111,
+     40.76619
+    ]
+   },
+   "properties": {
+    "Fault": "Hat Creek",
+    "Site": "Hat Creek",
+    "Max rate (mm/yr)": 3.6,
+    "Min rate (mm/yr)": 2.2,
+    "Preferred rate (mm/yr)": 2.7,
+    "Dating method": "Absolute, Argon-Argon radiometric dating",
+    "Time span": "12,000 - 130,000 years, long-term",
+    "Notes": "Apparent rate calculated from different age basalt layers displaced by the fault. Normal fault with a dip of 60 degrees. Slip rate was calculated with dip in mind. The reported slip rate is reported to not be constant along the fault zone, the reported value given is from the most active part along the fault.",
+    "Reference code": "CC27",
+    "Reference": "Blakeslee and others, 2013",
+    "Peer reviewed": "Yes",
+    "Site ID": "SR_9",
+    "CFM ID": "73",
+    "USGS QFFD #": "9",
+    "NSHM23 ID": "112"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -121.4111,
+     40.76619
+    ]
+   },
+   "properties": {
+    "Fault": "Hat Creek",
+    "Site": "Hat Creek Fault",
+    "Max rate (mm/yr)": 3.6,
+    "Min rate (mm/yr)": 2.2,
+    "Dating method": "Ar-Ar",
+    "Time span": "12,000 - 130,000 years",
+    "Notes": "\"Throw\" within the Hat Creek Basalt was used to date from Turrin et al. 2007. Offset within the displaced basalt ranged from 30 to 50 m.",
+    "Reference code": "CC27",
+    "Reference": "Blakeslee and others, 2013",
+    "Peer reviewed": "Yes",
+    "Site ID": "SR_10",
+    "CFM ID": "73",
+    "USGS QFFD #": "9",
+    "NSHM23 ID": "112"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -121.9272,
+     41.64523
+    ]
+   },
+   "properties": {
+    "Fault": "Cedar Mountain - Mahogany Mountain",
+    "Site": "South of Antelope Sink",
+    "Min rate (mm/yr)": 0.2,
+    "Dating method": "Glacial Deposit Elevation",
+    "Time span": "750,000 - 2,580,000 years",
+    "Notes": "Only a minimum rate was given. Minimum displacement is about 60 meters, total displacement is not known. Relating age of gravel deposits to Tioga outwash deposits.",
+    "Reference code": "CC58",
+    "Reference": "Bryant 1990a.",
+    "Peer reviewed": "Yes",
+    "Site ID": "SR_11",
+    "CFM ID": "27",
+    "USGS QFFD #": "2",
+    "NSHM23 ID": "31"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -121.5658,
+     41.74736
+    ]
+   },
+   "properties": {
+    "Fault": "Gillem - Big Crack",
+    "Max rate (mm/yr)": 0.38,
+    "Min rate (mm/yr)": 0.15,
+    "Dating method": "Glacial Deposit Elevation",
+    "Time span": "12,000 - 130,000 years",
+    "Notes": "No prefered rate is given. Cummulative vertical displacement is not known, there is a scarp with a height of 295 m, meaning at minimum there is 295 m of displacement. Correlating basalt magnetic values and correlating with regional geology they correlated the displaced basalt to be roughly the same age as a glacial outwash unit.",
+    "Reference code": "CC59",
+    "Reference": "Bryant 1990b.",
+    "Peer reviewed": "Yes",
+    "Site ID": "SR_12",
+    "CFM ID": "67",
+    "USGS QFFD #": "3",
+    "NSHM23 ID": "87"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -120.4209,
+     47.60331
+    ]
+   },
+   "properties": {
+    "Fault": "Entiat Fault Zone",
+    "Site": "Swakane Lineament",
+    "Preferred rate (mm/yr)": 0.01,
+    "Dating method": "Absolute, Radiocarbon dating",
+    "Time span": "1,000 - 12,000 years, intermediate",
+    "Notes": "The study focused on the dangers of blind faults for risk assesment in Washington state. The slip rate was not main focus of the paper, but reported value for the blind fault is \"<< 1 mm/yr\". The point is estimated to be where the Slick Grass Trench was dug.",
+    "Reference code": "CC28",
+    "Reference": "Carlson and others, 2018",
+    "Peer reviewed": "Yes",
+    "Site ID": "SR_13",
+    "CFM ID": "53",
+    "WGS ID": "348",
+    "NSHM23 ID": "2832"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -124.173,
+     40.63756
+    ]
+   },
+   "properties": {
+    "Fault": "Little Salmon (Onshore)",
+    "Site": "Little Salmon (Onshore)",
+    "Max rate (mm/yr)": 12,
+    "Min rate (mm/yr)": 6,
+    "Preferred rate (mm/yr)": 7,
+    "Dating method": "Absolute, Radiocarbon dating",
+    "Time span": "12,000 - 130,000 years",
+    "Notes": "Location of study site is estimated. The most deformed sediments were used for Carbon-14 dating. Offset was calculated from the scarp profile. Offset was recorded to be from 10.2 to 13.5 m over three events.",
+    "Reference code": "CC32",
+    "Reference": "Clarke and others, 1992",
+    "Peer reviewed": "Yes",
+    "Site ID": "SR_14",
+    "CFM ID": "103",
+    "USGS QFFD #": "15",
+    "NSHM23 ID": "147"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -124.0034,
+     40.75995
+    ]
+   },
+   "properties": {
+    "Fault": "Mad River Fault",
+    "Site": "Mad River Fault",
+    "Max rate (mm/yr)": 7,
+    "Min rate (mm/yr)": 5,
+    "Preferred rate (mm/yr)": 6,
+    "Dating method": "Absolute, Radiocarbon dating",
+    "Time span": "12,000 - 130,000 years",
+    "Notes": "Location of study site is estimated. Used disturbed floodplain sediment and marine terraces to calculate offset recorded to be 8 to 18 m across the fault . Age was calculated from fossil forests.",
+    "Reference code": "CC32",
+    "Reference": "Clarke and others, 1992",
+    "Peer reviewed": "Yes",
+    "Site ID": "SR_15",
+    "CFM ID": "106",
+    "USGS QFFD #": "13",
+    "NSHM23 ID": "157"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -123.4803,
+     47.38686
+    ]
+   },
+   "properties": {
+    "Fault": "Canyon River Fault",
+    "Site": "Canyon River OSL Sites",
+    "Max rate (mm/yr)": 0.3,
+    "Min rate (mm/yr)": 0.1,
+    "Preferred rate (mm/yr)": 0.2,
+    "Dating method": "Absolute, Optically Stimulated Luminescence",
+    "Time span": "12,000 - 130,000 years, long-term",
+    "Notes": "Used Optically Stimulated Luminesence to date fluvial terraces that have been offset due to faulting. Offset ranged from 0.9 to 6.1 m. Slip Sense was found to be reverse dextral.",
+    "Reference code": "CC33",
+    "Reference": "Delano and others, 2017",
+    "Peer reviewed": "Yes",
+    "Site ID": "SR_16",
+    "CFM ID": "23",
+    "WGS ID": "95",
+    "USGS QFFD #": "558",
+    "NSHM23 ID": "2828"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -119.3884,
+     39.79482
+    ]
+   },
+   "properties": {
+    "Fault": "Pyramid Lake",
+    "Site": "Pyramid Lake",
+    "Max rate (mm/yr)": 1.5,
+    "Min rate (mm/yr)": 0.1,
+    "Preferred rate (mm/yr)": 1,
+    "Dating method": "Absolute, Radiocarbon dating",
+    "Time span": "1,000 - 12,000 years, intermediate",
+    "Notes": "Study was done by taking gravity cores along the fault and comparing stratigraphic layer heights and dating them via carbondating. Offset was found to be in total 9 m. The fault is reported to have higher slip rate and changes the slip sense from the south opening to the north.",
+    "Reference code": "CC29",
+    "Reference": "Eisses and others, 2015",
+    "Peer reviewed": "Yes",
+    "Site ID": "SR_17",
+    "USGS QFFD #": "1669",
+    "NSHM23 ID": "1094"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -119.5015,
+     39.98629
+    ]
+   },
+   "properties": {
+    "Fault": "Lake Range",
+    "Site": "Lake Range",
+    "Max rate (mm/yr)": 1.5,
+    "Min rate (mm/yr)": 0.2,
+    "Preferred rate (mm/yr)": 1.2,
+    "Dating method": "Absolute, Radiocarbon dating",
+    "Time span": "1,000 - 12,000 years, intermediate",
+    "Notes": "Study was done by taking gravity cores along the fault and comparing layers heights. Offset was recorded to be between 25 and 113 m. The fault is reported to have significantly higher slip rate on the north end and lower at the south.",
+    "Reference code": "CC29",
+    "Reference": "Eisses and others, 2015",
+    "Peer reviewed": "Yes",
+    "Site ID": "SR_18",
+    "USGS QFFD #": "1607"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -119.9894,
+     40.06791
+    ]
+   },
+   "properties": {
+    "Fault": "Warm Springs Valley",
+    "Site": "Fort Sage Alluvial Fan",
+    "Max rate (mm/yr)": 3.6,
+    "Min rate (mm/yr)": 1,
+    "Preferred rate (mm/yr)": 2.4,
+    "Dating method": "10Be",
+    "Time span": "12,000 - 130,000 years",
+    "Notes": "Offset of alluvial fan is measured using LiDAR with values of 55 to 98 m. Post 15.8 ka the slip rate is < 0.2 mm/yr.",
+    "Reference code": "CC54",
+    "Reference": "Gold and others, 2013",
+    "Peer reviewed": "Yes",
+    "Site ID": "SR_19",
+    "CFM ID": "191",
+    "USGS QFFD #": "1605",
+    "NSHM23 ID": "1119"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -120.2291,
+     40.13223
+    ]
+   },
+   "properties": {
+    "Fault": "Honey Lake",
+    "Site": "Honey Lake",
+    "Max rate (mm/yr)": 1.9,
+    "Min rate (mm/yr)": 1.4,
+    "Preferred rate (mm/yr)": 1.6,
+    "Dating method": "Absolute, Radiocarbon dating",
+    "Time span": "1,000 - 12,000 years, intermediate",
+    "Notes": "Study was done by lateral offset of terrace riser sites which ranged from 6.6 to 28.3 m. The dating of units was done by Wesnousky et al. 1998, where they did carbon-14 dating.",
+    "Reference code": "CC30",
+    "Reference": "Gold and others, 2017",
+    "Peer reviewed": "Yes",
+    "Site ID": "SR_20",
+    "CFM ID": "79",
+    "USGS QFFD #": "22",
+    "NSHM23 ID": "120"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.5118,
+     48.30201
+    ]
+   },
+   "properties": {
+    "Fault": "Strawberry Point",
+    "Site": "Strawberry Point Road",
+    "Max rate (mm/yr)": 0.3,
+    "Min rate (mm/yr)": 0.25,
+    "Preferred rate (mm/yr)": 0.25,
+    "Dating method": "Absolute, Radiocarbon dating",
+    "Time span": "12,000 - 130,000 years",
+    "Notes": "Seismic reflection survey shows vertical offset \"a of few meters\".",
+    "Reference code": "CC48",
+    "Reference": "Johnsen and others, 2001",
+    "Peer reviewed": "Yes",
+    "Site ID": "SR_21",
+    "CFM ID": "159",
+    "WGS ID": "62",
+    "USGS QFFD #": "571",
+    "NSHM23 ID": "2809"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.3182,
+     47.57861
+    ]
+   },
+   "properties": {
+    "Fault": "Seattle Fault Zone",
+    "Site": "Seattle Fault Zone",
+    "Max rate (mm/yr)": 1.1,
+    "Min rate (mm/yr)": 0.6,
+    "Preferred rate (mm/yr)": 0.7,
+    "Dating method": "Other",
+    "Time span": "12,000 - 130,000 years",
+    "Notes": "Study used offset measured from Seismic reflection surveys. Point was placed directly onto fault as survey points were not conveyed. Fission Track Date by B. Sherrod and J.A. Vance, 1996",
+    "Reference code": "CC31",
+    "Reference": "Johnson and others, 1999",
+    "Peer reviewed": "Yes",
+    "Site ID": "SR_22",
+    "CFM ID": "142",
+    "WGS ID": "104",
+    "USGS QFFD #": "570",
+    "NSHM23 ID": "2882"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.6227,
+     48.36058
+    ]
+   },
+   "properties": {
+    "Fault": "Devils Mountain",
+    "Site": "Approximately Whidbey Formation",
+    "Max rate (mm/yr)": 0.3,
+    "Min rate (mm/yr)": 0.05,
+    "Preferred rate (mm/yr)": 0.15,
+    "Dating method": "Absolute, Radiocarbon dating",
+    "Time span": "12,000 - 130,000 years",
+    "Notes": "Glaciomarine features helped constrain offset, Approx. 4 to 24 meter of offset.",
+    "Reference code": "CC48",
+    "Reference": "Johnson and others, 2001",
+    "Peer reviewed": "Yes",
+    "Site ID": "SR_23",
+    "CFM ID": "47",
+    "WGS ID": "51",
+    "USGS QFFD #": "574",
+    "NSHM23 ID": "2801"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.6624,
+     48.31254
+    ]
+   },
+   "properties": {
+    "Fault": "Utsalady Point (east)",
+    "Site": "Middle of Utsalady Point",
+    "Max rate (mm/yr)": 0.15,
+    "Min rate (mm/yr)": 0.1,
+    "Preferred rate (mm/yr)": 0.13,
+    "Dating method": "Absolute, Radiocarbon dating",
+    "Time span": "750,000 - 2,580,000 years",
+    "Notes": "Seismic reflection survey shows vertical offset. Offset appeared \"to be less than a few meters\".",
+    "Reference code": "CC48",
+    "Reference": "Johnson and others, 2001",
+    "Peer reviewed": "Yes",
+    "Site ID": "SR_24",
+    "CFM ID": "183",
+    "WGS ID": "156",
+    "USGS QFFD #": "573",
+    "NSHM23 ID": "2811"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -119.7272,
+     39.63183
+    ]
+   },
+   "properties": {
+    "Fault": "Spanish Springs Valley",
+    "Site": "Spanish Springs Valley",
+    "Max rate (mm/yr)": 0.2,
+    "Min rate (mm/yr)": 0.6,
+    "Preferred rate (mm/yr)": 0.2,
+    "Dating method": "Glacial Deposit Elevation",
+    "Time span": "12,000 - 130,000 years",
+    "Notes": "LiDAR was used to calculate vertical offset, on a late Pleistocene fan there a range of 9.9 - 10.7 m. Reported to be a reconnaissance level approximations. Age of geomorphic markers was based on similar surficial characteristics to alluvial fans distributed accross central Nevada.",
+    "Reference code": "CC56",
+    "Reference": "Koehler, R., 2019",
+    "Peer reviewed": "Yes",
+    "Site ID": "SR_25",
+    "USGS QFFD #": "1656",
+    "NSHM23 ID": "1114"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -119.8535,
+     39.67252
+    ]
+   },
+   "properties": {
+    "Fault": "Freds Mountain",
+    "Site": "Freds Mountain",
+    "Max rate (mm/yr)": 0.15,
+    "Min rate (mm/yr)": 0.01,
+    "Preferred rate (mm/yr)": 0.06,
+    "Dating method": "Glacial Deposit Elevation",
+    "Time span": "12,000 - 130,000 years",
+    "Notes": "Discontinuous fault scarps on late quaternary deposits heights range from 2.2 to 7 m.",
+    "Reference code": "CC56",
+    "Reference": "Koehler, R., 2019",
+    "Peer reviewed": "Yes",
+    "Site ID": "SR_26",
+    "USGS QFFD #": "1657",
+    "NSHM23 ID": "1054"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -119.9417,
+     39.78248
+    ]
+   },
+   "properties": {
+    "Fault": "Petersen Mountain",
+    "Site": "Petersen Mountain (East)",
+    "Max rate (mm/yr)": 0.6,
+    "Min rate (mm/yr)": 0.01,
+    "Preferred rate (mm/yr)": 0.03,
+    "Dating method": "Glacial Deposit Elevation",
+    "Time span": "12,000 - 130,000 years",
+    "Notes": "East dipping normal fault, Late Pleistocene alluvium is displaced 2.6 to 3.0 m.",
+    "Reference code": "CC56",
+    "Reference": "Koehler, R., 2019",
+    "Peer reviewed": "Yes",
+    "Site ID": "SR_27",
+    "USGS QFFD #": "1640",
+    "NSHM23 ID": "1092"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -120.5699,
+     46.94569
+    ]
+   },
+   "properties": {
+    "Fault": "Manastash Ridge",
+    "Site": "Shushuskin Canyon",
+    "Max rate (mm/yr)": 0.18,
+    "Min rate (mm/yr)": 0.16,
+    "Dating method": "TL",
+    "Time span": "1,000 - 12,000 years",
+    "Notes": "Sliprate are calculated by incision rate.  Measured offset varried from 5 to 15 meters high.",
+    "Reference code": "CC50",
+    "Reference": "Ladinsky, T. 2012 Thesis",
+    "Peer reviewed": "No",
+    "Site ID": "SR_28",
+    "CFM ID": "108",
+    "WGS ID": "7",
+    "USGS QFFD #": "562",
+    "NSHM23 ID": "2836"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -124.2418,
+     40.6768
+    ]
+   },
+   "properties": {
+    "Fault": "Table Bluff",
+    "Site": "Tompkins Hill",
+    "Max rate (mm/yr)": 0.5,
+    "Min rate (mm/yr)": 0.44,
+    "Preferred rate (mm/yr)": 0.5,
+    "Dating method": "Other",
+    "Time span": "130,000 - 750,000 years",
+    "Notes": "Calculated ages from two separate marine-abrasion platforms. The largest displacement offset was 0.14 m. Thermoluminescence by Berger et al., 1991",
+    "Reference code": "CC61",
+    "Reference": "McCroy, P. 1996",
+    "Peer reviewed": "Yes",
+    "Site ID": "SR_29",
+    "CFM ID": "165",
+    "USGS QFFD #": "16",
+    "NSHM23 ID": "286"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -124.0059,
+     40.80533
+    ]
+   },
+   "properties": {
+    "Fault": "Mad River Fault Zone",
+    "Site": "Fickle Hill Fault",
+    "Max rate (mm/yr)": 1.2,
+    "Min rate (mm/yr)": 0.8,
+    "Preferred rate (mm/yr)": 1,
+    "Dating method": "Other",
+    "Time span": "12,000 - 130,000 years",
+    "Notes": "Different slip rates are from using different datums, either the \"Base of Falor\" datum or a 125-ka terrace datum. Minimum vertical seperation found is 40 m. Huckeberry Ridge Ash found within Falor Formation used for dating.",
+    "Reference code": "CC61",
+    "Reference": "McCroy, P. 1996",
+    "Peer reviewed": "Yes",
+    "Site ID": "SR_30",
+    "CFM ID": "56",
+    "USGS QFFD #": "13",
+    "NSHM23 ID": "80"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -124.0106,
+     40.87059
+    ]
+   },
+   "properties": {
+    "Fault": "Mad River Fault Zone",
+    "Site": "McKinleyville",
+    "Max rate (mm/yr)": 0.7,
+    "Min rate (mm/yr)": 0.5,
+    "Preferred rate (mm/yr)": 0.6,
+    "Dating method": "Absolute, Radiocarbon dating",
+    "Time span": "12,000 - 130,000 years",
+    "Notes": "A unit was found within the trench with an offset of 6.8 m.  Location of point is the approximate center of the study area.",
+    "Reference code": "CC60",
+    "Reference": "McCroy, P. 2000",
+    "Peer reviewed": "Yes",
+    "Site ID": "SR_31",
+    "CFM ID": "111",
+    "USGS QFFD #": "13",
+    "NSHM23 ID": "163"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -124.0305,
+     40.86569
+    ]
+   },
+   "properties": {
+    "Fault": "Mad River Fault Zone",
+    "Site": "Mad River Fault",
+    "Max rate (mm/yr)": 0.6,
+    "Min rate (mm/yr)": 0.5,
+    "Preferred rate (mm/yr)": 0.5,
+    "Dating method": "Marine Terrace",
+    "Time span": "1,000 - 12,000 years",
+    "Notes": "Offset cannot be measured completely, but there is at least 35m offset across the Mad River Fault.  Location of point is the approximate center of the study area.",
+    "Reference code": "CC60",
+    "Reference": "McCroy, P. 2000",
+    "Peer reviewed": "Yes",
+    "Site ID": "SR_32",
+    "CFM ID": "106",
+    "USGS QFFD #": "13",
+    "NSHM23 ID": "157"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -124.0857,
+     41.02155
+    ]
+   },
+   "properties": {
+    "Fault": "Trinidad",
+    "Site": "Trinidad Anticline",
+    "Max rate (mm/yr)": 1.1,
+    "Min rate (mm/yr)": 0.7,
+    "Preferred rate (mm/yr)": 0.9,
+    "Dating method": "Marine Terraces",
+    "Time span": "1,000 - 12,000 years",
+    "Notes": "Age for terrace datum could have been either 60 ka or 83 ka. McCroy used 60 ka for slip rate estimation. Complete vertical seperation can be measured, there is a 19 to 21 m offset from faulting. Location of point is the approximate center of the study area.",
+    "Reference code": "CC60",
+    "Reference": "McCroy, P. 2000",
+    "Peer reviewed": "Yes",
+    "Site ID": "SR_33",
+    "CFM ID": "173",
+    "USGS QFFD #": "13",
+    "NSHM23 ID": "291"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -121.4464,
+     40.96786
+    ]
+   },
+   "properties": {
+    "Fault": "Hat Creek",
+    "Site": "Hat Creek Fault",
+    "Max rate (mm/yr)": 1,
+    "Min rate (mm/yr)": 0.39,
+    "Dating method": "Ar-Ar",
+    "Time span": "750,000 - 2,580,000 years",
+    "Notes": "Ar-Ar dating of offsetted basalts gave time and rate. The displacement ranged from 12 to 64 m across the fault. Slip rate given is the range of the lowest rates, so a minimum. No preffered rate given.",
+    "Reference code": "CC57",
+    "Reference": "Page and others, 1994",
+    "Peer reviewed": "Yes",
+    "Site ID": "SR_34",
+    "CFM ID": "73",
+    "USGS QFFD #": "9",
+    "NSHM23 ID": "112"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -117.6406,
+     41.78759
+    ]
+   },
+   "properties": {
+    "Fault": "Santa Rosa Range Fault Zone",
+    "Site": "Orovado",
+    "Max rate (mm/yr)": 0.16,
+    "Min rate (mm/yr)": 0.2,
+    "Preferred rate (mm/yr)": 0.3,
+    "Dating method": "Absolute, Optically Stimulated Luminescence",
+    "Time span": "130,000 - 750,000 years",
+    "Notes": "Study used a trench and fault scarps offset totaled across fault zone is 14.6 +/- 3 m.",
+    "Reference code": "CC34",
+    "Reference": "Personius and others, 2005",
+    "Peer reviewed": "Yes",
+    "Site ID": "SR_35",
+    "CFM ID": "139",
+    "USGS QFFD #": "1508",
+    "NSHM23 ID": "2573"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -118.7508,
+     41.87613
+    ]
+   },
+   "properties": {
+    "Fault": "Steens Fault Zone",
+    "Site": "Steens Fault Zone",
+    "Max rate (mm/yr)": 0.3,
+    "Min rate (mm/yr)": 0.1,
+    "Preferred rate (mm/yr)": 0.2,
+    "Dating method": "Other, explain in notes.",
+    "Time span": "12,000 - 130,000 years",
+    "Notes": "The sliprate was found by offset measured in a trench values ranging from 1.1 to 2.7 m displacement. Dating Methods: Radiocarbon dating of burned units and Optical Luminescences of Lacustrine and Colluvial units.",
+    "Reference code": "CC35",
+    "Reference": "Personius and others, 2007",
+    "Peer reviewed": "Yes",
+    "Site ID": "SR_36",
+    "CFM ID": "156",
+    "USGS QFFD #": "856",
+    "NSHM23 ID": "2575"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -120.1844,
+     41.57588
+    ]
+   },
+   "properties": {
+    "Fault": "Suprise Valley Fault",
+    "Site": "Suprise Valley Fault",
+    "Max rate (mm/yr)": 0.7,
+    "Min rate (mm/yr)": 0.5,
+    "Preferred rate (mm/yr)": 0.6,
+    "Dating method": "Other, explain in notes.",
+    "Time span": "12,000 - 130,000 years",
+    "Notes": "Slip was measured via offset found within the Cooks Canyon Trench. Dating Methods include: Radiocarbon, Optical Luminescence, and Tephrachronology.",
+    "Reference code": "CC36",
+    "Reference": "Personius and others, 2009",
+    "Peer reviewed": "Yes",
+    "Site ID": "SR_37",
+    "CFM ID": "161",
+    "USGS QFFD #": "4",
+    "NSHM23 ID": "284"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.1919,
+     48.34451
+    ]
+   },
+   "properties": {
+    "Fault": "Devils Mountain",
+    "Site": "Springboard and Aplodonita",
+    "Max rate (mm/yr)": 0.14,
+    "Min rate (mm/yr)": 0.13,
+    "Preferred rate (mm/yr)": 0.14,
+    "Dating method": "Absolute, Radiocarbon dating",
+    "Time span": "1,000 - 12,000 years",
+    "Notes": "Used two trenches and borehole to measure stratigraphic offset. Areas with measured offset of 3-5 meters.",
+    "Reference code": "CC13",
+    "Reference": "Personius and others, 2014",
+    "Peer reviewed": "Yes",
+    "Site ID": "SR_38",
+    "CFM ID": "47",
+    "WGS ID": "51",
+    "USGS QFFD #": "574",
+    "NSHM23 ID": "2801"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -119.8161,
+     41.6488
+    ]
+   },
+   "properties": {
+    "Fault": "Long Valley Fault Zone",
+    "Max rate (mm/yr)": 0.16,
+    "Min rate (mm/yr)": 0.14,
+    "Preferred rate (mm/yr)": 0.15,
+    "Dating method": "230Th",
+    "Time span": "12,000 - 130,000 years",
+    "Notes": "Age of faulting reported to be 15.6 +/- 0.3 ka, the age is from Adams and Wesnousky, 1998, 1999.",
+    "Reference code": "CC53",
+    "Reference": "Personius and others, 2017",
+    "Peer reviewed": "Yes",
+    "Site ID": "SR_39",
+    "USGS QFFD #": "1470",
+    "NSHM23 ID": "1249"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -120.7525,
+     42.72208
+    ]
+   },
+   "properties": {
+    "Fault": "Winter Rim",
+    "Site": "Approx location",
+    "Max rate (mm/yr)": 0.6,
+    "Min rate (mm/yr)": 0.4,
+    "Preferred rate (mm/yr)": 0.5,
+    "Dating method": "Absolute, Radiocarbon dating",
+    "Time span": "12,000 - 130,000 years",
+    "Notes": "Scarp offset depending on location is recorded to be 6 to 10 meters.",
+    "Reference code": "CC52",
+    "Reference": "Pezzopane, S. and Weldon, R. 1993",
+    "Peer reviewed": "Yes",
+    "Site ID": "SR_40",
+    "CFM ID": "207",
+    "USGS QFFD #": "831",
+    "NSHM23 ID": "2544"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.0709,
+     48.91523
+    ]
+   },
+   "properties": {
+    "Fault": "Boulder Creek Fault",
+    "Site": "Kendall Scarp",
+    "Max rate (mm/yr)": 0.33,
+    "Min rate (mm/yr)": 0.27,
+    "Preferred rate (mm/yr)": 0.3,
+    "Dating method": "Absolute, Radiocarbon dating",
+    "Time span": "12,000 - 130,000 years",
+    "Notes": "Radiocarbon dating used on detrital charcoal samples.",
+    "Reference code": "CC38",
+    "Reference": "Sherrod and others, 2013",
+    "Peer reviewed": "Yes",
+    "Site ID": "SR_41",
+    "CFM ID": "21",
+    "WGS ID": "450",
+    "USGS QFFD #": "598",
+    "NSHM23 ID": "2800"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.0809,
+     42.39133
+    ]
+   },
+   "properties": {
+    "Fault": "Klamath Lake Fault Zone",
+    "Site": "Measured at 35 locations, so an approx location.",
+    "Max rate (mm/yr)": 0.4,
+    "Min rate (mm/yr)": 0.2,
+    "Preferred rate (mm/yr)": 0.3,
+    "Dating method": "3He",
+    "Time span": "12,000 - 130,000 years",
+    "Notes": "Depending on location offset was recorded to be 5 to 25 meters.",
+    "Reference code": "CC39",
+    "Reference": "Speth and others, 2019",
+    "Peer reviewed": "Yes",
+    "Site ID": "SR_42",
+    "CFM ID": "93",
+    "USGS QFFD #": "843",
+    "NSHM23 ID": "2520"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -120.5146,
+     46.92893
+    ]
+   },
+   "properties": {
+    "Fault": "Manastash Ridge",
+    "Site": "Profile A",
+    "Max rate (mm/yr)": 0.23,
+    "Min rate (mm/yr)": 0.14,
+    "Preferred rate (mm/yr)": 0.15,
+    "Dating method": "Other",
+    "Time span": "130,000 - + (since 6.8 Ma)",
+    "Notes": "A more conservative estimate compared to West et al. 1998. Zircon and Tephra dating were used to constrain the slip rate.",
+    "Reference code": "CC40",
+    "Reference": "Staisch and others, 2018",
+    "Peer reviewed": "Yes",
+    "Site ID": "SR_43",
+    "CFM ID": "108",
+    "WGS ID": "7",
+    "USGS QFFD #": "562",
+    "NSHM23 ID": "2836"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -123.0921,
+     45.33846
+    ]
+   },
+   "properties": {
+    "Fault": "Gales Creek Fault Zone",
+    "Site": "Chehalem Valley",
+    "Max rate (mm/yr)": 0.74,
+    "Min rate (mm/yr)": 0.5,
+    "Preferred rate (mm/yr)": 0.62,
+    "Dating method": "Radiocarbon , IRSL",
+    "Time span": ">2,580,000 years",
+    "Notes": "Average apparent offset created by fault is recorded to be 8.8 + - 2.5 km.",
+    "Reference code": "CC51",
+    "Reference": "Wells and others, 2020",
+    "Peer reviewed": "Yes",
+    "Site ID": "SR_44",
+    "CFM ID": "62",
+    "USGS QFFD #": "718",
+    "NSHM23 ID": "2563"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -119.6471,
+     46.82023
+    ]
+   },
+   "properties": {
+    "Fault": "Saddle Mountains",
+    "Site": "Trench 1",
+    "Max rate (mm/yr)": 0.32,
+    "Min rate (mm/yr)": 0.16,
+    "Preferred rate (mm/yr)": 0.27,
+    "Dating method": "Other",
+    "Time span": "12,000 - 130,000 years",
+    "Notes": "Reported to have \"at least 6.5m\" of vertical displacement. Tephra dating by Crandell and others, 1981 was used to constrain time.",
+    "Reference code": "CC20",
+    "Reference": "West and others, 1996",
+    "Peer reviewed": "Yes",
+    "Site ID": "SR_45",
+    "CFM ID": "135",
+    "WGS ID": "21",
+    "USGS QFFD #": "562",
+    "NSHM23 ID": "2807"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -120.1217,
+     40.05316
+    ]
+   },
+   "properties": {
+    "Fault": "Honey Lake",
+    "Site": "Honey Lake",
+    "Max rate (mm/yr)": 2.6,
+    "Min rate (mm/yr)": 1.1,
+    "Preferred rate (mm/yr)": 2,
+    "Dating method": "Absolute, Radiocarbon dating",
+    "Time span": "1,000 - 12,000 years",
+    "Notes": "Right-Lateral fault, offset is measured by late Holocene deposits in a cutbank of Long Valley Creek ranging from 14 to 18 meters.",
+    "Reference code": "CC55",
+    "Reference": "Willis, C. and Borchardt, G., 1993",
+    "Peer reviewed": "Yes",
+    "Site ID": "SR_46",
+    "CFM ID": "79",
+    "USGS QFFD #": "22",
+    "NSHM23 ID": "120"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -123.780975,
+     48.506813
+    ]
+   },
+   "properties": {
+    "Fault": "Leech River",
+    "Site": "Trench 1",
+    "Max rate (mm/yr)": 0.3,
+    "Min rate (mm/yr)": 0.2,
+    "Preferred rate (mm/yr)": 0.2,
+    "Dating method": "C14",
+    "Time span": "1,000 - 12,000 years",
+    "Notes": "Slip rate calculations represent minimum estimates. Estimated to be three meters of displacement within Trench 1.",
+    "Reference code": "CC67",
+    "Reference": "Morell and others, 2018",
+    "Peer reviewed": "Yes",
+    "Site ID": "SR_47",
+    "CFM ID": "100"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -124.999518,
+     49.477824
+    ]
+   },
+   "properties": {
+    "Fault": "Beaufort Range",
+    "Site": "Site 2",
+    "Max rate (mm/yr)": 2,
+    "Min rate (mm/yr)": 0.5,
+    "Dating method": "C14",
+    "Time span": "1,000 - 12,000 years",
+    "Notes": "20 KM of the fault shows multiple episdes of lateral and vertical displacement, 127 produced scarps were found with 79 vistited in the field. LiDAR resolution was insufficient to measure offset of geomorphic features.",
+    "Reference code": "CC68",
+    "Reference": "Lynch and others, 2025",
+    "Peer reviewed": "Yes",
+    "Site ID": "SR_48",
+    "CFM ID": "12"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -121.88466,
+     42.237761
+    ]
+   },
+   "properties": {
+    "Fault": "Klamath Graben",
+    "Site": "Howard Bay",
+    "Max rate (mm/yr)": 0.5,
+    "Min rate (mm/yr)": 0.3,
+    "Preferred rate (mm/yr)": 0.4,
+    "Dating method": "Glacial Deposit Elevation",
+    "Time span": "130,000 - 750,000 years",
+    "Notes": "Offset cummulates to 10 meters. Three different slip rates along fault were calculated, the reported value is the average.",
+    "Reference code": "CC69",
+    "Reference": "Waldien and others, 2019",
+    "Peer reviewed": "Yes",
+    "Site ID": "SR_49",
+    "CFM ID": "92",
+    "USGS QFFD #": "843",
+    "NSHM23 ID": "2520"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -123.991473,
+     40.502117
+    ]
+   },
+   "properties": {
+    "Fault": "Van Duzen Fault",
+    "Max rate (mm/yr)": 0.38,
+    "Min rate (mm/yr)": 0.06,
+    "Dating method": "Other",
+    "Time span": "1,000 - 12,000 years",
+    "Notes": "Used Bayesian Age Model using fluvial terrace heights. Offset values have large uncertainty due to lack of stratigraphic evidence. Slip rates have no preferred rate from article.",
+    "Reference code": "CC70",
+    "Reference": "Nicovich and others 2024",
+    "Peer reviewed": "Yes",
+    "Site ID": "SR_50",
+    "USGS QFFD #": "15"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -123.179258,
+     47.468115
+    ]
+   },
+   "properties": {
+    "Fault": "Canyon River - Price Lake",
+    "Site": "Cargill Creek Trench",
+    "Max rate (mm/yr)": 0.3,
+    "Min rate (mm/yr)": 0.1,
+    "Dating method": "C14",
+    "Time span": "12,000 - 130,000 years",
+    "Notes": "Radoarbon dating of stumps within lake as investiagtor believes faulting caused the flooding. Scarp heights range from 2 to 4 meters. No prefered rate given.",
+    "Reference code": "CC72",
+    "Reference": "Witter and others, 2008",
+    "Peer reviewed": "Yes",
+    "Site ID": "SR_51",
+    "CFM ID": "24",
+    "WGS ID": "114",
+    "USGS QFFD #": "575",
+    "NSHM23 ID": "2829"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.993739,
+     41.59158
+    ]
+   },
+   "properties": {
+    "Fault": "Scott Valley",
+    "Site": "Shackleford Creek",
+    "Max rate (mm/yr)": 0.9,
+    "Min rate (mm/yr)": 0.5,
+    "Preferred rate (mm/yr)": 0.7,
+    "Dating method": "OSL",
+    "Time span": "12,000 - 130,000 years",
+    "Notes": "Fault scarp displacement found from LiDAR, 14.5+/- 1.5 meters of offset.",
+    "Reference code": "CC71",
+    "Reference": "Lynch, 2025",
+    "Peer reviewed": "No",
+    "Site ID": "SR_52"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -120.666975,
+     42.990169
+    ]
+   },
+   "properties": {
+    "Fault": "Thousand Springs Fault",
+    "Max rate (mm/yr)": 0.11,
+    "Min rate (mm/yr)": 0.05,
+    "Preferred rate (mm/yr)": 0.07,
+    "Dating method": "TL",
+    "Time span": "12,000 - 130,000 years",
+    "Notes": "Offset reported to be  3.4 + 2/−1 m in the past ∼65 ka. Point is placed inbetween the two trenches used, labeled Northern Trench and Southern Trench. Rate was calculated using an assume fault dip of 70 degrees.",
+    "Reference": "Curtiss and others, 2024",
+    "Peer reviewed": "Yes",
+    "CFM ID": "168"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -123.839065,
+     48.11144
+    ]
+   },
+   "properties": {
+    "Fault": "North Olympic Fault Zone",
+    "Max rate (mm/yr)": 2.3,
+    "Min rate (mm/yr)": 1.3,
+    "Preferred rate (mm/yr)": 0.4,
+    "Dating method": "OSL",
+    "Time span": "12,000 - 130,000 years",
+    "Notes": "Used offset measured from 11 debris flow channels, the displacement varied along each debris flow, investigator suggested they recorded different number of earthquake events from channel age.  No prefered rate was given.",
+    "Reference": "Duckworth and others, 2021",
+    "Peer reviewed": "Yes",
+    "CFM ID": "98",
+    "WGS ID": "133"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -120.402539,
+     39.650719
+    ]
+   },
+   "properties": {
+    "Fault": "Mohawk Valley Fault Zone",
+    "Site": "Turner Creek Trench",
+    "Max rate (mm/yr)": 0.5,
+    "Min rate (mm/yr)": 0.3,
+    "Dating method": "C14",
+    "Time span": "1,000 - 12,000 years",
+    "Notes": "Used lateral offset of paleochannels found from trench exposures to calculate slip rate. The investigator said their slip rate should be treated as a lower bound for slip rate across the Southern Mohawk Valley Fault zone, as it is likely to be higher.",
+    "Reference": "Sawyer and others, 2013",
+    "Peer reviewed": "Yes",
+    "USGS QFFD #": "25"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -123.387089,
+     48.526019
+    ]
+   },
+   "properties": {
+    "Fault": "XEOLXELEK-Elk Lake fault",
+    "Site": "Eagle Beach Trench",
+    "Max rate (mm/yr)": 0.34,
+    "Min rate (mm/yr)": 0.1,
+    "Dating method": "C14",
+    "Time span": "12,000 - 130,000 years",
+    "Notes": "Used elevations across the surface of their trench, displaced drumlinoid, and the most displaced stratigraphic horizons to calculate veritcal slip.",
+    "Reference": "Harrichhausen and others, 2023",
+    "Peer reviewed": "Yes",
+    "CFM ID": "208"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -115.851414,
+     50.290335
+    ]
+   },
+   "properties": {
+    "Fault": "Southern Rocky Mountain Trench Fault",
+    "Max rate (mm/yr)": 1.2,
+    "Min rate (mm/yr)": 0.4,
+    "Dating method": "C14",
+    "Time span": "1,000 - 12,000 years",
+    "Notes": "Used dating from (Dalton et al., 2023; Fulton, 1971).",
+    "Reference": "Finley and others (2026)",
+    "Peer reviewed": "Yes"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -120.98402,
+     45.66909
+    ]
+   },
+   "properties": {
+    "Fault": "Columbia Hills Thrust Fault",
+    "Max rate (mm/yr)": 0.009,
+    "Min rate (mm/yr)": 0.006,
+    "Dating method": "OSL",
+    "Time span": "750,000 - 2,580,000 years",
+    "Notes": "Caculated many different slip rates for different cross-sections and possible dip angles.",
+    "Reference": "Woodring (2020)",
+    "Peer reviewed": "No",
+    "CFM ID": "38",
+    "WGS ID": "274",
+    "USGS QFFD #": "568"
+   }
+  }
+ ]
+}

@@ -1,7 +1,7 @@
 {% extends 'cfm_page.html' %}
 
 {% block style%}
-<link rel="stylesheet" href="/static/css/main.css?v=20261106" />
+<link rel="stylesheet" href="/static/css/main.css?v=20261124" />
 <script src="https://cesium.com/downloads/cesiumjs/releases/1.82/Build/Cesium/Cesium.js"></script>
 <link href="https://cesium.com/downloads/cesiumjs/releases/1.82/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
 <!-- Include Font Awesome -->
@@ -183,6 +183,23 @@
                                 <span id="qffLoading" style="display:none; margin-left:4px; font-size:11px; color:#94a3b8;">loading&hellip;</span>
                             </label>
                         </div>
+                        {# Draft point layers, not shown on production yet. #}
+                        {% if branch not in ('prod', 'main') %}
+                        <div class="overlay-toggle">
+                            <label>
+                                <input type="checkbox" id="toggleEqSitesCheckbox">
+                                <span class="site-mark site-mark-eq" aria-hidden="true"></span>
+                                Earthquake History Sites (draft)
+                            </label>
+                        </div>
+                        <div class="overlay-toggle">
+                            <label>
+                                <input type="checkbox" id="toggleSlipSitesCheckbox">
+                                <span class="site-mark site-mark-slip" aria-hidden="true"></span>
+                                Slip Rate Sites (draft)
+                            </label>
+                        </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -346,6 +363,10 @@
                 ['Time (UTC)', p.time != null ? escapeHtml(new Date(p.time).toISOString().replace('T', ' ').slice(0, 19)) : 'n/a'],
                 ['Location', p.place ? escapeHtml(p.place) : 'n/a']
             ];
+            return infoTable(rows);
+        }
+
+        function infoTable(rows) {
             return '<table class="cesium-infoBox-defaultTable"><tbody>' +
                 rows.map(function (r) { return '<tr><th>' + r[0] + '</th><td>' + r[1] + '</td></tr>'; }).join('') +
                 '</tbody></table>';
@@ -410,6 +431,71 @@
                 }
             }
         });
+
+        // Point layers: earthquake history and slip rate sites. Loaded on first tick.
+        function siteMarker(shape, color) {
+            const canvas = document.createElement('canvas');
+            canvas.width = canvas.height = 18;
+            const ctx = canvas.getContext('2d');
+            ctx.beginPath();
+            if (shape === 'triangle') {
+                ctx.moveTo(9, 2); ctx.lineTo(16.5, 15.5); ctx.lineTo(1.5, 15.5);
+            } else {
+                ctx.rect(3, 3, 12, 12);
+            }
+            ctx.closePath();
+            ctx.fillStyle = color;
+            ctx.fill();
+            ctx.lineWidth = 1.5;
+            ctx.strokeStyle = '#ffffff';
+            ctx.stroke();
+            return canvas;
+        }
+
+        // The popup lists whatever fields the file has, so new fields need no change here.
+        function describeSite(feature) {
+            const [lon, lat] = feature.geometry.coordinates;
+            const rows = Object.entries(feature.properties).map(function (kv) {
+                return [escapeHtml(kv[0]), escapeHtml(kv[1])];
+            });
+            rows.push(['Latitude', fmt(lat, 4, '&deg;')], ['Longitude', fmt(lon, 4, '&deg;')]);
+            return infoTable(rows);
+        }
+
+        function addSiteLayer(checkboxId, file, shape, color) {
+            const checkbox = document.getElementById(checkboxId);
+            if (!checkbox) return;
+            const sites = new Cesium.CustomDataSource(file);
+            const image = siteMarker(shape, color);
+            let requested = false;
+            viewer.dataSources.add(sites);
+            checkbox.addEventListener('change', function () {
+                sites.show = checkbox.checked;
+                if (!checkbox.checked || requested) return;
+                requested = true;
+                fetch('/static/point_data/' + file)
+                    .then(function (response) { return response.json(); })
+                    .then(function (data) {
+                        data.features.forEach(function (feature) {
+                            const [lon, lat] = feature.geometry.coordinates;
+                            const { Fault: fault, Site: site } = feature.properties;
+                            sites.entities.add({
+                                // Site names alone can be generic ("Trench 1"), so lead with the fault.
+                                name: site && site !== fault ? fault + ': ' + site : fault,
+                                position: Cesium.Cartesian3.fromDegrees(lon, lat),
+                                billboard: { image: image, disableDepthTestDistance: Number.POSITIVE_INFINITY },
+                                description: describeSite(feature)
+                            });
+                        });
+                    })
+                    .catch(function (error) {
+                        requested = false;
+                        console.error('Error loading ' + file + ':', error);
+                    });
+            });
+        }
+        addSiteLayer('toggleEqSitesCheckbox', 'earthquake_history_sites.geojson', 'triangle', '#D55E00');
+        addSiteLayer('toggleSlipSitesCheckbox', 'slip_rate_sites.geojson', 'square', '#0072B2');
 
         // Single fault: direct download. Multi: fetch in parallel, JSZip bundle, one .zip.
         document.getElementById('downloadSelectedBtn').addEventListener('click', async function () {
@@ -572,12 +658,14 @@
                 updateVisibility(geoJsonEntities, document.getElementById('lineList'));
             }
 
-            // Uncheck QFF if on
-            var qffCb = document.getElementById('toggleQFFCheckbox');
-            if (qffCb.checked) {
-                qffCb.checked = false;
-                qffCb.dispatchEvent(new Event('change'));
-            }
+            // Turn the optional overlays back off
+            ['toggleQFFCheckbox', 'toggleEqSitesCheckbox', 'toggleSlipSitesCheckbox'].forEach(function (id) {
+                var cb = document.getElementById(id);
+                if (cb && cb.checked) {
+                    cb.checked = false;
+                    cb.dispatchEvent(new Event('change'));
+                }
+            });
 
             // Deselect all fault checkboxes
             document.querySelectorAll('#lineList input[type="checkbox"]:checked').forEach(function (cb) {

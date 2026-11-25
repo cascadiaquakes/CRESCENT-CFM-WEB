@@ -1,0 +1,1267 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.0946,
+     48.91295
+    ]
+   },
+   "properties": {
+    "Fault": "Boulder Creek (Kendall)",
+    "Site": "Hornet",
+    "Number of events": 3,
+    "Most recent event, max age (yr BP)": 910,
+    "Most recent event, min age (yr BP)": 740,
+    "Most recent event, mean age (yr BP)": 825,
+    "Events": "E3 (8050-7250 BP); E2 (3190-2980 BP); E1 (910-740 BP)",
+    "Calibrated age": "Yes",
+    "Modeled age": "Yes",
+    "Notes": "Earthquake timing constrained by radiocarbon dating. Claims supported by more than one trench and corings.",
+    "Reference code": "CC38",
+    "Reference": "Sherrod and others, 2013",
+    "Peer reviewed": "Yes",
+    "Site ID": "EQ_1",
+    "CFM ID": 21,
+    "WGS ID": 450,
+    "USGS QFFD #": "598",
+    "NSHM23 ID": 2800
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.1918,
+     48.34478
+    ]
+   },
+   "properties": {
+    "Fault": "Devils Mountain",
+    "Site": "Aplodontia-Springboard",
+    "Number of events": 2,
+    "Most recent event, max age (yr BP)": 2300,
+    "Most recent event, min age (yr BP)": 1500,
+    "Most recent event, mean age (yr BP)": 2200,
+    "Events": "E2 (8200-8000 BP); E1 (2300-1500 BP)",
+    "Calibrated age": "Yes",
+    "Modeled age": "Yes",
+    "Notes": "Earthquake timing constrained by radiocarbon dating. The authors intrepret the reported MRE age to be a minimum due to indiscrepancies in sample ages.",
+    "Reference code": "CC37",
+    "Reference": "Personius and others, 2014",
+    "Peer reviewed": "Yes",
+    "Site ID": "EQ_2",
+    "CFM ID": 47,
+    "WGS ID": 51,
+    "USGS QFFD #": "574",
+    "NSHM23 ID": 2801
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.6796,
+     48.31726
+    ]
+   },
+   "properties": {
+    "Fault": "Utsalady Point (east)",
+    "Site": "Duffers/Teeka",
+    "Number of events": 2,
+    "Most recent event, max age (yr BP)": 400,
+    "Most recent event, min age (yr BP)": 100,
+    "Most recent event, mean age (yr BP)": 250,
+    "Events": "E2 (2200-1100 BP); E1 (400-100 BP)",
+    "Calibrated age": "Yes",
+    "Modeled age": "Yes",
+    "Notes": "Earthquake timing constrained by radiocarbon dating. Two trenches were used. Evidence for the penultimate event was discovered at the Duffers trench.",
+    "Reference code": "CC47",
+    "Reference": "Johnson and others, 2004",
+    "Peer reviewed": "Yes",
+    "Site ID": "EQ_3",
+    "CFM ID": 183,
+    "WGS ID": 156,
+    "USGS QFFD #": "573",
+    "NSHM23 ID": 2811
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -123.3589,
+     48.02779
+    ]
+   },
+   "properties": {
+    "Fault": "Lake Creek - Boundary Creek - Sadie",
+    "Site": "Corners/Minicorners",
+    "Number of events": 4,
+    "Most recent event, max age (yr BP)": 2100,
+    "Most recent event, min age (yr BP)": 500,
+    "Most recent event, mean age (yr BP)": 1300,
+    "Events": "E4 (12000-8000 BP); E3 (8000-5000 BP); E2 (3500-2300 BP); E1 (2100-500 BP)",
+    "Calibrated age": "Yes",
+    "Modeled age": "Yes",
+    "Notes": "Earthquake timing constrained by radiocarbon dating. Mulitple trenches were used but because of lack of evidence, some stratagraphic correlation of events between sites was inferred. The Knee-high, Sapsucker, Minicorners, Corners, and Daisy trenches were investigated in this study.",
+    "Reference code": "CC41",
+    "Reference": "Nelson and others, 2017",
+    "Peer reviewed": "Yes",
+    "Site ID": "EQ_4",
+    "CFM ID": 98,
+    "WGS ID": 132,
+    "USGS QFFD #": "556",
+    "NSHM23 ID": 2804
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -123.8248,
+     48.10668
+    ]
+   },
+   "properties": {
+    "Fault": "Lake Creek - Boundary Creek - Sadie",
+    "Site": "Bog Lemming",
+    "Number of events": 5,
+    "Most recent event, max age (yr BP)": 1200,
+    "Most recent event, min age (yr BP)": 900,
+    "Most recent event, mean age (yr BP)": 1050,
+    "Events": "E5 (12200-10300 BP); E4 (8900-8100 BP); E3 (7000-6400 BP); E2 (6200-2300 BP); E1 (1200-900 BP)",
+    "Calibrated age": "Yes",
+    "Modeled age": "Yes",
+    "Notes": "Earthquake timing constrained by radiocarbon dating. This study includes interpretations of the Ground Bear trench and several cores on the same fault.",
+    "Reference code": "CC42",
+    "Reference": "Schermer and others, 2021",
+    "Peer reviewed": "Yes",
+    "Site ID": "EQ_5",
+    "CFM ID": 98,
+    "WGS ID": 133,
+    "NSHM23 ID": 2804
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.5245,
+     47.59524
+    ]
+   },
+   "properties": {
+    "Fault": "Seattle (middle)",
+    "Site": "Crane Lake",
+    "Number of events": 4,
+    "Most recent event, max age (yr BP)": 1290,
+    "Most recent event, min age (yr BP)": 1170,
+    "Most recent event, mean age (yr BP)": 1230,
+    "Events": "E4 (2600-2500 BP); E3 (2500-1900 BP); E2 (1700-1200 BP); E1 (1300-1000 BP)",
+    "Calibrated age": "Yes",
+    "Modeled age": "No",
+    "Notes": "Earthquake timing constrained by radiocarbon dating. C14 ages were calibrated, ages were not modeled using OxCal but qualitatively assessed for anomalously old or young samples. Crane Lake trench contains the most complete earthquake record.",
+    "Reference code": "CC10",
+    "Reference": "Nelson and others, 2003",
+    "Peer reviewed": "Yes",
+    "Site ID": "EQ_6",
+    "CFM ID": 141,
+    "WGS ID": 137,
+    "USGS QFFD #": "570",
+    "NSHM23 ID": 2881
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -123.1641,
+     47.47
+    ]
+   },
+   "properties": {
+    "Fault": "Canyon River - Price Lake (northeast)",
+    "Site": "Price Lake",
+    "Number of events": 1,
+    "Most recent event, max age (yr BP)": 1027,
+    "Most recent event, min age (yr BP)": 1026,
+    "Most recent event, mean age (yr BP)": 1026.5,
+    "Events": "E1 (1027-1026 BP)",
+    "Calibrated age": "Yes",
+    "Modeled age": "No",
+    "Notes": "Earthquake timing constrained by dendrochronology using tree-ring wiggle matching, and tree-ring sequences.",
+    "Reference code": "CC43",
+    "Reference": "Black and others, 2023",
+    "Peer reviewed": "Yes",
+    "Site ID": "EQ_7",
+    "CFM ID": 23,
+    "WGS ID": 95,
+    "USGS QFFD #": "558",
+    "NSHM23 ID": 2828
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.2125,
+     47.52771
+    ]
+   },
+   "properties": {
+    "Fault": "Seattle Fault",
+    "Site": "Lake Washington",
+    "Number of events": 1,
+    "Most recent event, max age (yr BP)": 1027,
+    "Most recent event, min age (yr BP)": 1026,
+    "Most recent event, mean age (yr BP)": 1026.5,
+    "Events": "E1 (1027-1026 BP)",
+    "Calibrated age": "Yes",
+    "Modeled age": "No",
+    "Notes": "Earthquake timing constrained by dendrochronology using tree-ring wiggle matching, and tree-ring sequences.",
+    "Reference code": "CC43",
+    "Reference": "Black and others, 2023",
+    "Peer reviewed": "Yes",
+    "Site ID": "EQ_8",
+    "CFM ID": 142,
+    "WGS ID": 104,
+    "USGS QFFD #": "570",
+    "NSHM23 ID": 2882
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -123.2631,
+     47.39194
+    ]
+   },
+   "properties": {
+    "Fault": "Frigid Creek",
+    "Site": "Frigid Creek",
+    "Number of events": 1,
+    "Most recent event, max age (yr BP)": 5657,
+    "Most recent event, min age (yr BP)": 319,
+    "Most recent event, mean age (yr BP)": 2988,
+    "Events": "E1 (5657-319 BP)",
+    "Calibrated age": "No",
+    "Modeled age": "No",
+    "Notes": "Earthquake timing constrained by radiocarbon dating, it is unclear what program was used to calibrate measured C14 ages.",
+    "Reference code": "CC3",
+    "Reference": "Blakely and others, 2009",
+    "Peer reviewed": "Yes",
+    "Site ID": "EQ_9",
+    "CFM ID": 59,
+    "WGS ID": 117,
+    "USGS QFFD #": "544",
+    "NSHM23 ID": 2833
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -120.4348,
+     47.61962
+    ]
+   },
+   "properties": {
+    "Fault": "Swakane Lineamet",
+    "Site": "Slick Grass Trench",
+    "Number of events": 1,
+    "Most recent event, max age (yr BP)": 2700,
+    "Most recent event, min age (yr BP)": 870,
+    "Most recent event, mean age (yr BP)": 915,
+    "Events": "E1 (2700-870 BP)",
+    "Calibrated age": "Yes",
+    "Modeled age": "Yes",
+    "Notes": "Earthquake timing constrained by radiocarbon dating. Dating methods included radiocarbon and infrared stimulated luminescence. The lack of constraints on unit ages and cross-cutting relationships lead the authors to believe there could be up to three earthquakes recorded at the site.",
+    "Reference code": "CC28",
+    "Reference": "Carlson and others, 2018",
+    "Peer reviewed": "Yes",
+    "Site ID": "EQ_10",
+    "CFM ID": 53,
+    "WGS ID": 348,
+    "NSHM23 ID": 2832
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.5639,
+     47.58393
+    ]
+   },
+   "properties": {
+    "Fault": "Seattle Fault Zone",
+    "Site": "Madrone Ridge",
+    "Number of events": 2,
+    "Most recent event, max age (yr BP)": 940,
+    "Most recent event, min age (yr BP)": 380,
+    "Most recent event, mean age (yr BP)": 660,
+    "Events": "E2 (1040-910 BP); E1 (940-380 BP)",
+    "Calibrated age": "Yes",
+    "Modeled age": "Yes",
+    "Notes": "Earthquake timing constrained by radiocarbon dating. Study uses new data and reinterprets data from previous studies to correlate different events across the Seattle Fault Zone, the Saddle Mt. Fault Zone, and Tacoma Fault zone to turbidite deposits in Lake Washington and the Restoration Point earthquake.",
+    "Reference code": "CC44",
+    "Reference": "Nelson and others, 2014",
+    "Peer reviewed": "Yes",
+    "Site ID": "EQ_11",
+    "CFM ID": 142,
+    "WGS ID": 104,
+    "USGS QFFD #": "570",
+    "NSHM23 ID": 2882
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -123.2483,
+     45.56387
+    ]
+   },
+   "properties": {
+    "Fault": "Gales Creek (Parsons Creek)",
+    "Site": "Clear Creek",
+    "Number of events": 3,
+    "Most recent event, max age (yr BP)": 1168,
+    "Most recent event, min age (yr BP)": 853,
+    "Most recent event, mean age (yr BP)": 1010.5,
+    "Events": "E3 (8885-8398 BP); E2 (7078-1274 BP); E1 (1168-853 BP)",
+    "Calibrated age": "Yes",
+    "Modeled age": "Yes",
+    "Notes": "Earthquake timing constrained by radiocarbon dating. The authors express confidence in their evidence of 3 earthquake events and also found weak evidence for another, younger earthquake.",
+    "Reference code": "CC45",
+    "Reference": "Horst and others, 2021",
+    "Peer reviewed": "Yes",
+    "Site ID": "EQ_12",
+    "CFM ID": 64,
+    "USGS QFFD #": "718",
+    "NSHM23 ID": 2514
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -120.4936,
+     39.66518
+    ]
+   },
+   "properties": {
+    "Fault": "Mohawk Valley",
+    "Site": "Sulphur Creek",
+    "Number of events": 4,
+    "Most recent event, max age (yr BP)": 1980,
+    "Most recent event, min age (yr BP)": 1780,
+    "Most recent event, mean age (yr BP)": 1880,
+    "Events": "E4 (15010-12940 BP); E3 ( 14140-11330 BP); E2 (8220-3210 BP)",
+    "Calibrated age": "Yes",
+    "Modeled age": "Yes",
+    "Notes": "Earthquake timing is constrained by luminescence and radiocarbon dating.",
+    "Reference code": "CC46",
+    "Reference": "Gold and others, 2014",
+    "Peer reviewed": "Yes",
+    "Site ID": "EQ_13",
+    "USGS QFFD #": "25",
+    "NSHM23 ID": 171
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -119.3766,
+     39.78393
+    ]
+   },
+   "properties": {
+    "Fault": "Pyramid Lake",
+    "Site": "Secret Canyon",
+    "Number of events": 4,
+    "Most recent event, max age (yr BP)": 1880,
+    "Most recent event, min age (yr BP)": 60,
+    "Most recent event, mean age (yr BP)": 970,
+    "Events": "E4 (155-9 ka); E3 (9000-7600 BP); E2 (7600-1800 BP); E1 (1800-60 BP)",
+    "Calibrated age": "Yes",
+    "Modeled age": "Yes",
+    "Notes": "Earthquake timing constrained by radiocarbon dating. Most recent earthquake may coincide with historical earthquake records. Trenches used for this study include the 1187 m berm, Truckee flood plain, Secret Canyon South, and Secret Canyon North trenches.",
+    "Reference code": "CC62",
+    "Reference": "Briggs & Wesnousky, 2004",
+    "Peer reviewed": "Yes",
+    "Site ID": "EQ_14",
+    "USGS QFFD #": "1669",
+    "NSHM23 ID": 1094
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -117.7495,
+     41.5324
+    ]
+   },
+   "properties": {
+    "Fault": "Santa Rosa Range (south)",
+    "Site": "Orovada",
+    "Number of events": 4,
+    "Most recent event, max age (yr BP)": 16000,
+    "Most recent event, min age (yr BP)": 11000,
+    "Most recent event, mean age (yr BP)": 13500,
+    "Events": "E4 (>141 +/- 14 ka); E3 (155-125 ka); E2 (108-90 ka); E1 (16-11 ka)",
+    "Notes": "Earthquake  timing is constrained by luminescence dating.",
+    "Reference code": "CC34",
+    "Reference": "Personius & Mahan, 2005",
+    "Peer reviewed": "Yes",
+    "Site ID": "EQ_15",
+    "CFM ID": 139,
+    "USGS QFFD #": "1508"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -118.7631,
+     41.83064
+    ]
+   },
+   "properties": {
+    "Fault": "Steens (south)",
+    "Site": "Bog Hot Valley",
+    "Number of events": 3,
+    "Most recent event, max age (yr BP)": 4700,
+    "Most recent event, min age (yr BP)": 4500,
+    "Most recent event, mean age (yr BP)": 4600,
+    "Events": "E3 (115000 +/- 20000 BP); E2 (61000 +/- 05 BP); E1 (46000 +/- 10000 BP)",
+    "Calibrated age": "Yes",
+    "Modeled age": "Yes",
+    "Notes": "Earthquake timing is constrained by luminenscence and radiocarbon dating.",
+    "Reference code": "CC35",
+    "Reference": "Personius and others, 2007",
+    "Peer reviewed": "Yes",
+    "Site ID": "EQ_16",
+    "CFM ID": 156,
+    "USGS QFFD #": "856",
+    "NSHM23 ID": 2575
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.5365,
+     47.59595
+    ]
+   },
+   "properties": {
+    "Fault": "Seattle Fault - Lytle Beach Fault",
+    "Site": "Rose Hip",
+    "Number of events": 2,
+    "Most recent event, max age (yr BP)": 238,
+    "Most recent event, min age (yr BP)": 97,
+    "Most recent event, mean age (yr BP)": 167.5,
+    "Events": "E2 (11240-10430 BP); E1 (238-97 BP)",
+    "Calibrated age": "Yes",
+    "Modeled age": "Yes",
+    "Notes": "Earthquake timing constrained by radiocarbon dating. Compares events to several other studies' evidence across the SFZ. Study includes two trenches, Lytle Beach and Vasa Park.",
+    "Reference code": "CC63",
+    "Reference": "Angster and others, 2026",
+    "Peer reviewed": "Yes",
+    "Site ID": "EQ_17",
+    "USGS QFFD #": "570"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.7051,
+     47.08374
+    ]
+   },
+   "properties": {
+    "Fault": "Seattle Fault",
+    "Site": "Nisqually River",
+    "Number of events": 1,
+    "Most recent event, max age (yr BP)": 1150,
+    "Most recent event, min age (yr BP)": 1010,
+    "Most recent event, mean age (yr BP)": 1080,
+    "Events": "E1 (1150-1010 BP)",
+    "Calibrated age": "Yes",
+    "Modeled age": "Yes",
+    "Notes": "Earthquake timing constrained by radiocarbon dating. This study also used biozones to constrain the timing of submergence. Fault responsible for subsidence is unclear.",
+    "Reference code": "CC64",
+    "Reference": "Sherrod, 2001",
+    "Peer reviewed": "Yes",
+    "Site ID": "EQ_18",
+    "CFM ID": 142,
+    "WGS ID": 104,
+    "USGS QFFD #": "570",
+    "NSHM23 ID": 2882
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.4898,
+     47.58332
+    ]
+   },
+   "properties": {
+    "Fault": "Seattle Fault",
+    "Site": "Restoration Point",
+    "Number of events": 3,
+    "Events": "E4 (about 6900 BP); E2 (about 1700 BP); E1 (about 1000 BP)",
+    "Calibrated age": "Yes",
+    "Modeled age": "Yes",
+    "Notes": "Earthquake timing constrained by radiocarbon dating. This study also used biozones to constrain the timing of submergence. Fault responsible for subsidence is unclear.",
+    "Reference code": "CC65",
+    "Reference": "Sherrod and others, 1999",
+    "Peer reviewed": "Yes",
+    "Site ID": "EQ_19",
+    "CFM ID": 142,
+    "WGS ID": 104,
+    "USGS QFFD #": "570",
+    "NSHM23 ID": 2882
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.8913,
+     47.37279
+    ]
+   },
+   "properties": {
+    "Fault": "Tacoma Fault",
+    "Site": "Catfish Lake",
+    "Number of events": 1,
+    "Most recent event, max age (yr BP)": 1180,
+    "Most recent event, min age (yr BP)": 790,
+    "Most recent event, mean age (yr BP)": 985,
+    "Events": "E1 (1180-790 BP)",
+    "Calibrated age": "No",
+    "Modeled age": "No",
+    "Notes": "Earthquake timing constrained by radiocarbon dating. This event may coincide with an event on the Seattle Fault.",
+    "Reference code": "CC66",
+    "Reference": "Sherrod and others, 2004",
+    "Peer reviewed": "Yes",
+    "Site ID": "EQ_29"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.7019,
+     47.52742
+    ]
+   },
+   "properties": {
+    "Fault": "Seattle Fault",
+    "Site": "Gorst",
+    "Number of events": 1,
+    "Most recent event, max age (yr BP)": 1260,
+    "Most recent event, min age (yr BP)": 560,
+    "Most recent event, mean age (yr BP)": 910,
+    "Events": "E1 (1260-560 BP)",
+    "Calibrated age": "Yes",
+    "Modeled age": "Yes",
+    "Notes": "Earthquake timing constrained by radiocarbon dating. The authors correlate the uplift at the site to tsunami deposits from other studies. Spatial point shown in the database was picked for nearness to evidence for uplift in Arcos and others, 2012, Figure 3a.",
+    "Reference code": "CC73",
+    "Reference": "Arcos and others, 2012",
+    "Peer reviewed": "Yes",
+    "Site ID": "EQ_30",
+    "CFM ID": 142,
+    "WGS ID": 104,
+    "USGS QFFD #": "570",
+    "NSHM23 ID": 2882
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -123.1471,
+     47.33972
+    ]
+   },
+   "properties": {
+    "Fault": "Saddle Mountain fault zone",
+    "Site": "Skokomish Delta",
+    "Number of events": 1,
+    "Events": "E1 (about 1000 BP)",
+    "Calibrated age": "Yes",
+    "Modeled age": "Yes",
+    "Notes": "Earthquake timing constrained by radiocarbon dating. Authors find the Saddle Mountain Fault zone to be the most likely structure to be responsible for uplift but acknowledge that there are other fault zones that may be responsible. Spatial point shown in the database refkects a central point of data collection.",
+    "Reference code": "CC74",
+    "Reference": "Arcos and others, 2012",
+    "Peer reviewed": "Yes",
+    "Site ID": "EQ_31",
+    "CFM ID": 24,
+    "WGS ID": 111,
+    "USGS QFFD #": "575",
+    "NSHM23 ID": 2829
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.4342,
+     47.66215
+    ]
+   },
+   "properties": {
+    "Fault": "Seattle Fault",
+    "Site": "West Point",
+    "Number of events": 1,
+    "Most recent event, max age (yr BP)": 1100,
+    "Most recent event, min age (yr BP)": 1000,
+    "Most recent event, mean age (yr BP)": 1050,
+    "Events": "E1 (1100-1000 BP)",
+    "Calibrated age": "Yes",
+    "Modeled age": "No",
+    "Notes": "Earthquake timing constrained by radiocarbon dating. Study includes another trench site, Cultus Bay, WA.",
+    "Reference code": "CC75",
+    "Reference": "Atwater & Moore, 1992",
+    "Peer reviewed": "Yes",
+    "Site ID": "EQ_32",
+    "CFM ID": 142,
+    "WGS ID": 104,
+    "USGS QFFD #": "570",
+    "NSHM23 ID": 2882
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.8415,
+     47.4379
+    ]
+   },
+   "properties": {
+    "Fault": "Saddle Mountain East Fault",
+    "Site": "Lynch Cove",
+    "Number of events": 1,
+    "Most recent event, max age (yr BP)": 1700,
+    "Most recent event, min age (yr BP)": 500,
+    "Most recent event, mean age (yr BP)": 1100,
+    "Events": "E1 (500-1700 BP)",
+    "Calibrated age": "Yes",
+    "Modeled age": "No",
+    "Notes": "Earthquake timing constrained by radiocarbon dating. The Authors use results from the Lynch Cove site for the Saddle Mountain East Fault, the location is based on figure 1 from Bucknam and others, 1992.",
+    "Reference code": "CC76",
+    "Reference": "Bucknam and others, 1992",
+    "Peer reviewed": "Yes",
+    "Site ID": "EQ_20",
+    "CFM ID": 24,
+    "WGS ID": 111,
+    "USGS QFFD #": "575",
+    "NSHM23 ID": 2829
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.4902,
+     47.5822
+    ]
+   },
+   "properties": {
+    "Fault": "Seattle Fault",
+    "Site": "Restoration Point",
+    "Number of events": 1,
+    "Most recent event, max age (yr BP)": 1700,
+    "Most recent event, min age (yr BP)": 500,
+    "Most recent event, mean age (yr BP)": 1100,
+    "Events": "E1 (500-1700 BP)",
+    "Calibrated age": "Yes",
+    "Modeled age": "No",
+    "Notes": "Earthquake timing constrained by radiocarbon dating. The Authors use results from the Restoration point site for the Seattle Fault, the location is approximately placed based on figure 2 from Bucknam and others, 1992.",
+    "Reference code": "CC76",
+    "Reference": "Bucknam and others, 1992",
+    "Peer reviewed": "Yes",
+    "Site ID": "EQ_21",
+    "CFM ID": 142,
+    "WGS ID": 104,
+    "USGS QFFD #": "570",
+    "NSHM23 ID": 2882
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -120.6659,
+     42.99204
+    ]
+   },
+   "properties": {
+    "Fault": "Thousand Springs Fault",
+    "Site": "Northern Trench",
+    "Number of events": 5,
+    "Most recent event, max age (yr BP)": 7700,
+    "Most recent event, min age (yr BP)": 3300,
+    "Most recent event, mean age (yr BP)": 5500,
+    "Events": "E5 (77000-33000 BP); E4 (75000–13000 BP); E3 (34000-19000 BP); E2\n(61000-23000 BP); and E1 (87000-33000 BP)",
+    "Calibrated age": "Yes",
+    "Modeled age": "Yes",
+    "Notes": "Earthquake timing constrained by radiocarbon dating, potassium-argon, and thermoluminescence.  Spatial point represents the approximate location of the Northern Trench Site based on Curtiss and others, 2024, figure 2.",
+    "Reference code": "CC77",
+    "Reference": "Curtiss and others, 2024",
+    "Peer reviewed": "Yes",
+    "Site ID": "EQ_22",
+    "CFM ID": 168
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -120.6648,
+     42.99031
+    ]
+   },
+   "properties": {
+    "Fault": "Thousand Springs Fault",
+    "Site": "Southern Trench",
+    "Number of events": 5,
+    "Most recent event, max age (yr BP)": 7600,
+    "Most recent event, min age (yr BP)": 0,
+    "Most recent event, mean age (yr BP)": 3800,
+    "Calibrated age": "Yes",
+    "Modeled age": "Yes",
+    "Notes": "Earthquake timing constrained by radiocarbon dating, potassium-argon, and thermoluminescence. Spatial point represents the location of the Southern Trench Site from Curtiss, 2020.",
+    "Reference": "Curtiss, 2020",
+    "Peer reviewed": "No",
+    "Site ID": "EQ_23",
+    "CFM ID": 168
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.2511,
+     47.65769
+    ]
+   },
+   "properties": {
+    "Fault": "Seattle Fault",
+    "Site": "Lake Washington",
+    "Number of events": 3,
+    "Most recent event, max age (yr BP)": 1265,
+    "Most recent event, min age (yr BP)": 960,
+    "Most recent event, mean age (yr BP)": 1112.5,
+    "Events": "E2 (1265-960 BP); E1 (400-300 BP)",
+    "Calibrated age": "Yes",
+    "Modeled age": "No",
+    "Notes": "Earthquake timing constrained by radiocarbon dating. Spatial point represents the central point of the authors data collection based on figure 1 in Karlin & Abella, 1992.",
+    "Reference code": "CC78",
+    "Reference": "Karlin & Abella, 1992",
+    "Peer reviewed": "Yes",
+    "Site ID": "EQ_24",
+    "CFM ID": 142,
+    "WGS ID": 104,
+    "USGS QFFD #": "570",
+    "NSHM23 ID": 2882
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -123.6764,
+     48.48367
+    ]
+   },
+   "properties": {
+    "Fault": "Leech River Fault",
+    "Site": "Good Hope Trench",
+    "Number of events": 1,
+    "Most recent event, max age (yr BP)": 12756,
+    "Most recent event, min age (yr BP)": 5984,
+    "Most recent event, mean age (yr BP)": 9370,
+    "Events": "E1 (94000 +/- 33000 BP)",
+    "Calibrated age": "Yes",
+    "Modeled age": "Yes",
+    "Notes": "Earthquake timing constrained by radiocarbon dating.The authors favored an earthquake age range with larger uncertainty which prevented them from correlating the prehistoric earthquakes in their trench with previous work.",
+    "Reference code": "CC79",
+    "Reference": "Harrichhausen and others, 2021",
+    "Peer reviewed": "Yes",
+    "Site ID": "EQ_25",
+    "CFM ID": 100
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -120.3001,
+     47.62021
+    ]
+   },
+   "properties": {
+    "Fault": "Spencer Canyon Fault Zone",
+    "Site": "Site 2",
+    "Number of events": 1,
+    "Most recent event, max age (yr BP)": 94,
+    "Most recent event, min age (yr BP)": 77,
+    "Most recent event, mean age (yr BP)": 85.5,
+    "Events": "E1 (94-77 BP)",
+    "Calibrated age": "Yes",
+    "Modeled age": "Yes",
+    "Notes": "Earthquake timing constrained with an OxCal Model using radiocarbon dates for detrital charcoal and dendrochronology for trees killed by a landslide.",
+    "Reference code": "CC80",
+    "Reference": "Sherrod and others, 2021",
+    "Peer reviewed": "Yes",
+    "Site ID": "EQ_26"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -123.1548,
+     47.48173
+    ]
+   },
+   "properties": {
+    "Fault": "Saddle Mountain East Fault",
+    "Site": "Banana Slug trench",
+    "Number of events": 1,
+    "Most recent event, max age (yr BP)": 1170,
+    "Most recent event, min age (yr BP)": 970,
+    "Most recent event, mean age (yr BP)": 1070,
+    "Events": "E3 (1170-970 BP)",
+    "Calibrated age": "Yes",
+    "Modeled age": "Yes",
+    "Notes": "Earthquake timing constrained by radiocarbon dating.Based on data from this study and others of the Saddle Mountain Fault Zone (SMFZ), the authors conclude that 3 earthquake events occurred in the SMFZ. Banana Slug Trench contained evidence for 1 of these events.",
+    "Reference code": "CC26",
+    "Reference": "Barnett and others, 2015",
+    "Peer reviewed": "Yes",
+    "Site ID": "EQ_27",
+    "CFM ID": 24,
+    "WGS ID": 111,
+    "USGS QFFD #": "575",
+    "NSHM23 ID": 2829
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -123.1609,
+     47.46012
+    ]
+   },
+   "properties": {
+    "Fault": "Sund Creek fault",
+    "Site": "Alligator Lizard Trench",
+    "Number of events": 2,
+    "Most recent event, max age (yr BP)": 1170,
+    "Most recent event, min age (yr BP)": 970,
+    "Most recent event, mean age (yr BP)": 1070,
+    "Events": "E3 (<3700-3480 BP); E1 (1170-970 BP)",
+    "Calibrated age": "Yes",
+    "Modeled age": "Yes",
+    "Notes": "Earthquake timing constrained by radiocarbon dating.Based on data from this study and others of the Saddle Mountain Fault Zone (SMFZ), the authors conclude that 3 earthquake events occurred in the SMFZ. Alligator Lizzard Trench contained evidence for 2 of these events.",
+    "Reference code": "CC26",
+    "Reference": "Barnett and others, 2015",
+    "Peer reviewed": "Yes",
+    "Site ID": "EQ_28",
+    "CFM ID": 24,
+    "WGS ID": 111,
+    "USGS QFFD #": "575",
+    "NSHM23 ID": 2829
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.7525,
+     47.38844
+    ]
+   },
+   "properties": {
+    "Fault": "Tacoma Fault",
+    "Site": "Micah Trench",
+    "Number of events": 1,
+    "Most recent event, max age (yr BP)": 1040,
+    "Most recent event, min age (yr BP)": 910,
+    "Most recent event, mean age (yr BP)": 975,
+    "Events": "E2 (1040-910 BP); E1 (940-380 BP)",
+    "Calibrated age": "Yes",
+    "Modeled age": "Yes",
+    "Notes": "Earthquake timing constrained by radiocarbon dating.",
+    "Reference code": "CC44",
+    "Reference": "Nelson and others, 2014",
+    "Peer reviewed": "Yes",
+    "Site ID": "EQ_33"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.1192,
+     47.57745
+    ]
+   },
+   "properties": {
+    "Fault": "Seattle Fault - Vasa Park Fault",
+    "Site": "Vasa Park",
+    "Number of events": 1,
+    "Most recent event, max age (yr BP)": 12470,
+    "Most recent event, min age (yr BP)": 8080,
+    "Most recent event, mean age (yr BP)": 10275,
+    "Events": "E1 (12470-8080 BP)",
+    "Calibrated age": "Yes",
+    "Modeled age": "Yes",
+    "Notes": "Earthquake timing constrained by radiocarbon dating.",
+    "Reference code": "CC63",
+    "Reference": "Angster and others, 2026",
+    "Peer reviewed": "Yes",
+    "Site ID": "EQ_34",
+    "CFM ID": 142,
+    "WGS ID": 104,
+    "USGS QFFD #": "570",
+    "NSHM23 ID": 2882
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.2317,
+     47.56667
+    ]
+   },
+   "properties": {
+    "Fault": "Seattle Fault",
+    "Site": "West Mercer Island",
+    "Number of events": 1,
+    "Most recent event, max age (yr BP)": 1100,
+    "Most recent event, min age (yr BP)": 1000,
+    "Most recent event, mean age (yr BP)": 1050,
+    "Events": "E1 (1100-1000 BP)",
+    "Calibrated age": "Yes",
+    "Modeled age": "No",
+    "Notes": "Earthquake timing constrained by radiocarbon dating and dendrochronology. Trees collected from West Point, Kirkland, Mercer Island, and Lake Washington, WA.",
+    "Reference code": "CC81",
+    "Reference": "Jacoby and others, 1992",
+    "Peer reviewed": "Yes",
+    "Site ID": "EQ_35",
+    "CFM ID": 142,
+    "WGS ID": 104,
+    "USGS QFFD #": "570",
+    "NSHM23 ID": 2882
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -118.0704,
+     41.16864
+    ]
+   },
+   "properties": {
+    "Fault": "Desert Valley fault zone",
+    "Site": "DV2",
+    "Number of events": 1,
+    "Most recent event, max age (yr BP)": 15900,
+    "Events": "E1 (<15900-15300 BP)",
+    "Calibrated age": "Yes",
+    "Modeled age": "Yes",
+    "Notes": "Earthquake timing is constrained by luminescence dating, U-series dating, and tephra chronology by chemically determining tephra layers found in their excavations with regional chronology. They were only able to constrain a maximum age of rupture from their study.",
+    "Reference code": "CC53",
+    "Reference": "Personius and others, 2017",
+    "Peer reviewed": "Yes",
+    "Site ID": "EQ_36"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -118.5033,
+     41.38146
+    ]
+   },
+   "properties": {
+    "Fault": "Jackson Mountain fault zone",
+    "Site": "JM4",
+    "Number of events": 2,
+    "Most recent event, max age (yr BP)": 15900,
+    "Events": "All Events (<15900-15300 BP)",
+    "Calibrated age": "Yes",
+    "Modeled age": "Yes",
+    "Notes": "Earthquake timing is constrained by luminescence dating, U-series dating, and tephra chronology by chemically determining tephra layers found in their excavations with regional chronology. They were only able to constrain a maximum age of rupture from their study.",
+    "Reference code": "CC53",
+    "Reference": "Personius and others, 2017",
+    "Peer reviewed": "Yes",
+    "Site ID": "EQ_37"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -119.7595,
+     41.48602
+    ]
+   },
+   "properties": {
+    "Fault": "Long Valley fault zone",
+    "Site": "LV1",
+    "Number of events": 1,
+    "Most recent event, max age (yr BP)": 15900,
+    "Events": "E1 (<15900-15300 BP)",
+    "Calibrated age": "Yes",
+    "Modeled age": "Yes",
+    "Notes": "Earthquake timing is constrained by luminescence dating, U-series dating, and tephra chronology by chemically determining tephra layers found in their excavations with regional chronology. They were only able to constrain a maximum age of rupture from their study.",
+    "Reference code": "CC53",
+    "Reference": "Personius and others, 2017",
+    "Peer reviewed": "Yes",
+    "Site ID": "EQ_38"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -123.7683,
+     48.50805
+    ]
+   },
+   "properties": {
+    "Fault": "Leech River Fault",
+    "Site": "Trench 1 and 2",
+    "Number of events": 3,
+    "Most recent event, max age (yr BP)": 1800,
+    "Most recent event, min age (yr BP)": 1600,
+    "Most recent event, mean age (yr BP)": 1700,
+    "Events": "E3 (9000-8400 BP); E2 (2300-2100 BP); E1 (1800-1600 BP)",
+    "Calibrated age": "Yes",
+    "Modeled age": "Yes",
+    "Notes": "Earthquake timing constrained by radiocarbon dating.  Samples may have contained reworked detrital charcoal that can either give ages that are too old or young.",
+    "Reference code": "CC67",
+    "Reference": "Morrell and others, 2018",
+    "Peer reviewed": "Yes",
+    "Site ID": "EQ_39",
+    "CFM ID": 100
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -123.089,
+     48.70258
+    ]
+   },
+   "properties": {
+    "Fault": "Slipjack Island Fault Zone",
+    "Site": "Central cores",
+    "Number of events": 1,
+    "Most recent event, max age (yr BP)": 12700,
+    "Most recent event, min age (yr BP)": 6090,
+    "Most recent event, mean age (yr BP)": 6263.333333333333,
+    "Events": "E1 (12700-12580 BP)",
+    "Calibrated age": "No",
+    "Modeled age": "No",
+    "Notes": "Earthquake timing constrained by radiocarbon dating.Results on the timing of fault rupture are presented in the conclusion of the article. Interpretations of cores and supplemental material could not be located for more details.",
+    "Reference": "Greene and Barrie, 2018",
+    "Peer reviewed": "Yes",
+    "Site ID": "EQ_40"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -123.3873,
+     48.52577
+    ]
+   },
+   "properties": {
+    "Fault": "XEOLXELEK-Elk Lake fault",
+    "Site": "Eagle Beach",
+    "Number of events": 1,
+    "Most recent event, max age (yr BP)": 4700,
+    "Most recent event, min age (yr BP)": 2300,
+    "Most recent event, mean age (yr BP)": 3500,
+    "Events": "E1 (4700-2300 BP)",
+    "Calibrated age": "Yes",
+    "Modeled age": "Yes",
+    "Notes": "Earthquake timing constrained by radiocarbon dating.The authors present 5 different OxCal models that include and exclude different radiocarbon samples, and present a preferred modeled age range for the MRE.",
+    "Reference": "Harrichhausen and others, 2023",
+    "Peer reviewed": "Yes",
+    "Site ID": "EQ_41",
+    "CFM ID": 208
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.1424,
+     47.79484
+    ]
+   },
+   "properties": {
+    "Fault": "Southern Whidbey Island Fault zone",
+    "Site": "Beef Barley",
+    "Number of events": 4,
+    "Most recent event, max age (yr BP)": 2730,
+    "Events": "E4 (earlier glaciation); E3 (about 16000 BP); E2 (12000-2850 BP), E1 (<2730 BP)",
+    "Calibrated age": "Yes",
+    "Modeled age": "Yes",
+    "Notes": "Earthquake timing constrained by radiocarbon dating and relative age information from glacial deposits.",
+    "Reference": "Sherrod and others, 2008",
+    "Peer reviewed": "Yes",
+    "Site ID": "EQ_42",
+    "CFM ID": 149,
+    "USGS QFFD #": "572"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -123.8304,
+     48.0595
+    ]
+   },
+   "properties": {
+    "Fault": "Lake Creek - Boundary Creek - Sadie",
+    "Site": "Lake Crescent",
+    "Number of events": 4,
+    "Most recent event, max age (yr BP)": 3225,
+    "Most recent event, min age (yr BP)": 2960,
+    "Most recent event, mean age (yr BP)": 3092.5,
+    "Events": "E4 (7165-7005 BP); E3 (5300-4860 BP); E2 (4100-3840); E1 (3225-2960 BP)",
+    "Calibrated age": "Yes",
+    "Modeled age": "Yes",
+    "Notes": "Earthquake timing of deposits in cores are constrained by radiocarbon dating. Ages of megaturbidites A-D coincide with earthquake timing from paleoseismic trenches in other nearby studies.",
+    "Reference": "Leithold and others, 2019",
+    "Peer reviewed": "Yes",
+    "Site ID": "EQ_43",
+    "CFM ID": 179,
+    "WGS ID": 167,
+    "USGS QFFD #": "557"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -123.183,
+     47.45952
+    ]
+   },
+   "properties": {
+    "Fault": "Saddle Mountain West Fault",
+    "Site": "Cargill Creek Trench",
+    "Number of events": 2,
+    "Most recent event, max age (yr BP)": 1700,
+    "Events": "E2 (17000-7700 BP); E1 (<1700 BP)",
+    "Calibrated age": "Yes",
+    "Modeled age": "No",
+    "Notes": "Earthquake timing constrained by C14 dating of detrital charcoal and a Douglas fir.",
+    "Reference": "Witter and others, 2008",
+    "Peer reviewed": "Yes",
+    "Site ID": "EQ_44",
+    "CFM ID": 24,
+    "WGS ID": 111,
+    "USGS QFFD #": "575",
+    "NSHM23 ID": 2829
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -124.8773,
+     49.34315
+    ]
+   },
+   "properties": {
+    "Fault": "Beaufort Range Fault",
+    "Site": "Site 1",
+    "Number of events": 3,
+    "Most recent event, max age (yr BP)": 4000,
+    "Most recent event, min age (yr BP)": 3000,
+    "Most recent event, mean age (yr BP)": 3500,
+    "Events": "E3 (14000-3000 BP); E2 (11000-<4000 BP); E1 (about 4000 BP)",
+    "Calibrated age": "Yes",
+    "Modeled age": "Yes",
+    "Notes": "Earthquake timing constrained by radiocarbon dating.",
+    "Reference": "Lynch and others, 2025",
+    "Peer reviewed": "Yes",
+    "Site ID": "EQ_45",
+    "CFM ID": 12
+   }
+  }
+ ]
+}
