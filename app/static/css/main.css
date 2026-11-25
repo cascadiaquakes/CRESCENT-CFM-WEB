@@ -566,6 +566,24 @@ tbody tr:hover {
     border: 1px solid #c9a800;
 }
 
+/* Same shapes and colors as the point markers drawn on the map */
+.site-mark {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    vertical-align: middle;
+    margin-right: 2px;
+}
+
+.site-mark-eq {
+    background: #D55E00;
+    clip-path: polygon(50% 0, 100% 100%, 0 100%);
+}
+
+.site-mark-slip {
+    background: #0072B2;
+}
+
 .overlay-toggle {
     font-size: 11px;
     line-height: 1.4;
